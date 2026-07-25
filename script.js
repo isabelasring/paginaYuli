@@ -396,95 +396,153 @@ function initRoutineLightbox() {
 }
 
 function initBeforeAfter() {
-  const slider = document.getElementById("baSlider");
-  const wrap = document.getElementById("baBeforeWrap");
-  const handle = document.getElementById("baHandle");
-  const beforeImg = slider?.querySelector(".ba-slider__before");
-  if (!slider || !wrap || !handle) return;
+  const carousel = document.getElementById("baCarousel");
+  const track = document.getElementById("baCarouselTrack");
+  const dots = Array.from(document.querySelectorAll("#baDots .dot"));
+  if (!carousel || !track) return;
 
-  let dragging = false;
+  const slides = Array.from(track.querySelectorAll(".ba-slide"));
+  if (!slides.length) return;
 
-  const syncBeforeWidth = () => {
-    const track = slider.querySelector(".ba-slider__track");
-    if (!track || !beforeImg) return;
-    beforeImg.style.width = `${track.offsetWidth}px`;
-  };
+  let active = 0;
 
-  const setPosition = (clientX) => {
-    const track = slider.querySelector(".ba-slider__track");
-    if (!track) return;
-    const rect = track.getBoundingClientRect();
-    let percent = ((clientX - rect.left) / rect.width) * 100;
-    percent = Math.min(96, Math.max(4, percent));
-    wrap.style.width = `${percent}%`;
-    handle.style.left = `${percent}%`;
-    handle.setAttribute("aria-valuenow", String(Math.round(percent)));
-  };
+  const initSlider = (slider) => {
+    const wrap = slider.querySelector(".ba-slider__before-wrap");
+    const handle = slider.querySelector(".ba-slider__handle");
+    const beforeImg = slider.querySelector(".ba-slider__before");
+    const trackEl = slider.querySelector(".ba-slider__track");
+    if (!wrap || !handle || !beforeImg || !trackEl) return;
 
-  const start = (e) => {
-    dragging = true;
-    handle.focus({ preventScroll: true });
-    if (e.type === "mousedown") setPosition(e.clientX);
-    if (e.type === "touchstart") setPosition(e.touches[0].clientX);
-  };
+    let dragging = false;
 
-  const move = (e) => {
-    if (!dragging) return;
-    if (e.type === "mousemove") setPosition(e.clientX);
-    if (e.type === "touchmove") {
-      e.preventDefault();
-      setPosition(e.touches[0].clientX);
-    }
-  };
+    const syncBeforeWidth = () => {
+      beforeImg.style.width = `${trackEl.offsetWidth}px`;
+    };
 
-  const end = () => {
-    dragging = false;
-  };
+    const setPosition = (clientX) => {
+      const rect = trackEl.getBoundingClientRect();
+      let percent = ((clientX - rect.left) / rect.width) * 100;
+      percent = Math.min(96, Math.max(4, percent));
+      wrap.style.width = `${percent}%`;
+      handle.style.left = `${percent}%`;
+      handle.setAttribute("aria-valuenow", String(Math.round(percent)));
+    };
 
-  handle.addEventListener("mousedown", start);
-  wrap.addEventListener("mousedown", start);
-  slider.addEventListener("mousedown", (e) => {
-    if (e.target.closest(".ba-slider__track")) {
+    const start = (e) => {
       dragging = true;
-      setPosition(e.clientX);
+      handle.focus({ preventScroll: true });
+      if (e.type === "mousedown") setPosition(e.clientX);
+      if (e.type === "touchstart") setPosition(e.touches[0].clientX);
+    };
+
+    const move = (e) => {
+      if (!dragging) return;
+      if (e.type === "mousemove") setPosition(e.clientX);
+      if (e.type === "touchmove") {
+        e.preventDefault();
+        setPosition(e.touches[0].clientX);
+      }
+    };
+
+    const end = () => {
+      dragging = false;
+    };
+
+    handle.addEventListener("mousedown", start);
+    wrap.addEventListener("mousedown", start);
+    slider.addEventListener("mousedown", (e) => {
+      if (e.target.closest(".ba-slider__track")) {
+        dragging = true;
+        setPosition(e.clientX);
+      }
+    });
+
+    window.addEventListener("mousemove", move);
+    window.addEventListener("mouseup", end);
+
+    handle.addEventListener("touchstart", start, { passive: true });
+    window.addEventListener("touchmove", move, { passive: false });
+    window.addEventListener("touchend", end);
+
+    handle.addEventListener("keydown", (e) => {
+      const current = Number(handle.getAttribute("aria-valuenow") || 50);
+      const rect = trackEl.getBoundingClientRect();
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        setPosition(rect.left + ((current - 3) / 100) * rect.width);
+      }
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        setPosition(rect.left + ((current + 3) / 100) * rect.width);
+      }
+    });
+
+    syncBeforeWidth();
+    window.addEventListener("resize", syncBeforeWidth);
+  };
+
+  const showSlide = (index) => {
+    active = ((index % slides.length) + slides.length) % slides.length;
+    track.style.transform = `translateX(-${active * 100}%)`;
+    slides.forEach((slide, i) => {
+      slide.classList.toggle("is-active", i === active);
+    });
+    dots.forEach((dot, i) => {
+      dot.classList.toggle("is-active", i === active);
+    });
+
+    // Reset active slider to 50%
+    const activeSlider = slides[active]?.querySelector("[data-ba-slider]");
+    if (activeSlider) {
+      const wrap = activeSlider.querySelector(".ba-slider__before-wrap");
+      const handle = activeSlider.querySelector(".ba-slider__handle");
+      if (wrap) wrap.style.width = "50%";
+      if (handle) {
+        handle.style.left = "50%";
+        handle.setAttribute("aria-valuenow", "50");
+      }
     }
+  };
+
+  slides.forEach((slide) => {
+    const slider = slide.querySelector("[data-ba-slider]");
+    if (slider) initSlider(slider);
   });
 
-  window.addEventListener("mousemove", move);
-  window.addEventListener("mouseup", end);
+  carousel.querySelector(".ba-carousel__nav--next")?.addEventListener("click", () => {
+    showSlide(active + 1);
+  });
+  carousel.querySelector(".ba-carousel__nav--prev")?.addEventListener("click", () => {
+    showSlide(active - 1);
+  });
 
-  handle.addEventListener("touchstart", start, { passive: true });
-  slider.addEventListener(
+  dots.forEach((dot, i) => {
+    dot.addEventListener("click", () => showSlide(i));
+  });
+
+  let touchStartX = 0;
+  carousel.addEventListener(
     "touchstart",
     (e) => {
-      dragging = true;
-      setPosition(e.touches[0].clientX);
+      // Don't capture if touching the handle
+      if (e.target.closest(".ba-slider__handle")) return;
+      touchStartX = e.changedTouches[0].clientX;
     },
     { passive: true }
   );
-  window.addEventListener("touchmove", move, { passive: false });
-  window.addEventListener("touchend", end);
+  carousel.addEventListener(
+    "touchend",
+    (e) => {
+      if (e.target.closest(".ba-slider__handle")) return;
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      if (Math.abs(dx) < 50) return;
+      if (dx < 0) showSlide(active + 1);
+      else showSlide(active - 1);
+    },
+    { passive: true }
+  );
 
-  handle.addEventListener("keydown", (e) => {
-    const current = Number(handle.getAttribute("aria-valuenow") || 50);
-    if (e.key === "ArrowLeft") {
-      e.preventDefault();
-      const track = slider.querySelector(".ba-slider__track");
-      if (!track) return;
-      const rect = track.getBoundingClientRect();
-      setPosition(rect.left + ((current - 3) / 100) * rect.width);
-    }
-    if (e.key === "ArrowRight") {
-      e.preventDefault();
-      const track = slider.querySelector(".ba-slider__track");
-      if (!track) return;
-      const rect = track.getBoundingClientRect();
-      setPosition(rect.left + ((current + 3) / 100) * rect.width);
-    }
-  });
-
-  syncBeforeWidth();
-  window.addEventListener("resize", syncBeforeWidth);
+  showSlide(0);
 }
 
 function initTestimonials() {

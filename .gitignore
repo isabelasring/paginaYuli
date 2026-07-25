@@ -5,3 +5,21 @@ desktop.ini
 .vscode/
 .idea/
 node_modules/
+
+# Source / unused large images (optimized WebP versions are used in the site)
+Gemini_Generated_Image_*.png
+ChatGPT Image *.png
+3894186f-*.png
+WhatsApp Image *.jpeg
+WhatsApp Image *.jpg
+servicios/*.png
+productos/Gemini_Generated_Image_*.png
+
+# Original heavy PNGs replaced by WebP
+assets/hero-tratamiento.png
+assets/atmosfera-spa.png
+assets/sobre-mi-portada.png
+assets/rutina-piel-*.png
+assets/products/agua-termal.png
+assets/infografia-cita.png
+assets/infografia-experiencia.png
