@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initMobileNav();
   initPages();
   initServicesCarousel();
+  initServiceGalleries();
   initReveals();
   initProductFilters();
   initProductFlips();
@@ -184,6 +185,28 @@ function initServicesCarousel() {
 
   render();
   startAuto();
+}
+
+function initServiceGalleries() {
+  const galleries = document.querySelectorAll("[data-gallery] .service-card__gallery");
+  if (!galleries.length) return;
+
+  galleries.forEach((gallery) => {
+    const slides = Array.from(gallery.querySelectorAll("img"));
+    if (slides.length < 2) return;
+
+    let index = slides.findIndex((img) => img.classList.contains("is-active"));
+    if (index < 0) index = 0;
+
+    const show = (i) => {
+      index = ((i % slides.length) + slides.length) % slides.length;
+      slides.forEach((img, idx) => {
+        img.classList.toggle("is-active", idx === index);
+      });
+    };
+
+    window.setInterval(() => show(index + 1), 2800);
+  });
 }
 
 function initHeader() {

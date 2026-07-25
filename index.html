@@ -242,6 +242,14 @@
       <div class="home-for__swirl" aria-hidden="true"></div>
       <div class="container">
         <div class="home-for__showcase reveal">
+          <div class="home-for__video" aria-label="Espacio para video">
+            <!-- Cuando tengas el video, agrégalo aquí:
+            <video controls playsinline preload="metadata">
+              <source src="assets/video-skin-beauty.mp4" type="video/mp4" />
+            </video>
+            -->
+          </div>
+
           <div class="home-for__copy">
             <p class="eyebrow">Esto es para ti si…</p>
             <h2>Tu piel merece<br /><em>una mirada distinta</em>.</h2>
@@ -249,14 +257,6 @@
               Un cuidado cercano, honesto y pensado para lo que tu piel
               realmente necesita — sin fórmulas genéricas.
             </p>
-          </div>
-
-          <div class="home-for__video" aria-label="Espacio para video">
-            <!-- Cuando tengas el video, agrégalo aquí:
-            <video controls playsinline preload="metadata">
-              <source src="assets/video-skin-beauty.mp4" type="video/mp4" />
-            </video>
-            -->
           </div>
         </div>
       </div>
@@ -319,8 +319,11 @@
               </article>
 
               <article class="service-card" data-index="1">
-                <div class="service-card__media">
-                  <img src="assets/hero-tratamiento.webp" alt="Limpieza Facial Premium" loading="lazy" />
+                <div class="service-card__media service-card__media--gallery" data-gallery>
+                  <div class="service-card__gallery">
+                    <img class="is-active" src="assets/servicio-premium-1.webp" alt="Resultados Limpieza Facial Premium 1" loading="lazy" />
+                    <img src="assets/servicio-premium-2.webp" alt="Resultados Limpieza Facial Premium 2" loading="lazy" />
+                  </div>
                 </div>
                 <div class="service-card__body">
                   <h3>Limpieza Facial Premium</h3>
@@ -331,7 +334,7 @@
 
               <article class="service-card" data-index="2">
                 <div class="service-card__media">
-                  <img src="https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=700&q=80" alt="Limpieza Facial Acné" loading="lazy" />
+                  <img src="assets/servicio-acne.webp" alt="Sesión Limpieza Facial Acné" loading="lazy" />
                 </div>
                 <div class="service-card__body">
                   <h3>Sesión Limpieza Facial Acné</h3>
@@ -342,7 +345,7 @@
 
               <article class="service-card" data-index="3">
                 <div class="service-card__media">
-                  <img src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=700&q=80" alt="Limpieza Facial Acné + Peeling" loading="lazy" />
+                  <img src="assets/servicio-acne-peeling.webp" alt="Limpieza Facial Acné + Peeling" loading="lazy" />
                 </div>
                 <div class="service-card__body">
                   <h3>Limpieza Facial Acné + Peeling</h3>
@@ -353,7 +356,7 @@
 
               <article class="service-card" data-index="4">
                 <div class="service-card__media">
-                  <img src="assets/atmosfera-spa.webp" alt="Porcelanización con Hidrafacial" loading="lazy" />
+                  <img src="assets/servicio-porcelanizacion.webp" alt="Porcelanización con Hidrafacial" loading="lazy" />
                 </div>
                 <div class="service-card__body">
                   <h3>Porcelanización con Hidrafacial</h3>
@@ -364,7 +367,7 @@
 
               <article class="service-card" data-index="5">
                 <div class="service-card__media">
-                  <img src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=700&q=80" alt="Microneedling" loading="lazy" />
+                  <img src="assets/servicio-microneedling.webp" alt="Microneedling Principio Activo" loading="lazy" />
                 </div>
                 <div class="service-card__body">
                   <h3>Microneedling Principio Activo</h3>
@@ -374,8 +377,11 @@
               </article>
 
               <article class="service-card" data-index="6">
-                <div class="service-card__media">
-                  <img src="https://images.unsplash.com/photo-1522338140262-f46f5913618a?w=700&q=80" alt="Microneedling Pink Glow" loading="lazy" />
+                <div class="service-card__media service-card__media--gallery" data-gallery>
+                  <div class="service-card__gallery">
+                    <img class="is-active" src="assets/servicio-pink-glow-1.webp" alt="Microneedling Pink Glow productos" loading="lazy" />
+                    <img src="assets/servicio-pink-glow-2.webp" alt="Microneedling Pink Glow tratamiento" loading="lazy" />
+                  </div>
                 </div>
                 <div class="service-card__body">
                   <h3>Microneedling Pink Glow</h3>
@@ -385,8 +391,11 @@
               </article>
 
               <article class="service-card" data-index="7">
-                <div class="service-card__media">
-                  <img src="https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=700&q=80" alt="Limpieza Facial Espalda" loading="lazy" />
+                <div class="service-card__media service-card__media--gallery" data-gallery>
+                  <div class="service-card__gallery">
+                    <img class="is-active" src="assets/servicio-espalda-1.webp" alt="Limpieza Facial Espalda resultado 1" loading="lazy" />
+                    <img src="assets/servicio-espalda-2.webp" alt="Limpieza Facial Espalda resultado 2" loading="lazy" />
+                  </div>
                 </div>
                 <div class="service-card__body">
                   <h3>Limpieza Facial Espalda</h3>
@@ -397,7 +406,7 @@
 
               <article class="service-card" data-index="8">
                 <div class="service-card__media">
-                  <img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=700&q=80" alt="Masaje Relajación Completo" loading="lazy" />
+                  <img src="assets/servicio-masaje.webp" alt="Masaje Relajación Completo" loading="lazy" />
                 </div>
                 <div class="service-card__body">
                   <h3>Masaje Relajación Completo</h3>
