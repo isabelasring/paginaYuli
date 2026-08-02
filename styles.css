@@ -1914,34 +1914,6 @@ body:not([data-active-page="inicio"])
   right: auto;
 }
 
-.product-card__cart {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 0;
-  background: var(--terracotta);
-  color: var(--cream);
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  z-index: 4;
-  box-shadow: 0 8px 20px rgba(142, 111, 94, 0.3);
-  transition: transform 0.3s var(--ease), background 0.3s ease;
-}
-
-.product-card__cart:hover {
-  transform: scale(1.08);
-  background: var(--terracotta-deep);
-}
-
-.product-card__cart svg {
-  width: 18px;
-  height: 18px;
-}
-
 /* Routines — layout suelto, mismo sistema visual que Experiencia */
 .routines {
   position: relative;

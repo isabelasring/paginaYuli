@@ -290,14 +290,8 @@ function initProductFlips() {
   if (!cards.length) return;
 
   cards.forEach((card) => {
-    card.addEventListener("click", (event) => {
-      if (event.target.closest(".product-card__cart")) return;
+    card.addEventListener("click", () => {
       card.classList.toggle("is-flipped");
-    });
-
-    const cart = card.querySelector(".product-card__cart");
-    cart?.addEventListener("click", (event) => {
-      event.stopPropagation();
     });
   });
 }
