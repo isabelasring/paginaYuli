@@ -150,10 +150,13 @@
             <h3>Productos</h3>
             <p>Cosmética profesional Avène para continuar el cuidado en casa, con productos seleccionados según lo que tu piel realmente necesita.</p>
           </a>
-          <a href="#sobre-mi" class="home-invite__card home-invite__card--text" data-nav="sobre-mi">
+          <a href="#testimonios" class="home-invite__card" data-nav="testimonios">
+            <div class="home-invite__media">
+              <img src="assets/home-clientes.webp" alt="Resultados y cuidado en la piel de mis clientas" loading="lazy" />
+            </div>
             <span class="home-invite__label">03</span>
-            <h3>Sobre mí</h3>
-            <p>Conoce la historia detrás de Skin Beauty: mi camino, mi forma de cuidar y por qué cada protocolo nace de escuchar tu piel con honestidad.</p>
+            <h3>Clientes</h3>
+            <p>Mira resultados reales y lo que dicen mis clientas: antes y después, experiencias honestas y el cambio que se siente en la piel.</p>
           </a>
         </div>
 
@@ -195,17 +198,62 @@
     </section>
 
     <!-- INICIO: cómo funciona -->
-    <section class="section home-process page-panel is-active" id="experiencia" data-page="inicio">
+    <section class="section experience page-panel is-active" id="experiencia" data-page="inicio">
+      <div class="experience__blob experience__blob--1" aria-hidden="true"></div>
+      <div class="experience__blob experience__blob--2" aria-hidden="true"></div>
       <div class="container">
-        <figure class="infografia infografia--large reveal">
-          <img
-            src="assets/experiencia.png"
-            alt="Así se vive una cita conmigo: 01 Reservas tu momento, 02 Evaluamos tu piel, 03 Recibes tu tratamiento, 04 Te llevas tu plan"
-            loading="lazy"
-            width="1600"
-            height="900"
-          />
-        </figure>
+        <div class="experience__head reveal">
+          <p class="eyebrow experience__eyebrow">Tu experiencia <span aria-hidden="true">♡</span></p>
+          <h2>Así se vive una cita <em class="experience__script">conmigo.</em></h2>
+        </div>
+
+        <div class="experience__steps reveal" role="list">
+          <article class="experience-step" role="listitem">
+            <div class="experience-step__visual">
+                  <img src="assets/experiencia/paso-01-reservas.webp?v=8" alt="" loading="lazy" />
+            </div>
+            <span class="experience-step__num">01</span>
+            <h3>Reservas tu momento</h3>
+            <span class="experience-step__heart" aria-hidden="true">♡</span>
+            <p>Escribes por WhatsApp o el formulario y agendamos el día que mejor te quede.</p>
+          </article>
+
+          <div class="experience-step__arrow" aria-hidden="true">→</div>
+
+          <article class="experience-step" role="listitem">
+            <div class="experience-step__visual">
+                  <img src="assets/experiencia/paso-02-evaluamos.webp?v=8" alt="" loading="lazy" />
+            </div>
+            <span class="experience-step__num">02</span>
+            <h3>Evaluamos tu piel</h3>
+            <span class="experience-step__heart" aria-hidden="true">♡</span>
+            <p>Conversamos sobre tu historial, hábitos y objetivos antes de elegir el protocolo.</p>
+          </article>
+
+          <div class="experience-step__arrow" aria-hidden="true">→</div>
+
+          <article class="experience-step" role="listitem">
+            <div class="experience-step__visual">
+                  <img src="assets/experiencia/paso-03-tratamiento.webp?v=8" alt="" loading="lazy" />
+            </div>
+            <span class="experience-step__num">03</span>
+            <h3>Recibes tu tratamiento</h3>
+            <span class="experience-step__heart" aria-hidden="true">♡</span>
+            <p>En un ambiente calmado, con técnicas profesionales y productos de calidad.</p>
+          </article>
+
+          <div class="experience-step__arrow" aria-hidden="true">→</div>
+
+          <article class="experience-step" role="listitem">
+            <div class="experience-step__visual">
+                  <img src="assets/experiencia/paso-04-plan.webp?v=8" alt="" loading="lazy" />
+            </div>
+            <span class="experience-step__num">04</span>
+            <h3>Te llevas tu plan</h3>
+            <span class="experience-step__heart" aria-hidden="true">♡</span>
+            <p>Te oriento en el cuidado en casa para que los resultados se mantengan.</p>
+          </article>
+        </div>
       </div>
     </section>
 
@@ -255,51 +303,183 @@
 
         <div class="routine-panels" id="routinePanels">
           <div class="routine-panel is-active" id="panel-grasa" role="tabpanel" aria-labelledby="tab-grasa" data-routine="grasa">
-            <button class="routine-panel__zoom" type="button" data-zoom-src="assets/rutina-piel-grasa.webp" data-zoom-alt="Tu rutina ideal para piel grasa">
-              <img
-                class="routine-panel__infografia"
-                src="assets/rutina-piel-grasa.webp"
-                alt="Tu rutina ideal para piel grasa: limpiar, tonificar, tratar y proteger"
-                loading="lazy"
-              />
-              <span class="routine-panel__zoom-label">Ampliar</span>
-            </button>
+            <p class="routine-flow__head">Tu rutina ideal para <em>Piel Grasa</em></p>
+            <div class="experience__steps" role="list">
+              <article class="experience-step" role="listitem">
+                <div class="experience-step__visual">
+                  <img src="assets/rutinas/grasa/01-limpiar.webp?v=3" alt="" loading="lazy" />
+                </div>
+                <span class="experience-step__num">01</span>
+                <h3>Limpiar</h3>
+                <span class="experience-step__heart" aria-hidden="true">♡</span>
+                <p>Limpiador suave que equilibra el sebo sin resecar.</p>
+              </article>
+              <div class="experience-step__arrow" aria-hidden="true">→</div>
+              <article class="experience-step" role="listitem">
+                <div class="experience-step__visual">
+                  <img src="assets/rutinas/grasa/02-tonificar.webp?v=3" alt="" loading="lazy" />
+                </div>
+                <span class="experience-step__num">02</span>
+                <h3>Tonificar</h3>
+                <span class="experience-step__heart" aria-hidden="true">♡</span>
+                <p>Tónico astringente con niacinamida para poros refinados.</p>
+              </article>
+              <div class="experience-step__arrow" aria-hidden="true">→</div>
+              <article class="experience-step" role="listitem">
+                <div class="experience-step__visual">
+                  <img src="assets/rutinas/grasa/03-tratar.webp?v=3" alt="" loading="lazy" />
+                </div>
+                <span class="experience-step__num">03</span>
+                <h3>Tratar</h3>
+                <span class="experience-step__heart" aria-hidden="true">♡</span>
+                <p>Sérum de ácido salicílico para textura uniforme.</p>
+              </article>
+              <div class="experience-step__arrow" aria-hidden="true">→</div>
+              <article class="experience-step" role="listitem">
+                <div class="experience-step__visual">
+                  <img src="assets/rutinas/grasa/04-proteger.webp?v=3" alt="" loading="lazy" />
+                </div>
+                <span class="experience-step__num">04</span>
+                <h3>Proteger</h3>
+                <span class="experience-step__heart" aria-hidden="true">♡</span>
+                <p>Protector matificante SPF 50 para sellar tu rutina.</p>
+              </article>
+            </div>
           </div>
 
           <div class="routine-panel" id="panel-seca" role="tabpanel" aria-labelledby="tab-seca" data-routine="seca" hidden>
-            <button class="routine-panel__zoom" type="button" data-zoom-src="assets/rutina-piel-seca.webp" data-zoom-alt="Tu rutina ideal para piel seca">
-              <img
-                class="routine-panel__infografia"
-                src="assets/rutina-piel-seca.webp"
-                alt="Tu rutina ideal para piel seca: limpiar, tonificar, tratar y proteger"
-                loading="lazy"
-              />
-              <span class="routine-panel__zoom-label">Ampliar</span>
-            </button>
+            <p class="routine-flow__head">Tu rutina ideal para <em>Piel Seca</em></p>
+            <div class="experience__steps" role="list">
+              <article class="experience-step" role="listitem">
+                <div class="experience-step__visual">
+                  <img src="assets/rutinas/seca/01-limpiar.webp?v=3" alt="" loading="lazy" />
+                </div>
+                <span class="experience-step__num">01</span>
+                <h3>Limpiar</h3>
+                <span class="experience-step__heart" aria-hidden="true">♡</span>
+                <p>Limpiador cremoso hidratante para no resecar la piel.</p>
+              </article>
+              <div class="experience-step__arrow" aria-hidden="true">→</div>
+              <article class="experience-step" role="listitem">
+                <div class="experience-step__visual">
+                  <img src="assets/rutinas/seca/02-tonificar.webp?v=3" alt="" loading="lazy" />
+                </div>
+                <span class="experience-step__num">02</span>
+                <h3>Tonificar</h3>
+                <span class="experience-step__heart" aria-hidden="true">♡</span>
+                <p>Tónico sin alcohol con aloe vera y glicerina para calmar y reponer.</p>
+              </article>
+              <div class="experience-step__arrow" aria-hidden="true">→</div>
+              <article class="experience-step" role="listitem">
+                <div class="experience-step__visual">
+                  <img src="assets/rutinas/seca/03-tratar.webp?v=3" alt="" loading="lazy" />
+                </div>
+                <span class="experience-step__num">03</span>
+                <h3>Tratar</h3>
+                <span class="experience-step__heart" aria-hidden="true">♡</span>
+                <p>Sérum de ácido hialurónico y aceites nutritivos para hidratación profunda.</p>
+              </article>
+              <div class="experience-step__arrow" aria-hidden="true">→</div>
+              <article class="experience-step" role="listitem">
+                <div class="experience-step__visual">
+                  <img src="assets/rutinas/seca/04-proteger.webp?v=3" alt="" loading="lazy" />
+                </div>
+                <span class="experience-step__num">04</span>
+                <h3>Proteger</h3>
+                <span class="experience-step__heart" aria-hidden="true">♡</span>
+                <p>Protector solar hidratante con manteca de karité para sellar tu rutina.</p>
+              </article>
+            </div>
           </div>
 
           <div class="routine-panel" id="panel-mixta" role="tabpanel" aria-labelledby="tab-mixta" data-routine="mixta" hidden>
-            <button class="routine-panel__zoom" type="button" data-zoom-src="assets/rutina-piel-mixta.webp" data-zoom-alt="Tu rutina ideal para piel mixta">
-              <img
-                class="routine-panel__infografia"
-                src="assets/rutina-piel-mixta.webp"
-                alt="Tu rutina ideal para piel mixta: limpiar, tonificar, tratar y proteger"
-                loading="lazy"
-              />
-              <span class="routine-panel__zoom-label">Ampliar</span>
-            </button>
+            <p class="routine-flow__head">Tu rutina ideal para <em>Piel Mixta</em></p>
+            <div class="experience__steps" role="list">
+              <article class="experience-step" role="listitem">
+                <div class="experience-step__visual">
+                  <img src="assets/rutinas/mixta/01-limpiar.webp?v=3" alt="" loading="lazy" />
+                </div>
+                <span class="experience-step__num">01</span>
+                <h3>Limpiar</h3>
+                <span class="experience-step__heart" aria-hidden="true">♡</span>
+                <p>Limpiador en gel equilibrante que controla el sebo en la zona T sin resecar.</p>
+              </article>
+              <div class="experience-step__arrow" aria-hidden="true">→</div>
+              <article class="experience-step" role="listitem">
+                <div class="experience-step__visual">
+                  <img src="assets/rutinas/mixta/02-tonificar.webp?v=3" alt="" loading="lazy" />
+                </div>
+                <span class="experience-step__num">02</span>
+                <h3>Tonificar</h3>
+                <span class="experience-step__heart" aria-hidden="true">♡</span>
+                <p>Tónico astringente ligero con extractos de hamamelis y pepino para refinar los poros.</p>
+              </article>
+              <div class="experience-step__arrow" aria-hidden="true">→</div>
+              <article class="experience-step" role="listitem">
+                <div class="experience-step__visual">
+                  <img src="assets/rutinas/mixta/03-tratar.webp?v=3" alt="" loading="lazy" />
+                </div>
+                <span class="experience-step__num">03</span>
+                <h3>Tratar</h3>
+                <span class="experience-step__heart" aria-hidden="true">♡</span>
+                <p>Sérum equilibrante con niacinamida para textura uniforme y control de brillos.</p>
+              </article>
+              <div class="experience-step__arrow" aria-hidden="true">→</div>
+              <article class="experience-step" role="listitem">
+                <div class="experience-step__visual">
+                  <img src="assets/rutinas/mixta/04-proteger.webp?v=3" alt="" loading="lazy" />
+                </div>
+                <span class="experience-step__num">04</span>
+                <h3>Proteger y equilibrar</h3>
+                <span class="experience-step__heart" aria-hidden="true">♡</span>
+                <p>Gel-crema fluido hidratante con SPF 30 ligero para un acabado cómodo y matificado.</p>
+              </article>
+            </div>
           </div>
 
           <div class="routine-panel" id="panel-sensible" role="tabpanel" aria-labelledby="tab-sensible" data-routine="sensible" hidden>
-            <button class="routine-panel__zoom" type="button" data-zoom-src="assets/rutina-piel-sensible.webp" data-zoom-alt="Tu rutina ideal para piel sensible">
-              <img
-                class="routine-panel__infografia"
-                src="assets/rutina-piel-sensible.webp"
-                alt="Tu rutina ideal para piel sensible: limpiar, tonificar, tratar y proteger"
-                loading="lazy"
-              />
-              <span class="routine-panel__zoom-label">Ampliar</span>
-            </button>
+            <p class="routine-flow__head">Tu rutina ideal para <em>Piel Sensible</em></p>
+            <div class="experience__steps" role="list">
+              <article class="experience-step" role="listitem">
+                <div class="experience-step__visual">
+                  <img src="assets/rutinas/sensible/01-limpiar.webp?v=3" alt="" loading="lazy" />
+                </div>
+                <span class="experience-step__num">01</span>
+                <h3>Limpiar</h3>
+                <span class="experience-step__heart" aria-hidden="true">♡</span>
+                <p>Limpiador en crema suave y calmante que limpia sin alterar la barrera cutánea.</p>
+              </article>
+              <div class="experience-step__arrow" aria-hidden="true">→</div>
+              <article class="experience-step" role="listitem">
+                <div class="experience-step__visual">
+                  <img src="assets/rutinas/sensible/02-tonificar.webp?v=3" alt="" loading="lazy" />
+                </div>
+                <span class="experience-step__num">02</span>
+                <h3>Tonificar</h3>
+                <span class="experience-step__heart" aria-hidden="true">♡</span>
+                <p>Tónico suave sin alcohol con manzanilla y agua de rosas para calmar y reequilibrar.</p>
+              </article>
+              <div class="experience-step__arrow" aria-hidden="true">→</div>
+              <article class="experience-step" role="listitem">
+                <div class="experience-step__visual">
+                  <img src="assets/rutinas/sensible/03-tratar.webp?v=3" alt="" loading="lazy" />
+                </div>
+                <span class="experience-step__num">03</span>
+                <h3>Tratar</h3>
+                <span class="experience-step__heart" aria-hidden="true">♡</span>
+                <p>Sérum reparador de barrera con ceramidas y alantoína para calmar el enrojecimiento.</p>
+              </article>
+              <div class="experience-step__arrow" aria-hidden="true">→</div>
+              <article class="experience-step" role="listitem">
+                <div class="experience-step__visual">
+                  <img src="assets/rutinas/sensible/04-proteger.webp?v=3" alt="" loading="lazy" />
+                </div>
+                <span class="experience-step__num">04</span>
+                <h3>Proteger y nutrir</h3>
+                <span class="experience-step__heart" aria-hidden="true">♡</span>
+                <p>Crema hidratante mineral suave con SPF 30 ligero, sin irritación y con protección.</p>
+              </article>
+            </div>
           </div>
         </div>
       </div>
@@ -324,7 +504,7 @@
             <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.52 3.48A11.86 11.86 0 0 0 12.04 0C5.5 0 .16 5.34.16 11.9c0 2.1.55 4.15 1.6 5.96L0 24l6.3-1.65a11.9 11.9 0 0 0 5.74 1.46h.01c6.54 0 11.88-5.34 11.88-11.9 0-3.18-1.24-6.17-3.41-8.43ZM12.05 21.8h-.01a9.9 9.9 0 0 1-5.04-1.38l-.36-.21-3.74.98 1-3.64-.24-.37a9.86 9.86 0 0 1-1.51-5.26c0-5.45 4.44-9.88 9.9-9.88 2.64 0 5.13 1.03 7 2.9a9.82 9.82 0 0 1 2.9 6.99c0 5.45-4.44 9.87-9.9 9.87Zm5.42-7.4c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.64.07-.3-.15-1.25-.46-2.38-1.47-.88-.78-1.47-1.75-1.64-2.04-.17-.3-.02-.46.13-.6.13-.13.3-.35.44-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.61-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.22 3.08c.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.69.62.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.7.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35Z"/></svg>
           </a>
           <a
-            href="https://instagram.com"
+            href="https://www.instagram.com/yulysanchez.skinbeauty/"
             class="social-icon social-icon--light"
             target="_blank"
             rel="noopener noreferrer"
@@ -399,7 +579,7 @@
 
               <article class="service-card" data-index="4">
                 <div class="service-card__media">
-                  <img src="assets/servicio-porcelanizacion.webp" alt="Porcelanización con Hidrafacial" loading="lazy" />
+                  <img src="assets/servicio-porcelanizacion.webp?v=2" alt="Porcelanización con Hidrafacial" loading="lazy" />
                 </div>
                 <div class="service-card__body">
                   <h3>Porcelanización con Hidrafacial</h3>
@@ -904,7 +1084,7 @@
         <div class="results__copy reveal">
           <p class="eyebrow">Resultados reales</p>
           <h2>Resultados que se ven<br />y se sienten.</h2>
-          <p class="results__lead">Desliza para comparar el antes y después. Próximamente más casos reales.</p>
+          <p class="results__lead">Casos reales de mis clientas: cada imagen muestra el antes y el después del tratamiento.</p>
         </div>
 
         <div class="ba-carousel reveal" id="baCarousel">
@@ -912,65 +1092,15 @@
 
           <div class="ba-carousel__viewport">
             <div class="ba-carousel__track" id="baCarouselTrack">
-              <div class="ba-slide is-active">
-                <div class="ba-slider" data-ba-slider>
-                  <div class="ba-slider__track">
-                    <img
-                      class="ba-slider__after"
-                      src="https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=1000&q=80"
-                      alt="Después del tratamiento 1"
-                      loading="lazy"
-                    />
-                    <div class="ba-slider__before-wrap">
-                      <img
-                        class="ba-slider__before"
-                        src="https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=1000&q=80"
-                        alt="Antes del tratamiento 1"
-                        loading="lazy"
-                      />
-                    </div>
-                    <div class="ba-slider__handle" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" aria-label="Comparar antes y después" tabindex="0">
-                      <span></span>
-                    </div>
-                    <span class="ba-label ba-label--before">Antes</span>
-                    <span class="ba-label ba-label--after">Después</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="ba-slide">
-                <div class="ba-slider" data-ba-slider>
-                  <div class="ba-slider__track">
-                    <img
-                      class="ba-slider__after"
-                      src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=1000&q=80"
-                      alt="Después del tratamiento 2"
-                      loading="lazy"
-                    />
-                    <div class="ba-slider__before-wrap">
-                      <img
-                        class="ba-slider__before"
-                        src="https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=1000&q=80"
-                        alt="Antes del tratamiento 2"
-                        loading="lazy"
-                      />
-                    </div>
-                    <div class="ba-slider__handle" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" aria-label="Comparar antes y después" tabindex="0">
-                      <span></span>
-                    </div>
-                    <span class="ba-label ba-label--before">Antes</span>
-                    <span class="ba-label ba-label--after">Después</span>
-                  </div>
-                </div>
-              </div>
+              <!-- slides generados en script.js -->
             </div>
           </div>
 
           <button class="ba-carousel__nav ba-carousel__nav--next" type="button" aria-label="Resultado siguiente">›</button>
 
-          <div class="dots ba-carousel__dots" id="baDots" aria-label="Paginación de resultados">
-            <button class="dot is-active" type="button" aria-label="Resultado 1"></button>
-            <button class="dot" type="button" aria-label="Resultado 2"></button>
+          <div class="ba-carousel__meta">
+            <p class="ba-carousel__counter" id="baCounter" aria-live="polite">1 / 17</p>
+            <div class="dots ba-carousel__dots" id="baDots" aria-label="Paginación de resultados"></div>
           </div>
         </div>
       </div>
@@ -987,33 +1117,45 @@
         <div class="testimonials__track reveal" id="testimonialsTrack">
           <article class="testimonial-card">
             <div class="testimonial-card__author">
-              <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80" alt="" loading="lazy" />
-              <div>
-                <span class="stars">★★★★★</span>
-                <strong>Camila R.</strong>
-              </div>
+              <span class="stars" aria-label="5 estrellas">★★★★★</span>
+              <strong>Laura Gómez</strong>
             </div>
-            <p>Mi piel cambió por completo. El Hydrafacial dejó mi rostro luminoso y suave desde la primera sesión. ¡Totalmente recomendada!</p>
+            <p>“Salí de la cita con la piel luminosa y calmada. Yuly es muy profesional y te explica cada paso con cariño. Me sentí en buenas manos desde el primer mensaje.”</p>
           </article>
           <article class="testimonial-card">
             <div class="testimonial-card__author">
-              <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&q=80" alt="" loading="lazy" />
-              <div>
-                <span class="stars">★★★★★</span>
-                <strong>Valentina M.</strong>
-              </div>
+              <span class="stars" aria-label="5 estrellas">★★★★★</span>
+              <strong>Mariana Restrepo</strong>
             </div>
-            <p>Yuly entiende exactamente lo que necesita tu piel. Me sentí cuidada, escuchada y los resultados del microneedling son increíbles.</p>
+            <p>“Mi acné mejoró muchísimo. El tratamiento fue cómodo y los resultados se notan en las fotos de antes y después. ¡Totalmente recomendada en Medellín!”</p>
           </article>
           <article class="testimonial-card">
             <div class="testimonial-card__author">
-              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80" alt="" loading="lazy" />
-              <div>
-                <span class="stars">★★★★★</span>
-                <strong>Andrea L.</strong>
-              </div>
+              <span class="stars" aria-label="5 estrellas">★★★★★</span>
+              <strong>Valentina Rodríguez</strong>
             </div>
-            <p>Los productos que me recomendó transformaron mi rutina. Piel más firme, hidratada y con un glow que no había tenido en años.</p>
+            <p>“Lo que más valoro es la honestidad: me armó un plan realista para mi piel sensible y ahora me veo descansada y con un glow natural hermoso.”</p>
+          </article>
+          <article class="testimonial-card">
+            <div class="testimonial-card__author">
+              <span class="stars" aria-label="5 estrellas">★★★★★</span>
+              <strong>Camila Osorio</strong>
+            </div>
+            <p>“Un espacio íntimo, limpio y cálido. El Hydrafacial me dejó la cara suavecita y sin brotes. Ya agendé mi próximo cuidado.”</p>
+          </article>
+          <article class="testimonial-card">
+            <div class="testimonial-card__author">
+              <span class="stars" aria-label="5 estrellas">★★★★★</span>
+              <strong>Daniela Mejía</strong>
+            </div>
+            <p>“Llevo años batallando con manchas y por fin veo un cambio de verdad. Yuly es detallada, cariñosa y transmite mucha tranquilidad.”</p>
+          </article>
+          <article class="testimonial-card">
+            <div class="testimonial-card__author">
+              <span class="stars" aria-label="5 estrellas">★★★★★</span>
+              <strong>Isabella Cárdenas</strong>
+            </div>
+            <p>“Me recomendó productos que sí funcionan con mi rutina. Mi piel se siente más firme, hidratada y con un brillo sano que me encanta.”</p>
           </article>
         </div>
 
@@ -1021,41 +1163,9 @@
           <button class="dot is-active" type="button" aria-label="Testimonio 1"></button>
           <button class="dot" type="button" aria-label="Testimonio 2"></button>
           <button class="dot" type="button" aria-label="Testimonio 3"></button>
-        </div>
-      </div>
-    </section>
-
-    <!-- INSTAGRAM -->
-    <section class="section instagram page-panel" id="instagram" data-page="testimonios">
-      <div class="container">
-        <div class="section__head reveal">
-          <p class="eyebrow">Instagram</p>
-          <h2>@yulysanchez.skinbeauty</h2>
-        </div>
-
-        <div class="instagram__grid reveal">
-          <a class="instagram__item" href="https://instagram.com" target="_blank" rel="noopener noreferrer">
-            <img src="https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=500&q=80" alt="Publicación Instagram 1" loading="lazy" />
-          </a>
-          <a class="instagram__item" href="https://instagram.com" target="_blank" rel="noopener noreferrer">
-            <img src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=500&q=80" alt="Publicación Instagram 2" loading="lazy" />
-          </a>
-          <a class="instagram__item" href="https://instagram.com" target="_blank" rel="noopener noreferrer">
-            <img src="https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=500&q=80" alt="Publicación Instagram 3" loading="lazy" />
-          </a>
-          <a class="instagram__item" href="https://instagram.com" target="_blank" rel="noopener noreferrer">
-            <img src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=500&q=80" alt="Publicación Instagram 4" loading="lazy" />
-          </a>
-          <a class="instagram__item" href="https://instagram.com" target="_blank" rel="noopener noreferrer">
-            <img src="https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=500&q=80" alt="Publicación Instagram 5" loading="lazy" />
-          </a>
-          <a class="instagram__item" href="https://instagram.com" target="_blank" rel="noopener noreferrer">
-            <img src="https://images.unsplash.com/photo-1522338140262-f46f5913618a?w=500&q=80" alt="Publicación Instagram 6" loading="lazy" />
-          </a>
-        </div>
-
-        <div class="section__cta reveal">
-          <a href="https://instagram.com" class="btn btn--primary" target="_blank" rel="noopener noreferrer">Ver más en Instagram</a>
+          <button class="dot" type="button" aria-label="Testimonio 4"></button>
+          <button class="dot" type="button" aria-label="Testimonio 5"></button>
+          <button class="dot" type="button" aria-label="Testimonio 6"></button>
         </div>
       </div>
     </section>
@@ -1102,7 +1212,7 @@
           <a href="https://wa.link/ms8v5z" class="social-icon" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.52 3.48A11.86 11.86 0 0 0 12.04 0C5.5 0 .16 5.34.16 11.9c0 2.1.55 4.15 1.6 5.96L0 24l6.3-1.65a11.9 11.9 0 0 0 5.74 1.46h.01c6.54 0 11.88-5.34 11.88-11.9 0-3.18-1.24-6.17-3.41-8.43ZM12.05 21.8h-.01a9.9 9.9 0 0 1-5.04-1.38l-.36-.21-3.74.98 1-3.64-.24-.37a9.86 9.86 0 0 1-1.51-5.26c0-5.45 4.44-9.88 9.9-9.88 2.64 0 5.13 1.03 7 2.9a9.82 9.82 0 0 1 2.9 6.99c0 5.45-4.44 9.87-9.9 9.87Zm5.42-7.4c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.64.07-.3-.15-1.25-.46-2.38-1.47-.88-.78-1.47-1.75-1.64-2.04-.17-.3-.02-.46.13-.6.13-.13.3-.35.44-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.61-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.22 3.08c.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.69.62.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.7.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35Z"/></svg>
           </a>
-          <a href="https://instagram.com" class="social-icon" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+          <a href="https://www.instagram.com/yulysanchez.skinbeauty/" class="social-icon" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.9.2 2.4.4.6.2 1 .5 1.5 1 .4.4.7.9 1 1.5.2.5.4 1.2.4 2.4.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.2 1.9-.4 2.4-.2.6-.5 1-1 1.5-.4.4-.9.7-1.5 1-.5.2-1.2.4-2.4.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.9-.2-2.4-.4-.6-.2-1-.5-1.5-1-.4-.4-.7-.9-1-1.5-.2-.5-.4-1.2-.4-2.4C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.2-1.9.4-2.4.2-.6.5-1 1-1.5.4-.4.9-.7 1.5-1 .5-.2 1.2-.4 2.4-.4C8.4 2.2 8.8 2.2 12 2.2Zm0 1.8c-3.2 0-3.5 0-4.8.1-1 .1-1.6.2-1.9.4-.5.2-.8.4-1.1.7-.3.3-.5.6-.7 1.1-.2.4-.3.9-.4 1.9-.1 1.2-.1 1.6-.1 4.8s0 3.5.1 4.8c.1 1 .2 1.6.4 1.9.2.5.4.8.7 1.1.3.3.6.5 1.1.7.4.2.9.3 1.9.4 1.2.1 1.6.1 4.8.1s3.5 0 4.8-.1c1-.1 1.6-.2 1.9-.4.5-.2.8-.4 1.1-.7.3-.3.5-.6.7-1.1.2-.4.3-.9.4-1.9.1-1.2.1-1.6.1-4.8s0-3.5-.1-4.8c-.1-1-.2-1.6-.4-1.9-.2-.5-.4-.8-.7-1.1-.3-.3-.6-.5-1.1-.7-.4-.2-.9-.3-1.9-.4-1.2-.1-1.6-.1-4.8-.1Zm0 3.1a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 8.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Zm6.3-8.4a1.2 1.2 0 1 1-2.3 0 1.2 1.2 0 0 1 2.3 0Z"/></svg>
           </a>
         </div>

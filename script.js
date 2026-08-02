@@ -30,7 +30,6 @@ const HASH_TO_PAGE = {
   "sobre-mi": "sobre-mi",
   resultados: "testimonios",
   testimonios: "testimonios",
-  instagram: "testimonios",
 };
 
 function resolvePage(raw) {
@@ -50,7 +49,7 @@ function resolvePage(raw) {
     // Reinicia animaciones cada vez que se abre una sección
     if (match) {
       panel.querySelectorAll(
-        ".trust-item, .home-invite__card, .why-card, .process-step, .home-for__card, .service-item, .product-card, .routine-step, .testimonial-card, .instagram__item, .info-block, .services-value, .section__head, .section__cta, .why__quote, .home-cta__box, .ba-slider, .results__copy, .about__visual, .about__content, .contact__form-wrap, .contact__info, .services-aside, .hero__content, .hero__visual, .hero__mini-item"
+        ".trust-item, .home-invite__card, .why-card, .experience-step, .home-for__card, .service-item, .product-card, .routine-step, .testimonial-card, .info-block, .services-value, .section__head, .experience__head, .section__cta, .why__quote, .home-cta__box, .ba-carousel, .ba-case, .results__copy, .about__visual, .about__content, .contact__form-wrap, .contact__info, .services-aside, .hero__content, .hero__visual, .hero__mini-item"
       ).forEach((el) => {
         el.style.animation = "none";
         // force reflow
@@ -366,6 +365,8 @@ function initRoutines() {
 }
 
 function initRoutineLightbox() {
+  // Las rutinas ahora son HTML estructurado; se mantiene el lightbox
+  // por si se reutiliza en otras imágenes de la página.
   const lightbox = document.getElementById("imgLightbox");
   const lightboxImg = document.getElementById("imgLightboxImg");
   if (!lightbox || !lightboxImg) return;
@@ -387,7 +388,7 @@ function initRoutineLightbox() {
     document.body.classList.remove("lightbox-open");
   };
 
-  document.querySelectorAll(".routine-panel__zoom").forEach((btn) => {
+  document.querySelectorAll("[data-zoom-src]").forEach((btn) => {
     btn.addEventListener("click", (event) => {
       event.stopPropagation();
       open(btn.dataset.zoomSrc || "", btn.dataset.zoomAlt || "");
@@ -403,90 +404,43 @@ function initRoutineLightbox() {
 }
 
 function initBeforeAfter() {
+  const RESULT_IDS = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
   const carousel = document.getElementById("baCarousel");
   const track = document.getElementById("baCarouselTrack");
-  const dots = Array.from(document.querySelectorAll("#baDots .dot"));
-  if (!carousel || !track) return;
+  const dotsWrap = document.getElementById("baDots");
+  const counter = document.getElementById("baCounter");
+  if (!carousel || !track || !dotsWrap) return;
+
+  track.innerHTML = "";
+  dotsWrap.innerHTML = "";
+
+  RESULT_IDS.forEach((id, i) => {
+    const slide = document.createElement("div");
+    slide.className = `ba-slide${i === 0 ? " is-active" : ""}`;
+    slide.innerHTML = `
+      <figure class="ba-case">
+        <img
+          src="assets/resultados/${id}.webp"
+          alt="Resultado antes y después ${i + 1}"
+          loading="${i === 0 ? "eager" : "lazy"}"
+          decoding="async"
+        />
+      </figure>
+    `;
+    track.appendChild(slide);
+
+    const dot = document.createElement("button");
+    dot.className = `dot${i === 0 ? " is-active" : ""}`;
+    dot.type = "button";
+    dot.setAttribute("aria-label", `Resultado ${i + 1}`);
+    dotsWrap.appendChild(dot);
+  });
 
   const slides = Array.from(track.querySelectorAll(".ba-slide"));
+  const dots = Array.from(dotsWrap.querySelectorAll(".dot"));
   if (!slides.length) return;
 
   let active = 0;
-
-  const initSlider = (slider) => {
-    const wrap = slider.querySelector(".ba-slider__before-wrap");
-    const handle = slider.querySelector(".ba-slider__handle");
-    const beforeImg = slider.querySelector(".ba-slider__before");
-    const trackEl = slider.querySelector(".ba-slider__track");
-    if (!wrap || !handle || !beforeImg || !trackEl) return;
-
-    let dragging = false;
-
-    const syncBeforeWidth = () => {
-      beforeImg.style.width = `${trackEl.offsetWidth}px`;
-    };
-
-    const setPosition = (clientX) => {
-      const rect = trackEl.getBoundingClientRect();
-      let percent = ((clientX - rect.left) / rect.width) * 100;
-      percent = Math.min(96, Math.max(4, percent));
-      wrap.style.width = `${percent}%`;
-      handle.style.left = `${percent}%`;
-      handle.setAttribute("aria-valuenow", String(Math.round(percent)));
-    };
-
-    const start = (e) => {
-      dragging = true;
-      handle.focus({ preventScroll: true });
-      if (e.type === "mousedown") setPosition(e.clientX);
-      if (e.type === "touchstart") setPosition(e.touches[0].clientX);
-    };
-
-    const move = (e) => {
-      if (!dragging) return;
-      if (e.type === "mousemove") setPosition(e.clientX);
-      if (e.type === "touchmove") {
-        e.preventDefault();
-        setPosition(e.touches[0].clientX);
-      }
-    };
-
-    const end = () => {
-      dragging = false;
-    };
-
-    handle.addEventListener("mousedown", start);
-    wrap.addEventListener("mousedown", start);
-    slider.addEventListener("mousedown", (e) => {
-      if (e.target.closest(".ba-slider__track")) {
-        dragging = true;
-        setPosition(e.clientX);
-      }
-    });
-
-    window.addEventListener("mousemove", move);
-    window.addEventListener("mouseup", end);
-
-    handle.addEventListener("touchstart", start, { passive: true });
-    window.addEventListener("touchmove", move, { passive: false });
-    window.addEventListener("touchend", end);
-
-    handle.addEventListener("keydown", (e) => {
-      const current = Number(handle.getAttribute("aria-valuenow") || 50);
-      const rect = trackEl.getBoundingClientRect();
-      if (e.key === "ArrowLeft") {
-        e.preventDefault();
-        setPosition(rect.left + ((current - 3) / 100) * rect.width);
-      }
-      if (e.key === "ArrowRight") {
-        e.preventDefault();
-        setPosition(rect.left + ((current + 3) / 100) * rect.width);
-      }
-    });
-
-    syncBeforeWidth();
-    window.addEventListener("resize", syncBeforeWidth);
-  };
 
   const showSlide = (index) => {
     active = ((index % slides.length) + slides.length) % slides.length;
@@ -497,24 +451,8 @@ function initBeforeAfter() {
     dots.forEach((dot, i) => {
       dot.classList.toggle("is-active", i === active);
     });
-
-    // Reset active slider to 50%
-    const activeSlider = slides[active]?.querySelector("[data-ba-slider]");
-    if (activeSlider) {
-      const wrap = activeSlider.querySelector(".ba-slider__before-wrap");
-      const handle = activeSlider.querySelector(".ba-slider__handle");
-      if (wrap) wrap.style.width = "50%";
-      if (handle) {
-        handle.style.left = "50%";
-        handle.setAttribute("aria-valuenow", "50");
-      }
-    }
+    if (counter) counter.textContent = `${active + 1} / ${slides.length}`;
   };
-
-  slides.forEach((slide) => {
-    const slider = slide.querySelector("[data-ba-slider]");
-    if (slider) initSlider(slider);
-  });
 
   carousel.querySelector(".ba-carousel__nav--next")?.addEventListener("click", () => {
     showSlide(active + 1);
@@ -531,8 +469,6 @@ function initBeforeAfter() {
   carousel.addEventListener(
     "touchstart",
     (e) => {
-      // Don't capture if touching the handle
-      if (e.target.closest(".ba-slider__handle")) return;
       touchStartX = e.changedTouches[0].clientX;
     },
     { passive: true }
@@ -540,7 +476,6 @@ function initBeforeAfter() {
   carousel.addEventListener(
     "touchend",
     (e) => {
-      if (e.target.closest(".ba-slider__handle")) return;
       const dx = e.changedTouches[0].clientX - touchStartX;
       if (Math.abs(dx) < 50) return;
       if (dx < 0) showSlide(active + 1);
