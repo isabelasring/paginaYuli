@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin productos · Yuly Sánchez Skin Beauty</title>
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="icon" type="image/png" href="assets/brand/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+  <div class="admin">
+    <header class="admin-top">
+      <div>
+        <p class="admin-top__eyebrow">Yuly Sánchez Skin Beauty</p>
+        <h1>Panel de productos</h1>
+      </div>
+      <div class="admin-top__actions">
+        <a class="btn btn--ghost" href="index.html">Ver web</a>
+        <button class="btn btn--ghost" type="button" id="btnLogout" hidden>Cerrar sesión</button>
+      </div>
+    </header>
+
+    <section class="panel panel--setup" id="setupPanel" hidden>
+      <h2>Configurar guardado en la nube (una sola vez)</h2>
+      <p>
+        Para que lo que Yuly suba se vea en todos los celulares y quede guardado, conectamos Firebase (gratis de Google).
+        Hazlo desde tu Gmail o el de ella — solo tarda unos minutos.
+      </p>
+      <ol class="steps">
+        <li>Entra a <a href="https://console.firebase.google.com" target="_blank" rel="noopener">console.firebase.google.com</a> y crea un proyecto (ej. Skin Beauty).</li>
+        <li>Pulsa el ícono <strong>Web (&lt;/&gt;)</strong>, registra la app y copia el objeto <code>firebaseConfig</code>.</li>
+        <li>Pega esos valores en el archivo <code>js/firebase-config.js</code> del sitio y vuelve a subir a GitHub/Vercel.</li>
+        <li><strong>Authentication</strong> → método Email/contraseña → Activar → <strong>Add user</strong> con el correo y contraseña de Yuly.</li>
+        <li><strong>Firestore Database</strong> → Create → modo producción → pega las reglas del archivo <code>firestore.rules</code>.</li>
+        <li><strong>Storage</strong> → Get started → pega las reglas del archivo <code>storage.rules</code>.</li>
+      </ol>
+      <p class="hint">
+        Después, Yuly solo entra a <strong>/admin.html</strong> con su correo y contraseña. No ve código ni Firebase.
+      </p>
+    </section>
+
+    <section class="panel" id="loginPanel">
+      <h2>Entrar</h2>
+      <p class="muted">Acceso solo para Yuly (correo y contraseña que creaste en Firebase).</p>
+      <form id="loginForm" class="form">
+        <label>
+          Correo
+          <input type="email" id="loginEmail" required autocomplete="username" placeholder="yuly@ejemplo.com" />
+        </label>
+        <label>
+          Contraseña
+          <input type="password" id="loginPassword" required autocomplete="current-password" />
+        </label>
+        <p class="form-error" id="loginError" hidden></p>
+        <button class="btn btn--primary" type="submit">Entrar al panel</button>
+      </form>
+    </section>
+
+    <section class="panel panel--app" id="appPanel" hidden>
+      <div class="app-bar">
+        <p id="sessionLabel" class="muted"></p>
+        <div class="app-bar__actions">
+          <button class="btn btn--ghost" type="button" id="btnSeed">Cargar catálogo base a la nube</button>
+          <button class="btn btn--primary" type="button" id="btnNew">+ Nuevo producto</button>
+        </div>
+      </div>
+
+      <div class="layout">
+        <div class="list-wrap">
+          <h2>Productos publicados</h2>
+          <p class="muted" id="listMeta">—</p>
+          <div class="list" id="productList"></div>
+        </div>
+
+        <form class="form form--editor" id="productForm" hidden>
+          <h2 id="formTitle">Nuevo producto</h2>
+          <input type="hidden" id="productId" />
+
+          <label>
+            Nombre del producto
+            <input type="text" id="fieldName" required placeholder="Ej. Sérum Hyaluron Activ B3" />
+          </label>
+
+          <label>
+            Marca
+            <input type="text" id="fieldBrand" value="Eau Thermale Avène" />
+          </label>
+
+          <div class="row">
+            <label>
+              Categoría
+              <select id="fieldCategory" required>
+                <option value="limpieza">Limpieza</option>
+                <option value="hidratacion">Hidratación</option>
+                <option value="tratamiento">Tratamiento</option>
+                <option value="proteccion">Protección</option>
+              </select>
+            </label>
+            <label>
+              Orden (menor = primero)
+              <input type="number" id="fieldOrder" min="1" step="1" value="1" />
+            </label>
+          </div>
+
+          <div class="row">
+            <label>
+              Precio actual
+              <input type="text" id="fieldPrice" required placeholder="191800 o 191.800" />
+            </label>
+            <label>
+              Precio anterior (opcional)
+              <input type="text" id="fieldPriceOld" placeholder="274000" />
+            </label>
+          </div>
+
+          <label>
+            Etiqueta (opcional)
+            <input type="text" id="fieldBadge" placeholder="Nuevo  o  -30%" />
+          </label>
+
+          <label>
+            Beneficios (uno por línea)
+            <textarea id="fieldBenefits" rows="5" placeholder="Ilumina el cutis&#10;Unifica el tono&#10;…"></textarea>
+          </label>
+
+          <label>
+            Foto del producto
+            <input type="file" id="fieldImage" accept="image/*" />
+          </label>
+          <div class="preview" id="imagePreview" hidden>
+            <img id="imagePreviewImg" alt="Vista previa" />
+            <p class="muted" id="imagePreviewNote"></p>
+          </div>
+
+          <p class="form-error" id="formError" hidden></p>
+          <p class="form-ok" id="formOk" hidden></p>
+
+          <div class="form-actions">
+            <button class="btn btn--primary" type="submit" id="btnSave">Guardar</button>
+            <button class="btn btn--ghost" type="button" id="btnCancel">Cancelar</button>
+            <button class="btn btn--danger" type="button" id="btnDelete" hidden>Eliminar</button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/products-core.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

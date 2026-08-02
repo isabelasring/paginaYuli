@@ -1,0 +1,11 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /products/{productId} {
+      // Cualquiera puede ver el catálogo en la web
+      allow read: if true;
+      // Solo Yuly (usuario logueado) puede crear, editar o borrar
+      allow create, update, delete: if request.auth != null;
+    }
+  }
+}

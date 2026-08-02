@@ -1,18 +1,22 @@
 /* Yuly Sánchez Skin Beauty — Interactions */
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   initHeader();
   initMobileNav();
   initPages();
   initServicesCarousel();
   initServiceGalleries();
-  initReveals();
-  initProductFilters();
   initProductFlips();
   initRoutines();
   initRoutineLightbox();
   initBeforeAfter();
   initTestimonials();
+
+  if (window.ProductsCore?.mountPublicCatalog) {
+    await ProductsCore.mountPublicCatalog();
+  }
+  initProductFilters();
+  initReveals();
 });
 
 const PAGE_IDS = ["inicio", "servicios", "productos", "sobre-mi", "testimonios"];
@@ -257,12 +261,12 @@ function initReveals() {
 
 function initProductFilters() {
   const filters = document.querySelectorAll(".filter");
-  const cards = document.querySelectorAll(".product-card");
   const search = document.getElementById("productSearch");
   let active = "todos";
 
   const apply = () => {
     const query = (search?.value || "").trim().toLowerCase();
+    const cards = document.querySelectorAll("#productsGrid .product-card");
 
     cards.forEach((card) => {
       const category = card.dataset.category || "";
@@ -286,13 +290,13 @@ function initProductFilters() {
 }
 
 function initProductFlips() {
-  const cards = document.querySelectorAll("#productsGrid .product-card");
-  if (!cards.length) return;
-
-  cards.forEach((card) => {
-    card.addEventListener("click", () => {
-      card.classList.toggle("is-flipped");
-    });
+  const grid = document.getElementById("productsGrid");
+  if (!grid || grid.dataset.flipBound === "1") return;
+  grid.dataset.flipBound = "1";
+  grid.addEventListener("click", (e) => {
+    const card = e.target.closest(".product-card");
+    if (!card || !grid.contains(card)) return;
+    card.classList.toggle("is-flipped");
   });
 }
 

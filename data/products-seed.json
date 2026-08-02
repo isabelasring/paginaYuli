@@ -1,0 +1,189 @@
+[
+  {
+    "id": "kit-dermabsolu",
+    "name": "Kit DermAbsolu Contorno de Ojos 15ML + Loción Tónica 200ML + Agua Termal 50ML",
+    "brand": "Eau Thermale Avène",
+    "category": "tratamiento",
+    "price": 256000,
+    "priceOld": null,
+    "badge": "Nuevo",
+    "imageUrl": "assets/productos/kit-dermabsolu-contorno-ojos.webp",
+    "benefits": [
+      "Reafirma y redensifica el contorno de ojos",
+      "Suaviza arrugas y líneas de expresión",
+      "Loción tónica que calma y prepara la piel",
+      "Agua termal para aliviar e hidratar"
+    ],
+    "order": 1
+  },
+  {
+    "id": "cicalfate-plus",
+    "name": "Cicalfate Plus Crema Protectora Reparadora 40ML",
+    "brand": "Eau Thermale Avène",
+    "category": "tratamiento",
+    "price": 38500,
+    "priceOld": 55000,
+    "badge": "-30%",
+    "imageUrl": "assets/productos/cicalfate-plus-crema.webp",
+    "benefits": [
+      "Repara piel irritada, dañada o sensibilizada",
+      "Calma enrojecimiento e incomodidad",
+      "Ayuda a restaurar la barrera cutánea",
+      "Forma una película protectora sobre la piel"
+    ],
+    "order": 2
+  },
+  {
+    "id": "vitamin-cg",
+    "name": "Sérum Iluminador Antiedad Vitamin Activ Cg 30ML",
+    "brand": "Eau Thermale Avène",
+    "category": "tratamiento",
+    "price": 191800,
+    "priceOld": 274000,
+    "badge": "-30%",
+    "imageUrl": "assets/productos/serum-vitamin-activ-cg.webp",
+    "benefits": [
+      "Ilumina el cutis y aporta glow visible",
+      "Ayuda a unificar el tono y reducir manchas",
+      "Acción antioxidante antiedad",
+      "Mejora la luminosidad y textura de la piel"
+    ],
+    "order": 3
+  },
+  {
+    "id": "hyaluron-b3-serum",
+    "name": "Sérum Concentrado Voluminizador Hyaluron Activ B3 30ML",
+    "brand": "Eau Thermale Avène",
+    "category": "tratamiento",
+    "price": 188300,
+    "priceOld": 269000,
+    "badge": "-30%",
+    "imageUrl": "assets/productos/serum-hyaluron-activ-b3.webp",
+    "benefits": [
+      "Rellena y suaviza arrugas",
+      "Efecto voluminizador e hidratación intensa",
+      "Niacinamida para reforzar la barrera cutánea",
+      "Piel más firme, tersa y confortable"
+    ],
+    "order": 4
+  },
+  {
+    "id": "cleanance-aqua",
+    "name": "Cleanance Aqua-Gel Crema Matificante 50ML",
+    "brand": "Eau Thermale Avène",
+    "category": "limpieza",
+    "price": 107100,
+    "priceOld": 153000,
+    "badge": "-30%",
+    "imageUrl": "assets/productos/cleanance-aqua-gel.webp",
+    "benefits": [
+      "Controla el brillo y el exceso de sebo",
+      "Acabado matificante y fresca sensación",
+      "Ideal para piel grasa o mixta",
+      "Ayuda a equilibrar sin resecar"
+    ],
+    "order": 5
+  },
+  {
+    "id": "hyaluron-noche",
+    "name": "Crema De Noche Multi-Intensiva Hyaluron Activ B3",
+    "brand": "Eau Thermale Avène",
+    "category": "hidratacion",
+    "price": 196000,
+    "priceOld": 280000,
+    "badge": "-30%",
+    "imageUrl": "assets/productos/crema-noche-hyaluron-activ-b3.webp",
+    "benefits": [
+      "Regeneración intensiva durante la noche",
+      "Reduce signos de fatiga y arrugas",
+      "Hidratación profunda y confort",
+      "Piel más firme al despertar"
+    ],
+    "order": 6
+  },
+  {
+    "id": "agua-termal",
+    "name": "Agua Termal 150ML",
+    "brand": "Eau Thermale Avène",
+    "category": "limpieza",
+    "price": 59500,
+    "priceOld": 85000,
+    "badge": "-30%",
+    "imageUrl": "assets/productos/agua-termal-150ml.webp",
+    "benefits": [
+      "Calma y suaviza piel sensible",
+      "Reduce sensación de irritación",
+      "Aporta confort inmediato",
+      "Spray práctico para usar varias veces al día"
+    ],
+    "order": 7
+  },
+  {
+    "id": "hyaluron-dia",
+    "name": "Crema de Día Hyaluron Activ B3",
+    "brand": "Eau Thermale Avène",
+    "category": "hidratacion",
+    "price": 186200,
+    "priceOld": 266000,
+    "badge": "-30%",
+    "imageUrl": "assets/productos/crema-dia-hyaluron-activ-b3.webp",
+    "benefits": [
+      "Hidratación duradera durante el día",
+      "Acción antiarrugas visible",
+      "Refuerza la barrera de la piel",
+      "Acabado cómodo y no graso"
+    ],
+    "order": 8
+  },
+  {
+    "id": "contorno-dermabsolu",
+    "name": "Contorno de Ojos DermAbsolu",
+    "brand": "Eau Thermale Avène",
+    "category": "tratamiento",
+    "price": 179200,
+    "priceOld": 256000,
+    "badge": "-30%",
+    "imageUrl": "assets/productos/contorno-ojos-dermabsolu.webp",
+    "benefits": [
+      "Reafirma el contorno y párpados",
+      "Ayuda a atenuar ojeras y bolsas",
+      "Suaviza arrugas de expresión",
+      "Mirada más descansada y definida"
+    ],
+    "order": 9
+  },
+  {
+    "id": "protector-solar",
+    "name": "Protector Solar Spray LN SPF 50+",
+    "brand": "Eau Thermale Avène",
+    "category": "proteccion",
+    "price": 137900,
+    "priceOld": 197000,
+    "badge": "-30%",
+    "imageUrl": "assets/productos/protector-solar-spf50.webp",
+    "benefits": [
+      "Alta protección SPF 50+ frente a UV",
+      "Formato spray de aplicación rápida",
+      "Pensado para piel sensible",
+      "Ayuda a prevenir manchas y fotoenvejecimiento"
+    ],
+    "order": 10
+  },
+  {
+    "id": "retrinal",
+    "name": "Retrinal Crema 0.1",
+    "brand": "Eau Thermale Avène",
+    "category": "tratamiento",
+    "price": 264000,
+    "priceOld": null,
+    "badge": "Nuevo",
+    "imageUrl": "assets/productos/retrinal-crema-01.webp",
+    "benefits": [
+      "Renueva la piel con retinaldehído",
+      "Mejora arrugas, textura y firmeza",
+      "Estimula la renovación celular",
+      "Buena tolerancia para rutinas antiedad"
+    ],
+    "order": 11
+  }
+]

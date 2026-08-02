@@ -1728,6 +1728,14 @@ body:not([data-active-page="inicio"])
   justify-items: center;
 }
 
+.products__status {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--ink-soft);
+  padding: 2rem 1rem;
+  width: 100%;
+}
+
 .product-card {
   position: relative;
   width: 100%;
