@@ -148,7 +148,7 @@
             </div>
             <span class="home-invite__label">02</span>
             <h3>Productos</h3>
-            <p>Rutinas y cosmética profesional Avène para continuar el cuidado en casa, con productos seleccionados según lo que tu piel realmente necesita.</p>
+            <p>Cosmética profesional Avène para continuar el cuidado en casa, con productos seleccionados según lo que tu piel realmente necesita.</p>
           </a>
           <a href="#sobre-mi" class="home-invite__card home-invite__card--text" data-nav="sobre-mi">
             <span class="home-invite__label">03</span>
@@ -257,6 +257,74 @@
               Un cuidado cercano, honesto y pensado para lo que tu piel
               realmente necesita — sin fórmulas genéricas.
             </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- INICIO: rutinas por tipo de piel -->
+    <section class="section routines page-panel is-active" id="rutinas" data-page="inicio">
+      <div class="container">
+        <div class="section__head section__head--center reveal">
+          <p class="eyebrow">Rutinas de cuidado</p>
+          <h2>Tu ritual según<br /><em>tu tipo de piel</em>.</h2>
+          <p class="routines__intro">Elige tu tipo de piel y descubre tu rutina paso a paso.</p>
+        </div>
+
+        <div class="routine-tabs reveal" role="tablist" aria-label="Tipos de piel" id="routineTabs">
+          <button class="routine-tab is-active" type="button" role="tab" id="tab-grasa" aria-controls="panel-grasa" aria-selected="true" data-routine="grasa">Piel grasa</button>
+          <button class="routine-tab" type="button" role="tab" id="tab-seca" aria-controls="panel-seca" aria-selected="false" data-routine="seca">Piel seca</button>
+          <button class="routine-tab" type="button" role="tab" id="tab-mixta" aria-controls="panel-mixta" aria-selected="false" data-routine="mixta">Piel mixta</button>
+          <button class="routine-tab" type="button" role="tab" id="tab-sensible" aria-controls="panel-sensible" aria-selected="false" data-routine="sensible">Piel sensible</button>
+        </div>
+
+        <div class="routine-panels" id="routinePanels">
+          <div class="routine-panel is-active" id="panel-grasa" role="tabpanel" aria-labelledby="tab-grasa" data-routine="grasa">
+            <button class="routine-panel__zoom" type="button" data-zoom-src="assets/rutina-piel-grasa.webp" data-zoom-alt="Tu rutina ideal para piel grasa">
+              <img
+                class="routine-panel__infografia"
+                src="assets/rutina-piel-grasa.webp"
+                alt="Tu rutina ideal para piel grasa: limpiar, tonificar, tratar y proteger"
+                loading="lazy"
+              />
+              <span class="routine-panel__zoom-label">Ampliar</span>
+            </button>
+          </div>
+
+          <div class="routine-panel" id="panel-seca" role="tabpanel" aria-labelledby="tab-seca" data-routine="seca" hidden>
+            <button class="routine-panel__zoom" type="button" data-zoom-src="assets/rutina-piel-seca.webp" data-zoom-alt="Tu rutina ideal para piel seca">
+              <img
+                class="routine-panel__infografia"
+                src="assets/rutina-piel-seca.webp"
+                alt="Tu rutina ideal para piel seca: limpiar, tonificar, tratar y proteger"
+                loading="lazy"
+              />
+              <span class="routine-panel__zoom-label">Ampliar</span>
+            </button>
+          </div>
+
+          <div class="routine-panel" id="panel-mixta" role="tabpanel" aria-labelledby="tab-mixta" data-routine="mixta" hidden>
+            <button class="routine-panel__zoom" type="button" data-zoom-src="assets/rutina-piel-mixta.webp" data-zoom-alt="Tu rutina ideal para piel mixta">
+              <img
+                class="routine-panel__infografia"
+                src="assets/rutina-piel-mixta.webp"
+                alt="Tu rutina ideal para piel mixta: limpiar, tonificar, tratar y proteger"
+                loading="lazy"
+              />
+              <span class="routine-panel__zoom-label">Ampliar</span>
+            </button>
+          </div>
+
+          <div class="routine-panel" id="panel-sensible" role="tabpanel" aria-labelledby="tab-sensible" data-routine="sensible" hidden>
+            <button class="routine-panel__zoom" type="button" data-zoom-src="assets/rutina-piel-sensible.webp" data-zoom-alt="Tu rutina ideal para piel sensible">
+              <img
+                class="routine-panel__infografia"
+                src="assets/rutina-piel-sensible.webp"
+                alt="Tu rutina ideal para piel sensible: limpiar, tonificar, tratar y proteger"
+                loading="lazy"
+              />
+              <span class="routine-panel__zoom-label">Ampliar</span>
+            </button>
           </div>
         </div>
       </div>
@@ -520,7 +588,7 @@
             <div class="product-card__inner">
               <div class="product-card__face product-card__face--front">
                 <div class="product-card__media">
-                  <img src="assets/products/vitamin-cg.webp" alt="Sérum Vitamin Activ Cg Avène" loading="lazy" />
+                  <img src="assets/products/vitamin-cg.png" alt="Sérum Vitamin Activ Cg Avène" loading="lazy" />
                 </div>
                 <div class="product-card__body">
                   <span class="product-card__brand">Eau Thermale Avène</span>
@@ -652,7 +720,7 @@
             <div class="product-card__inner">
               <div class="product-card__face product-card__face--front">
                 <div class="product-card__media">
-                  <img src="assets/products/agua-termal.webp" alt="Agua Termal Avène" loading="lazy" />
+                  <img src="assets/products/agua-termal.png" alt="Agua Termal Avène" loading="lazy" />
                 </div>
                 <div class="product-card__body">
                   <span class="product-card__brand">Eau Thermale Avène</span>
@@ -802,74 +870,6 @@
 
         <div class="section__cta reveal">
           <a href="https://wa.link/ms8v5z" class="btn btn--primary" target="_blank" rel="noopener noreferrer">Consultar por WhatsApp</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- RUTINAS -->
-    <section class="section routines page-panel" id="rutinas" data-page="productos">
-      <div class="container">
-        <div class="section__head section__head--center reveal">
-          <p class="eyebrow">Rutinas de cuidado</p>
-          <h2>Tu ritual según<br /><em>tu tipo de piel</em>.</h2>
-          <p class="routines__intro">Elige tu tipo de piel y descubre tu rutina paso a paso.</p>
-        </div>
-
-        <div class="routine-tabs reveal" role="tablist" aria-label="Tipos de piel" id="routineTabs">
-          <button class="routine-tab is-active" type="button" role="tab" id="tab-grasa" aria-controls="panel-grasa" aria-selected="true" data-routine="grasa">Piel grasa</button>
-          <button class="routine-tab" type="button" role="tab" id="tab-seca" aria-controls="panel-seca" aria-selected="false" data-routine="seca">Piel seca</button>
-          <button class="routine-tab" type="button" role="tab" id="tab-mixta" aria-controls="panel-mixta" aria-selected="false" data-routine="mixta">Piel mixta</button>
-          <button class="routine-tab" type="button" role="tab" id="tab-sensible" aria-controls="panel-sensible" aria-selected="false" data-routine="sensible">Piel sensible</button>
-        </div>
-
-        <div class="routine-panels" id="routinePanels">
-          <div class="routine-panel is-active" id="panel-grasa" role="tabpanel" aria-labelledby="tab-grasa" data-routine="grasa">
-            <button class="routine-panel__zoom" type="button" data-zoom-src="assets/rutina-piel-grasa.webp" data-zoom-alt="Tu rutina ideal para piel grasa">
-              <img
-                class="routine-panel__infografia"
-                src="assets/rutina-piel-grasa.webp"
-                alt="Tu rutina ideal para piel grasa: limpiar, tonificar, tratar y proteger"
-                loading="lazy"
-              />
-              <span class="routine-panel__zoom-label">Ampliar</span>
-            </button>
-          </div>
-
-          <div class="routine-panel" id="panel-seca" role="tabpanel" aria-labelledby="tab-seca" data-routine="seca" hidden>
-            <button class="routine-panel__zoom" type="button" data-zoom-src="assets/rutina-piel-seca.webp" data-zoom-alt="Tu rutina ideal para piel seca">
-              <img
-                class="routine-panel__infografia"
-                src="assets/rutina-piel-seca.webp"
-                alt="Tu rutina ideal para piel seca: limpiar, tonificar, tratar y proteger"
-                loading="lazy"
-              />
-              <span class="routine-panel__zoom-label">Ampliar</span>
-            </button>
-          </div>
-
-          <div class="routine-panel" id="panel-mixta" role="tabpanel" aria-labelledby="tab-mixta" data-routine="mixta" hidden>
-            <button class="routine-panel__zoom" type="button" data-zoom-src="assets/rutina-piel-mixta.webp" data-zoom-alt="Tu rutina ideal para piel mixta">
-              <img
-                class="routine-panel__infografia"
-                src="assets/rutina-piel-mixta.webp"
-                alt="Tu rutina ideal para piel mixta: limpiar, tonificar, tratar y proteger"
-                loading="lazy"
-              />
-              <span class="routine-panel__zoom-label">Ampliar</span>
-            </button>
-          </div>
-
-          <div class="routine-panel" id="panel-sensible" role="tabpanel" aria-labelledby="tab-sensible" data-routine="sensible" hidden>
-            <button class="routine-panel__zoom" type="button" data-zoom-src="assets/rutina-piel-sensible.webp" data-zoom-alt="Tu rutina ideal para piel sensible">
-              <img
-                class="routine-panel__infografia"
-                src="assets/rutina-piel-sensible.webp"
-                alt="Tu rutina ideal para piel sensible: limpiar, tonificar, tratar y proteger"
-                loading="lazy"
-              />
-              <span class="routine-panel__zoom-label">Ampliar</span>
-            </button>
-          </div>
         </div>
       </div>
     </section>

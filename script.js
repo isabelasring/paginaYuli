@@ -26,7 +26,7 @@ const HASH_TO_PAGE = {
   "inicio-cita": "inicio",
   servicios: "servicios",
   productos: "productos",
-  rutinas: "productos",
+  rutinas: "inicio",
   "sobre-mi": "sobre-mi",
   resultados: "testimonios",
   testimonios: "testimonios",
