@@ -398,7 +398,7 @@ function initRoutineLightbox() {
 }
 
 function initBeforeAfter() {
-  const RESULT_IDS = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
+  const RESULT_COUNT = 17;
   const carousel = document.getElementById("baCarousel");
   const track = document.getElementById("baCarouselTrack");
   const dotsWrap = document.getElementById("baDots");
@@ -408,13 +408,14 @@ function initBeforeAfter() {
   track.innerHTML = "";
   dotsWrap.innerHTML = "";
 
-  RESULT_IDS.forEach((id, i) => {
+  for (let i = 0; i < RESULT_COUNT; i++) {
+    const n = String(i + 1).padStart(2, "0");
     const slide = document.createElement("div");
     slide.className = `ba-slide${i === 0 ? " is-active" : ""}`;
     slide.innerHTML = `
       <figure class="ba-case">
         <img
-          src="assets/resultados/${id}.webp"
+          src="assets/testimonios/antes-despues/caso-${n}.webp"
           alt="Resultado antes y después ${i + 1}"
           loading="${i === 0 ? "eager" : "lazy"}"
           decoding="async"
@@ -428,7 +429,7 @@ function initBeforeAfter() {
     dot.type = "button";
     dot.setAttribute("aria-label", `Resultado ${i + 1}`);
     dotsWrap.appendChild(dot);
-  });
+  }
 
   const slides = Array.from(track.querySelectorAll(".ba-slide"));
   const dots = Array.from(dotsWrap.querySelectorAll(".dot"));
