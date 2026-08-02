@@ -2188,6 +2188,7 @@ body.lightbox-open {
 .ba-carousel__viewport {
   overflow: hidden;
   border-radius: var(--radius-lg);
+  width: 100%;
 }
 
 .ba-carousel__track {
@@ -2199,40 +2200,45 @@ body.lightbox-open {
 .ba-slide {
   flex: 0 0 100%;
   min-width: 100%;
+  width: 100%;
   opacity: 0.35;
   transition: opacity 0.45s ease;
   display: flex;
   justify-content: center;
   align-items: center;
+  box-sizing: border-box;
+  padding: 0.15rem 0;
 }
 
 .ba-slide.is-active {
   opacity: 1;
 }
 
-/* Marco: imagen completa, sin recorte ni deformación */
+/* Imagen pequeña y COMPLETA: nunca se recorta */
 .ba-case {
-  margin: 0;
-  width: 100%;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  background: #faf7f4;
-  box-shadow: var(--shadow), 0 0 0 8px rgba(255, 255, 255, 0.55);
+  margin: 0 auto;
+  width: fit-content;
+  max-width: 100%;
+  overflow: visible;
+  background: transparent;
+  box-shadow: none;
   display: flex;
-  align-items: center;
   justify-content: center;
-  min-height: 0;
+  align-items: center;
+  line-height: 0;
 }
 
 .ba-case img {
   display: block;
   width: auto;
   height: auto;
-  max-width: 100%;
-  max-height: min(72vh, 620px);
+  max-width: min(100%, 780px);
+  max-height: 520px;
   object-fit: contain;
   object-position: center;
   background: #faf7f4;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow), 0 0 0 6px rgba(255, 255, 255, 0.55);
   user-select: none;
   -webkit-user-drag: none;
 }
@@ -2929,20 +2935,27 @@ body.lightbox-open {
     right: 0.15rem;
   }
 
-  .ba-case {
-    aspect-ratio: 16 / 11;
-  }
-
   .ba-carousel__nav--prev {
-    left: 8px;
+    left: 6px;
   }
 
   .ba-carousel__nav--next {
-    right: 8px;
+    right: 6px;
+  }
+
+  /* Responsive: pequeña y entera */
+  .ba-case {
+    aspect-ratio: auto;
+    width: 100%;
+    max-width: 100%;
   }
 
   .ba-case img {
-    max-height: min(70vh, 540px);
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 420px;
+    object-fit: contain;
   }
 
   .results__layout {
@@ -3088,6 +3101,23 @@ body.lightbox-open {
 @media (max-width: 600px) {
   .container {
     width: min(100% - 2rem, var(--container));
+  }
+
+  .ba-case {
+    width: 100%;
+  }
+
+  .ba-case img {
+    max-width: 100%;
+    max-height: 360px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .ba-carousel__dots .dot {
+    width: 7px;
+    height: 7px;
   }
 
   .services-carousel__viewport {
