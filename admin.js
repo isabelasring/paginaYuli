@@ -1,11 +1,11 @@
 (function () {
-  const setupPanel = document.getElementById("setupPanel");
+  const TOKEN_KEY = "ys_admin_token";
+
   const loginPanel = document.getElementById("loginPanel");
   const appPanel = document.getElementById("appPanel");
   const loginForm = document.getElementById("loginForm");
   const loginError = document.getElementById("loginError");
   const btnLogout = document.getElementById("btnLogout");
-  const sessionLabel = document.getElementById("sessionLabel");
   const productList = document.getElementById("productList");
   const listMeta = document.getElementById("listMeta");
   const productForm = document.getElementById("productForm");
@@ -13,7 +13,6 @@
   const formError = document.getElementById("formError");
   const formOk = document.getElementById("formOk");
   const btnNew = document.getElementById("btnNew");
-  const btnSeed = document.getElementById("btnSeed");
   const btnCancel = document.getElementById("btnCancel");
   const btnDelete = document.getElementById("btnDelete");
   const btnSave = document.getElementById("btnSave");
@@ -25,8 +24,18 @@
   let products = [];
   let currentId = null;
   let existingImageUrl = "";
+  let pendingImage = null; // { id, fileName, base64 }
 
-  function showError(el, msg) {
+  function getToken() {
+    return sessionStorage.getItem(TOKEN_KEY) || "";
+  }
+
+  function setToken(t) {
+    if (t) sessionStorage.setItem(TOKEN_KEY, t);
+    else sessionStorage.removeItem(TOKEN_KEY);
+  }
+
+  function showMsg(el, msg) {
     if (!el) return;
     if (!msg) {
       el.hidden = true;
@@ -38,58 +47,51 @@
   }
 
   function showOk(msg) {
-    showError(formOk, msg);
-    if (msg) setTimeout(() => showError(formOk, ""), 3500);
+    showMsg(formOk, msg);
+    if (msg) setTimeout(() => showMsg(formOk, ""), 5000);
   }
 
-  function configured() {
-    return window.isFirebaseConfigured && window.isFirebaseConfigured();
-  }
-
-  function setAuthUI(user) {
-    if (!configured()) {
-      setupPanel.hidden = false;
-      loginPanel.hidden = true;
-      appPanel.hidden = true;
-      btnLogout.hidden = true;
-      return;
-    }
-
-    setupPanel.hidden = true;
-
-    if (user) {
-      loginPanel.hidden = true;
-      appPanel.hidden = false;
-      btnLogout.hidden = false;
-      sessionLabel.textContent = `Conectada como ${user.email}`;
-      refreshList();
-    } else {
-      loginPanel.hidden = false;
-      appPanel.hidden = true;
-      btnLogout.hidden = true;
+  function setAuthUI(loggedIn) {
+    loginPanel.hidden = loggedIn;
+    appPanel.hidden = !loggedIn;
+    btnLogout.hidden = !loggedIn;
+    if (loggedIn) refreshList();
+    else {
       productForm.hidden = true;
+      pendingImage = null;
     }
+  }
+
+  async function api(path, { method = "GET", body, token } = {}) {
+    const res = await fetch(path, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: body ? JSON.stringify(body) : undefined,
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const err = new Error(data.error || `Error ${res.status}`);
+      err.status = res.status;
+      err.data = data;
+      throw err;
+    }
+    return data;
   }
 
   async function refreshList() {
     listMeta.textContent = "Cargando…";
     productList.innerHTML = "";
     try {
-      const { products: list, source } = await ProductsCore.loadProducts();
+      const { products: list } = await ProductsCore.loadProducts();
       products = list;
-      const sourceNote =
-        source === "firebase"
-          ? "Guardados en la nube"
-          : source === "seed-empty-firebase"
-            ? "La nube está vacía · mostrando catálogo base (cárgalo con el botón de arriba)"
-            : "Catálogo base (aún no hay nube / Firebase)";
-      listMeta.textContent = `${list.length} producto(s) · ${sourceNote}`;
-
+      listMeta.textContent = `${list.length} producto(s) · desde el repositorio`;
       if (!list.length) {
-        productList.innerHTML = `<p class="empty">No hay productos. Crea uno o carga el catálogo base.</p>`;
+        productList.innerHTML = `<p class="empty">No hay productos. Crea el primero.</p>`;
         return;
       }
-
       productList.innerHTML = list
         .map(
           (p) => `
@@ -100,19 +102,30 @@
             <span class="list-item__meta">${ProductsCore.escapeHtml(ProductsCore.CATEGORY_LABELS[p.category] || p.category)}${p.badge ? " · " + ProductsCore.escapeHtml(p.badge) : ""}</span>
           </span>
           <span class="list-item__price">${ProductsCore.escapeHtml(ProductsCore.formatPrice(p.price))}</span>
-        </button>
-      `
+        </button>`
         )
         .join("");
     } catch (err) {
       listMeta.textContent = "Error al cargar";
-      productList.innerHTML = `<p class="empty">${ProductsCore.escapeHtml(err.message || String(err))}</p>`;
+      productList.innerHTML = `<p class="empty">${ProductsCore.escapeHtml(err.message)}</p>`;
     }
+  }
+
+  function makeId(name) {
+    const base = String(name || "producto")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 40);
+    return `${base || "producto"}-${Date.now().toString(36)}`;
   }
 
   function openNew() {
     currentId = null;
     existingImageUrl = "";
+    pendingImage = null;
     productForm.hidden = false;
     formTitle.textContent = "Nuevo producto";
     productForm.reset();
@@ -121,9 +134,8 @@
     document.getElementById("fieldOrder").value = String((products[products.length - 1]?.order || 0) + 1);
     btnDelete.hidden = true;
     imagePreview.hidden = true;
-    imagePreviewImg.removeAttribute("src");
-    showError(formError, "");
-    showError(formOk, "");
+    showMsg(formError, "");
+    showMsg(formOk, "");
     productForm.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
@@ -132,6 +144,7 @@
     if (!p) return;
     currentId = id;
     existingImageUrl = p.imageUrl || "";
+    pendingImage = null;
     productForm.hidden = false;
     formTitle.textContent = "Editar producto";
     document.getElementById("productId").value = p.id;
@@ -152,9 +165,9 @@
     } else {
       imagePreview.hidden = true;
     }
-    showError(formError, "");
-    showError(formOk, "");
-    Array.from(productList.querySelectorAll(".list-item")).forEach((btn) => {
+    showMsg(formError, "");
+    showMsg(formOk, "");
+    productList.querySelectorAll(".list-item").forEach((btn) => {
       btn.classList.toggle("is-active", btn.dataset.id === id);
     });
     productForm.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -163,150 +176,188 @@
   function closeForm() {
     productForm.hidden = true;
     currentId = null;
-    existingImageUrl = "";
+    pendingImage = null;
     fieldImage.value = "";
-    Array.from(productList.querySelectorAll(".list-item")).forEach((btn) => btn.classList.remove("is-active"));
+    productList.querySelectorAll(".list-item").forEach((b) => b.classList.remove("is-active"));
+  }
+
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result || ""));
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  /** Reduce un poco fotos muy pesadas (canvas JPEG). */
+  async function prepareImage(file) {
+    if (!file || !file.type.startsWith("image/")) throw new Error("El archivo debe ser una imagen");
+    if (file.size <= 900 * 1024) {
+      const dataUrl = await fileToBase64(file);
+      return { fileName: file.name, base64: dataUrl };
+    }
+
+    const dataUrl = await fileToBase64(file);
+    const img = await new Promise((resolve, reject) => {
+      const i = new Image();
+      i.onload = () => resolve(i);
+      i.onerror = reject;
+      i.src = dataUrl;
+    });
+
+    const max = 1200;
+    let { width, height } = img;
+    if (width > max || height > max) {
+      const r = Math.min(max / width, max / height);
+      width = Math.round(width * r);
+      height = Math.round(height * r);
+    }
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    canvas.getContext("2d").drawImage(img, 0, 0, width, height);
+    const jpeg = canvas.toDataURL("image/jpeg", 0.82);
+    return { fileName: file.name.replace(/\.\w+$/, "") + ".jpg", base64: jpeg };
   }
 
   loginForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
-    showError(loginError, "");
-    if (!configured()) {
-      showError(loginError, "Primero configura Firebase en js/firebase-config.js");
-      return;
-    }
-    ProductsCore.initFirebase();
-    const { auth } = ProductsCore.getFirebase();
+    showMsg(loginError, "");
     try {
-      await auth.signInWithEmailAndPassword(
-        document.getElementById("loginEmail").value.trim(),
-        document.getElementById("loginPassword").value
-      );
+      const data = await api("/api/login", {
+        method: "POST",
+        body: { password: document.getElementById("loginPassword").value },
+      });
+      setToken(data.token);
+      setAuthUI(true);
     } catch (err) {
-      showError(loginError, mapAuthError(err));
+      if (err.status === 404 || String(err.message).includes("Failed to fetch")) {
+        showMsg(
+          loginError,
+          "El guardado solo funciona en la web publicada (Vercel), no en servidor local. Abre admin desde tu dominio .vercel.app"
+        );
+      } else {
+        showMsg(loginError, err.message || "No se pudo entrar");
+      }
     }
   });
 
-  btnLogout?.addEventListener("click", async () => {
-    const { auth } = ProductsCore.getFirebase();
-    if (auth) await auth.signOut();
+  btnLogout?.addEventListener("click", () => {
+    setToken("");
+    setAuthUI(false);
   });
 
   btnNew?.addEventListener("click", openNew);
   btnCancel?.addEventListener("click", closeForm);
 
-  btnSeed?.addEventListener("click", async () => {
-    if (!confirm("¿Subir el catálogo base (productos actuales) a la nube?")) return;
-    try {
-      btnSeed.disabled = true;
-      const n = await ProductsCore.seedToFirebase(false);
-      showOk(`Listo: ${n} productos guardados en la nube.`);
-      await refreshList();
-    } catch (err) {
-      const force = String(err.message || "").includes("Ya hay productos");
-      if (force && confirm(`${err.message}\n\n¿Forzar importación (puede sobrescribir IDs del seed)?`)) {
-        try {
-          const n = await ProductsCore.seedToFirebase(true);
-          showOk(`Importados ${n} productos.`);
-          await refreshList();
-        } catch (e2) {
-          alert(e2.message || e2);
-        }
-      } else {
-        alert(err.message || err);
-      }
-    } finally {
-      btnSeed.disabled = false;
-    }
-  });
-
   productList?.addEventListener("click", (e) => {
     const btn = e.target.closest(".list-item");
-    if (!btn) return;
-    openEdit(btn.dataset.id);
+    if (btn) openEdit(btn.dataset.id);
   });
 
-  fieldImage?.addEventListener("change", () => {
+  fieldImage?.addEventListener("change", async () => {
     const file = fieldImage.files?.[0];
     if (!file) return;
-    const url = URL.createObjectURL(file);
-    imagePreview.hidden = false;
-    imagePreviewImg.src = url;
-    imagePreviewNote.textContent = `Nueva foto: ${file.name}`;
+    try {
+      const prepared = await prepareImage(file);
+      pendingImage = prepared;
+      imagePreview.hidden = false;
+      imagePreviewImg.src = prepared.base64;
+      imagePreviewNote.textContent = `Nueva foto: ${prepared.fileName}`;
+    } catch (err) {
+      showMsg(formError, err.message || "No se pudo leer la imagen");
+    }
   });
 
   productForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
-    showError(formError, "");
-    showError(formOk, "");
+    showMsg(formError, "");
+    showMsg(formOk, "");
     btnSave.disabled = true;
+    btnSave.textContent = "Guardando…";
+
     try {
-      const file = fieldImage.files?.[0] || null;
+      const name = document.getElementById("fieldName").value.trim();
+      const id = document.getElementById("productId").value || makeId(name);
       const benefits = document
         .getElementById("fieldBenefits")
         .value.split("\n")
         .map((l) => l.trim())
         .filter(Boolean);
 
+      const price = ProductsCore.parsePrice(document.getElementById("fieldPrice").value);
+      if (!name) throw new Error("Escribe el nombre");
+      if (price == null) throw new Error("Escribe un precio válido");
+      if (!pendingImage && !existingImageUrl) throw new Error("Sube una foto del producto");
+
       const product = {
-        id: document.getElementById("productId").value || null,
-        name: document.getElementById("fieldName").value.trim(),
+        id,
+        name,
         brand: document.getElementById("fieldBrand").value.trim() || "Eau Thermale Avène",
         category: document.getElementById("fieldCategory").value,
-        order: Number(document.getElementById("fieldOrder").value) || 999,
-        price: ProductsCore.parsePrice(document.getElementById("fieldPrice").value),
+        order: Number(document.getElementById("fieldOrder").value) || products.length + 1,
+        price,
         priceOld: ProductsCore.parsePrice(document.getElementById("fieldPriceOld").value),
         badge: document.getElementById("fieldBadge").value.trim(),
         benefits,
-        imageUrl: existingImageUrl,
+        imageUrl: existingImageUrl || "",
       };
 
-      if (!product.name) throw new Error("Escribe el nombre del producto.");
-      if (product.price == null) throw new Error("Escribe un precio válido.");
-      if (!file && !existingImageUrl) throw new Error("Sube una foto del producto.");
+      const next = products.filter((p) => p.id !== id);
+      next.push(product);
+      next.sort((a, b) => (a.order || 0) - (b.order || 0));
 
-      await ProductsCore.saveProduct(product, file);
-      showOk("Producto guardado. Ya se refleja en la web pública.");
+      const newImages = [];
+      if (pendingImage) {
+        newImages.push({
+          id,
+          fileName: pendingImage.fileName,
+          base64: pendingImage.base64,
+        });
+      }
+
+      const result = await api("/api/products", {
+        method: "POST",
+        token: getToken(),
+        body: { products: next, newImages },
+      });
+
+      products = result.products || next;
+      showOk(result.note || "Guardado. En 1–2 minutos se ve en la web.");
       closeForm();
       await refreshList();
     } catch (err) {
-      showError(formError, err.message || String(err));
+      showMsg(formError, err.message || String(err));
     } finally {
       btnSave.disabled = false;
+      btnSave.textContent = "Guardar en la web";
     }
   });
 
   btnDelete?.addEventListener("click", async () => {
     if (!currentId) return;
     if (!confirm("¿Eliminar este producto del catálogo?")) return;
+    btnDelete.disabled = true;
     try {
-      await ProductsCore.deleteProduct(currentId);
+      const next = products.filter((p) => p.id !== currentId);
+      const result = await api("/api/products", {
+        method: "POST",
+        token: getToken(),
+        body: { products: next, newImages: [] },
+      });
+      products = result.products || next;
       closeForm();
       await refreshList();
-      showOk("Producto eliminado.");
+      showOk("Producto eliminado. Se actualiza la web en 1–2 min.");
     } catch (err) {
-      showError(formError, err.message || String(err));
+      showMsg(formError, err.message || String(err));
+    } finally {
+      btnDelete.disabled = false;
     }
   });
 
-  function mapAuthError(err) {
-    const code = err?.code || "";
-    if (code.includes("user-not-found") || code.includes("wrong-password") || code.includes("invalid-credential")) {
-      return "Correo o contraseña incorrectos.";
-    }
-    if (code.includes("too-many-requests")) return "Demasiados intentos. Espera un momento.";
-    if (code.includes("invalid-api-key") || code.includes("configuration")) {
-      return "Configuración de Firebase incompleta o incorrecta.";
-    }
-    return err.message || "No se pudo iniciar sesión.";
-  }
-
-  // Boot
-  if (!configured()) {
-    setAuthUI(null);
-  } else {
-    ProductsCore.initFirebase();
-    const { auth } = ProductsCore.getFirebase();
-    auth.onAuthStateChanged((user) => setAuthUI(user));
-  }
+  // boot
+  if (getToken()) setAuthUI(true);
+  else setAuthUI(false);
 })();

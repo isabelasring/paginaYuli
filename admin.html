@@ -24,54 +24,30 @@
       </div>
     </header>
 
-    <section class="panel panel--setup" id="setupPanel" hidden>
-      <h2>Configurar guardado en la nube (una sola vez)</h2>
-      <p>
-        Para que lo que Yuly suba se vea en todos los celulares y quede guardado, conectamos Firebase (gratis de Google).
-        Hazlo desde tu Gmail o el de ella — solo tarda unos minutos.
-      </p>
-      <ol class="steps">
-        <li>Entra a <a href="https://console.firebase.google.com" target="_blank" rel="noopener">console.firebase.google.com</a> y crea un proyecto (ej. Skin Beauty).</li>
-        <li>Pulsa el ícono <strong>Web (&lt;/&gt;)</strong>, registra la app y copia el objeto <code>firebaseConfig</code>.</li>
-        <li>Pega esos valores en el archivo <code>js/firebase-config.js</code> del sitio y vuelve a subir a GitHub/Vercel.</li>
-        <li><strong>Authentication</strong> → método Email/contraseña → Activar → <strong>Add user</strong> con el correo y contraseña de Yuly.</li>
-        <li><strong>Firestore Database</strong> → Create → modo producción → pega las reglas del archivo <code>firestore.rules</code>.</li>
-        <li><strong>Storage</strong> → Get started → pega las reglas del archivo <code>storage.rules</code>.</li>
-      </ol>
-      <p class="hint">
-        Después, Yuly solo entra a <strong>/admin.html</strong> con su correo y contraseña. No ve código ni Firebase.
-      </p>
-    </section>
-
     <section class="panel" id="loginPanel">
       <h2>Entrar</h2>
-      <p class="muted">Acceso solo para Yuly (correo y contraseña que creaste en Firebase).</p>
+      <p class="muted">Solo para ti. Usa la contraseña que te compartieron. Todo lo que guardes se sube al sitio y al repositorio.</p>
       <form id="loginForm" class="form">
         <label>
-          Correo
-          <input type="email" id="loginEmail" required autocomplete="username" placeholder="yuly@ejemplo.com" />
-        </label>
-        <label>
           Contraseña
-          <input type="password" id="loginPassword" required autocomplete="current-password" />
+          <input type="password" id="loginPassword" required autocomplete="current-password" placeholder="••••••••" />
         </label>
         <p class="form-error" id="loginError" hidden></p>
-        <button class="btn btn--primary" type="submit">Entrar al panel</button>
+        <button class="btn btn--primary" type="submit">Entrar</button>
       </form>
     </section>
 
     <section class="panel panel--app" id="appPanel" hidden>
       <div class="app-bar">
-        <p id="sessionLabel" class="muted"></p>
+        <p class="muted" id="sessionLabel">Sesión activa · los cambios se publican en la web (1–2 min)</p>
         <div class="app-bar__actions">
-          <button class="btn btn--ghost" type="button" id="btnSeed">Cargar catálogo base a la nube</button>
           <button class="btn btn--primary" type="button" id="btnNew">+ Nuevo producto</button>
         </div>
       </div>
 
       <div class="layout">
         <div class="list-wrap">
-          <h2>Productos publicados</h2>
+          <h2>Productos</h2>
           <p class="muted" id="listMeta">—</p>
           <div class="list" id="productList"></div>
         </div>
@@ -109,7 +85,7 @@
           <div class="row">
             <label>
               Precio actual
-              <input type="text" id="fieldPrice" required placeholder="191800 o 191.800" />
+              <input type="text" id="fieldPrice" required placeholder="191800" />
             </label>
             <label>
               Precio anterior (opcional)
@@ -124,7 +100,7 @@
 
           <label>
             Beneficios (uno por línea)
-            <textarea id="fieldBenefits" rows="5" placeholder="Ilumina el cutis&#10;Unifica el tono&#10;…"></textarea>
+            <textarea id="fieldBenefits" rows="5" placeholder="Ilumina el cutis&#10;Unifica el tono"></textarea>
           </label>
 
           <label>
@@ -140,7 +116,7 @@
           <p class="form-ok" id="formOk" hidden></p>
 
           <div class="form-actions">
-            <button class="btn btn--primary" type="submit" id="btnSave">Guardar</button>
+            <button class="btn btn--primary" type="submit" id="btnSave">Guardar en la web</button>
             <button class="btn btn--ghost" type="button" id="btnCancel">Cancelar</button>
             <button class="btn btn--danger" type="button" id="btnDelete" hidden>Eliminar</button>
           </div>
@@ -149,11 +125,6 @@
     </section>
   </div>
 
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
-  <script src="js/firebase-config.js"></script>
   <script src="js/products-core.js"></script>
   <script src="admin.js"></script>
 </body>
