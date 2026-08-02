@@ -41,17 +41,19 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: calc(var(--header-h) + 12px);
+  font-size: 110%;
 }
 
 body {
   font-family: var(--font-sans);
   font-weight: 400;
+  font-size: 1.05rem;
   color: var(--ink);
   background:
     radial-gradient(ellipse 80% 50% at 10% -10%, rgba(240, 221, 212, 0.7), transparent 55%),
     radial-gradient(ellipse 60% 40% at 100% 0%, rgba(201, 162, 122, 0.18), transparent 50%),
     var(--cream);
-  line-height: 1.65;
+  line-height: 1.7;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
@@ -86,7 +88,7 @@ ul {
 
 /* Typography */
 .eyebrow {
-  font-size: 0.78rem;
+  font-size: 0.84rem;
   font-weight: 500;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -104,17 +106,17 @@ h3 {
 }
 
 h1 {
-  font-size: clamp(2.8rem, 6vw, 5.2rem);
+  font-size: clamp(3rem, 6.2vw, 5.5rem);
   letter-spacing: -0.02em;
 }
 
 h2 {
-  font-size: clamp(2.2rem, 4.4vw, 3.65rem);
+  font-size: clamp(2.4rem, 4.6vw, 3.9rem);
   letter-spacing: -0.015em;
 }
 
 h3 {
-  font-size: clamp(1.2rem, 1.5vw, 1.4rem);
+  font-size: clamp(1.3rem, 1.65vw, 1.55rem);
 }
 
 .section {
@@ -265,7 +267,7 @@ body:not([data-active-page="inicio"])
 
 .infografia {
   margin: 0 auto;
-  max-width: 1100px;
+  max-width: 1280px;
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: var(--shadow-soft);
@@ -274,13 +276,21 @@ body:not([data-active-page="inicio"])
 }
 
 .infografia--large {
-  max-width: 1280px;
+  max-width: min(1480px, 100%);
+  width: 100%;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
 }
 
 .infografia img {
   width: 100%;
   height: auto;
   display: block;
+  object-fit: contain;
+}
+
+.home-process .container {
+  width: min(1480px, calc(100% - 3rem));
 }
 
 .home-atmosphere {
