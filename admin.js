@@ -95,14 +95,19 @@
       productList.innerHTML = list
         .map(
           (p) => `
-        <button type="button" class="list-item${p.id === currentId ? " is-active" : ""}" data-id="${ProductsCore.escapeHtml(p.id)}">
-          <img src="${ProductsCore.escapeHtml(p.imageUrl)}" alt="" />
-          <span>
-            <span class="list-item__title">${ProductsCore.escapeHtml(p.name)}</span>
-            <span class="list-item__meta">${ProductsCore.escapeHtml(ProductsCore.CATEGORY_LABELS[p.category] || p.category)}${p.badge ? " · " + ProductsCore.escapeHtml(p.badge) : ""}</span>
-          </span>
-          <span class="list-item__price">${ProductsCore.escapeHtml(ProductsCore.formatPrice(p.price))}</span>
-        </button>`
+        <div class="list-item${p.id === currentId ? " is-active" : ""}" data-id="${ProductsCore.escapeHtml(p.id)}">
+          <button type="button" class="list-item__main" data-action="edit" data-id="${ProductsCore.escapeHtml(p.id)}">
+            <img src="${ProductsCore.escapeHtml(p.imageUrl)}" alt="" />
+            <span>
+              <span class="list-item__title">${ProductsCore.escapeHtml(p.name)}</span>
+              <span class="list-item__meta">${ProductsCore.escapeHtml(ProductsCore.CATEGORY_LABELS[p.category] || p.category)}${p.badge ? " · " + ProductsCore.escapeHtml(p.badge) : ""}</span>
+            </span>
+            <span class="list-item__price">${ProductsCore.escapeHtml(ProductsCore.formatPrice(p.price))}</span>
+          </button>
+          <button type="button" class="btn btn--danger-sm" data-action="delete" data-id="${ProductsCore.escapeHtml(p.id)}" title="Eliminar producto">
+            Eliminar
+          </button>
+        </div>`
         )
         .join("");
     } catch (err) {
@@ -252,8 +257,15 @@
   btnCancel?.addEventListener("click", closeForm);
 
   productList?.addEventListener("click", (e) => {
-    const btn = e.target.closest(".list-item");
-    if (btn) openEdit(btn.dataset.id);
+    const actionBtn = e.target.closest("[data-action]");
+    if (!actionBtn) return;
+    const id = actionBtn.dataset.id;
+    if (actionBtn.dataset.action === "delete") {
+      e.preventDefault();
+      deleteProduct(id);
+      return;
+    }
+    if (actionBtn.dataset.action === "edit") openEdit(id);
   });
 
   fieldImage?.addEventListener("change", async () => {
@@ -335,27 +347,33 @@
     }
   });
 
-  btnDelete?.addEventListener("click", async () => {
-    if (!currentId) return;
-    if (!confirm("¿Eliminar este producto del catálogo?")) return;
-    btnDelete.disabled = true;
+  async function deleteProduct(id) {
+    if (!id) return;
+    const product = products.find((p) => p.id === id);
+    const label = product?.name ? `"${product.name}"` : "este producto";
+    if (!confirm(`¿Eliminar ${label} del catálogo?\nSe quitará de la web en 1–2 minutos.`)) return;
+
+    if (btnDelete) btnDelete.disabled = true;
     try {
-      const next = products.filter((p) => p.id !== currentId);
+      const next = products.filter((p) => p.id !== id);
       const result = await api("/api/products", {
         method: "POST",
         token: getToken(),
         body: { products: next, newImages: [] },
       });
       products = result.products || next;
-      closeForm();
+      if (currentId === id) closeForm();
       await refreshList();
       showOk("Producto eliminado. Se actualiza la web en 1–2 min.");
     } catch (err) {
       showMsg(formError, err.message || String(err));
+      alert(err.message || "No se pudo eliminar");
     } finally {
-      btnDelete.disabled = false;
+      if (btnDelete) btnDelete.disabled = false;
     }
-  });
+  }
+
+  btnDelete?.addEventListener("click", () => deleteProduct(currentId));
 
   // boot
   if (getToken()) setAuthUI(true);

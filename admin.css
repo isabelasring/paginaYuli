@@ -195,10 +195,14 @@ code {
 }
 
 .btn--danger {
-  background: transparent;
-  color: #9b3b3b;
-  border: 1px solid rgba(155, 59, 59, 0.35);
+  background: #c45c5c;
+  color: #fff;
+  border: none;
   margin-left: auto;
+}
+
+.btn--danger:hover {
+  background: #a34444;
 }
 
 .form-actions {
@@ -260,18 +264,14 @@ code {
 
 .list-item {
   display: grid;
-  grid-template-columns: 64px 1fr auto;
-  gap: 0.75rem;
+  grid-template-columns: 1fr auto;
+  gap: 0.55rem;
   align-items: center;
-  padding: 0.65rem;
+  padding: 0.5rem;
   border-radius: 14px;
   border: 1px solid rgba(176, 122, 104, 0.18);
   background: var(--cream);
-  cursor: pointer;
-  text-align: left;
   width: 100%;
-  font: inherit;
-  color: inherit;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -281,12 +281,44 @@ code {
   box-shadow: 0 8px 22px rgba(176, 122, 104, 0.15);
 }
 
+.list-item__main {
+  display: grid;
+  grid-template-columns: 64px 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.25rem 0.35rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  font: inherit;
+  color: inherit;
+  min-width: 0;
+}
+
 .list-item img {
   width: 64px;
   height: 64px;
   object-fit: contain;
   background: var(--white);
   border-radius: 10px;
+}
+
+.btn--danger-sm {
+  border-radius: 999px;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  background: #c45c5c;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.btn--danger-sm:hover {
+  background: #a34444;
 }
 
 .list-item__title {
@@ -334,11 +366,19 @@ code {
   }
 
   .list-item {
+    grid-template-columns: 1fr;
+  }
+
+  .list-item__main {
     grid-template-columns: 52px 1fr;
   }
 
   .list-item__price {
     grid-column: 2;
     justify-self: start;
+  }
+
+  .btn--danger-sm {
+    width: 100%;
   }
 }
