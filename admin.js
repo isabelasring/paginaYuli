@@ -71,9 +71,22 @@
       },
       body: body ? JSON.stringify(body) : undefined,
     });
-    const data = await res.json().catch(() => ({}));
+
+    const text = await res.text();
+    let data = {};
+    try {
+      data = text ? JSON.parse(text) : {};
+    } catch {
+      data = { error: text?.slice(0, 200) || `Error ${res.status}` };
+    }
+
     if (!res.ok) {
-      const err = new Error(data.error || `Error ${res.status}`);
+      let msg = data.error || data.message || `Error ${res.status}`;
+      if (res.status === 404 && /not found/i.test(String(msg)) && !data.repo) {
+        msg =
+          "No se encontró la API del admin. Espera a que Vercel termine de desplegar y recarga la página.";
+      }
+      const err = new Error(msg);
       err.status = res.status;
       err.data = data;
       throw err;
@@ -230,9 +243,9 @@
     e.preventDefault();
     showMsg(loginError, "");
     try {
-      const data = await api("/api/login", {
+      const data = await api("/api/admin", {
         method: "POST",
-        body: { password: document.getElementById("loginPassword").value },
+        body: { action: "login", password: document.getElementById("loginPassword").value },
       });
       setToken(data.token);
       setAuthUI(true);
@@ -329,10 +342,10 @@
         });
       }
 
-      const result = await api("/api/products", {
+      const result = await api("/api/admin", {
         method: "POST",
         token: getToken(),
-        body: { products: next, newImages },
+        body: { action: "save", products: next, newImages },
       });
 
       products = result.products || next;
@@ -356,10 +369,10 @@
     if (btnDelete) btnDelete.disabled = true;
     try {
       const next = products.filter((p) => p.id !== id);
-      const result = await api("/api/products", {
+      const result = await api("/api/admin", {
         method: "POST",
         token: getToken(),
-        body: { products: next, newImages: [] },
+        body: { action: "save", products: next, newImages: [] },
       });
       products = result.products || next;
       if (currentId === id) closeForm();
