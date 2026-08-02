@@ -1000,7 +1000,8 @@ body:not([data-active-page="inicio"])
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  overflow: hidden;
+  /* visible: no recortar florituras de la tipografía script del título */
+  overflow: visible;
 }
 
 .hero__bg {
@@ -1059,18 +1060,28 @@ body:not([data-active-page="inicio"])
   background: none;
   -webkit-text-fill-color: var(--terracotta);
   animation: softPulse 3.5s ease-in-out infinite;
+  /* Great Vibes se sale del caja de texto */
+  line-height: 1.28;
+  padding: 0.08em 0.35em 0.12em 0.1em;
+  margin-inline: -0.05em;
+  overflow: visible;
+  transform-origin: center center;
 }
 
 .hero__content {
   justify-self: center;
   width: 100%;
   max-width: 34rem;
-  padding-inline: clamp(0.25rem, 1.5vw, 1rem);
+  padding-inline: clamp(0.5rem, 3vw, 1.25rem);
+  overflow: visible;
 }
 
 .hero__content h1 {
   margin-bottom: 1.25rem;
   color: var(--ink);
+  overflow: visible;
+  line-height: 1.12;
+  padding-inline: 0.1em;
 }
 
 .hero__lead {
@@ -1323,7 +1334,7 @@ body:not([data-active-page="inicio"])
     transform: scale(1);
   }
   50% {
-    transform: scale(1.03);
+    transform: scale(1.02);
   }
 }
 
@@ -2870,6 +2881,17 @@ body.lightbox-open {
     text-align: center;
     max-width: 38rem;
     margin-inline: auto;
+    padding-inline: clamp(0.75rem, 5vw, 1.5rem);
+  }
+
+  .hero__content h1 {
+    overflow: visible;
+    padding-inline: 0.2em;
+  }
+
+  .hero__script {
+    padding-inline: 0.15em 0.42em;
+    font-size: 1.28em;
   }
 
   .hero__mini {
