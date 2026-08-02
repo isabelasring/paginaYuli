@@ -110,7 +110,6 @@ function initServicesCarousel() {
   if (!cards.length) return;
 
   let active = Math.floor(cards.length / 2);
-  let autoTimer = null;
 
   const render = () => {
     cards.forEach((card, i) => {
@@ -139,29 +138,12 @@ function initServicesCarousel() {
   const next = () => goTo(active + 1);
   const prev = () => goTo(active - 1);
 
-  const startAuto = () => {
-    window.clearInterval(autoTimer);
-    autoTimer = window.setInterval(next, 3800);
-  };
-
-  root.querySelector(".services-carousel__nav--next")?.addEventListener("click", () => {
-    next();
-    startAuto();
-  });
-  root.querySelector(".services-carousel__nav--prev")?.addEventListener("click", () => {
-    prev();
-    startAuto();
-  });
+  root.querySelector(".services-carousel__nav--next")?.addEventListener("click", next);
+  root.querySelector(".services-carousel__nav--prev")?.addEventListener("click", prev);
 
   cards.forEach((card, i) => {
-    card.addEventListener("click", () => {
-      goTo(i);
-      startAuto();
-    });
+    card.addEventListener("click", () => goTo(i));
   });
-
-  root.addEventListener("mouseenter", () => window.clearInterval(autoTimer));
-  root.addEventListener("mouseleave", startAuto);
 
   let touchStartX = 0;
   root.addEventListener(
@@ -178,13 +160,11 @@ function initServicesCarousel() {
       if (Math.abs(dx) < 40) return;
       if (dx < 0) next();
       else prev();
-      startAuto();
     },
     { passive: true }
   );
 
   render();
-  startAuto();
 }
 
 function initServiceGalleries() {
@@ -205,7 +185,11 @@ function initServiceGalleries() {
       });
     };
 
-    window.setInterval(() => show(index + 1), 2800);
+    gallery.style.cursor = "pointer";
+    gallery.addEventListener("click", (e) => {
+      e.stopPropagation();
+      show(index + 1);
+    });
   });
 }
 
