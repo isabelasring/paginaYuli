@@ -170,8 +170,10 @@
     document.getElementById("fieldBrand").value = p.brand || "";
     document.getElementById("fieldCategory").value = p.category || "tratamiento";
     document.getElementById("fieldOrder").value = String(p.order ?? 1);
-    document.getElementById("fieldPrice").value = p.price != null ? String(p.price) : "";
-    document.getElementById("fieldPriceOld").value = p.priceOld != null ? String(p.priceOld) : "";
+    document.getElementById("fieldPrice").value =
+      p.price != null ? ProductsCore.formatPriceInput(p.price) : "";
+    document.getElementById("fieldPriceOld").value =
+      p.priceOld != null ? ProductsCore.formatPriceInput(p.priceOld) : "";
     document.getElementById("fieldBadge").value = p.badge || "";
     document.getElementById("fieldBenefits").value = (p.benefits || []).join("\n");
     fieldImage.value = "";
@@ -294,6 +296,22 @@
       showMsg(formError, err.message || "No se pudo leer la imagen");
     }
   });
+
+  // Formato colombiano al escribir precios (punto miles, coma decimales)
+  function bindPriceInput(el) {
+    if (!el) return;
+    el.addEventListener("blur", () => {
+      const n = ProductsCore.parsePrice(el.value);
+      el.value = n == null ? el.value : ProductsCore.formatPriceInput(n);
+    });
+    el.addEventListener("focus", () => {
+      // al enfocar deja el número legible sin forzar si está vacío
+      const n = ProductsCore.parsePrice(el.value);
+      if (n != null) el.value = ProductsCore.formatPriceInput(n);
+    });
+  }
+  bindPriceInput(document.getElementById("fieldPrice"));
+  bindPriceInput(document.getElementById("fieldPriceOld"));
 
   productForm?.addEventListener("submit", async (e) => {
     e.preventDefault();

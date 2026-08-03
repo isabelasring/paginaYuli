@@ -9,19 +9,74 @@
     proteccion: "Protección",
   };
 
-  function formatPrice(value) {
+  /**
+   * Formato pesos colombianos: $191.800 o $191.800,50
+   * (punto = miles, coma = decimales)
+   */
+  function formatPrice(value, { withCents = true } = {}) {
     if (value == null || value === "") return "";
     const n = typeof value === "number" ? value : parsePrice(value);
-    if (n == null) return String(value);
-    return `$${n.toLocaleString("es-CO")}`;
+    if (n == null || !Number.isFinite(n)) return String(value);
+    return (
+      "$" +
+      n.toLocaleString("es-CO", {
+        minimumFractionDigits: withCents ? 2 : 0,
+        maximumFractionDigits: 2,
+      })
+    );
   }
 
+  /**
+   * Interpreta precios en formato colombiano o numérico.
+   * Acepta: 191800 | 191.800 | 191.800,50 | $191.800,00
+   */
   function parsePrice(str) {
     if (str == null || str === "") return null;
-    if (typeof str === "number" && Number.isFinite(str)) return Math.round(str);
-    const digits = String(str).replace(/[^\d]/g, "");
+    if (typeof str === "number" && Number.isFinite(str)) {
+      return Math.round(str * 100) / 100;
+    }
+
+    let s = String(str).trim().replace(/\$/g, "").replace(/\s/g, "");
+    if (!s) return null;
+
+    // Formato con decimales: 1.234.567,89
+    if (s.includes(",")) {
+      const parts = s.split(",");
+      const decimals = (parts.pop() || "").replace(/\D/g, "").slice(0, 2);
+      const integer = parts.join("").replace(/\./g, "").replace(/\D/g, "");
+      if (!integer && !decimals) return null;
+      const n = Number(`${integer || "0"}.${decimals || "0"}`);
+      return Number.isFinite(n) ? Math.round(n * 100) / 100 : null;
+    }
+
+    // Solo puntos como separador de miles: 191.800
+    if (/^\d{1,3}(\.\d{3})+$/.test(s)) {
+      const n = Number(s.replace(/\./g, ""));
+      return Number.isFinite(n) ? n : null;
+    }
+
+    // Punto como decimal (estilo tech): 191800.5
+    if (/^\d+\.\d{1,2}$/.test(s)) {
+      const n = Number(s);
+      return Number.isFinite(n) ? Math.round(n * 100) / 100 : null;
+    }
+
+    // Solo dígitos
+    const digits = s.replace(/[^\d]/g, "");
     if (!digits) return null;
-    return Number(digits);
+    const n = Number(digits);
+    return Number.isFinite(n) ? n : null;
+  }
+
+  /** Solo separadores de miles, sin símbolo $ (para inputs del admin). */
+  function formatPriceInput(value) {
+    if (value == null || value === "") return "";
+    const n = typeof value === "number" ? value : parsePrice(value);
+    if (n == null || !Number.isFinite(n)) return "";
+    return n.toLocaleString("es-CO", {
+      minimumFractionDigits: Number.isInteger(n) ? 0 : 2,
+      maximumFractionDigits: 2,
+    });
   }
 
   function escapeHtml(text) {
@@ -138,6 +193,7 @@
   window.ProductsCore = {
     CATEGORY_LABELS,
     formatPrice,
+    formatPriceInput,
     parsePrice,
     escapeHtml,
     loadProducts,
