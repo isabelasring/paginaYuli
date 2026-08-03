@@ -12,12 +12,13 @@ function env(name, fallback = "") {
 }
 
 function getConfig() {
+  // Repo fijo de este proyecto (evita confusiones con variables en Vercel)
   return {
     password: env("ADMIN_PASSWORD"),
     token: env("GITHUB_TOKEN"),
-    owner: env("GITHUB_OWNER") || env("VERCEL_GIT_REPO_OWNER") || "isabelasring",
-    repo: env("GITHUB_REPO") || env("VERCEL_GIT_REPO_SLUG") || "paginaYuli",
-    branch: env("GITHUB_BRANCH") || env("VERCEL_GIT_COMMIT_REF") || "main",
+    owner: "isabelasring",
+    repo: "paginaYuli",
+    branch: env("GITHUB_BRANCH") || "main",
     secret: env("ADMIN_SECRET") || env("ADMIN_PASSWORD") || "change-me",
   };
 }
