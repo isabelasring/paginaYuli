@@ -72,10 +72,10 @@
     "name": "Cleanance Aqua-Gel Crema Matificante 50ML",
     "brand": "Eau Thermale Avène",
     "category": "limpieza",
-    "price": 107100,
+    "price": 120000,
     "priceOld": 153000,
     "badge": "-30%",
-    "imageUrl": "/api/media?path=assets%2Fproductos%2Fcleanance-aqua-gel.webp&v=709c1fc9bd34fc4f89e59af92e3ccb6831c211f8",
+    "imageUrl": "assets/productos/cleanance-aqua-gel.webp",
     "benefits": [
       "Controla el brillo y el exceso de sebo",
       "Acabado matificante y fresca sensación",
