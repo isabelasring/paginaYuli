@@ -66,6 +66,9 @@
     if (loggedIn) {
       showEditor(false);
       refreshList();
+      if (window.AdminPageEditor?.init) {
+        window.AdminPageEditor.init().catch((e) => console.warn("Editor:", e));
+      }
     } else {
       showEditor(false);
       productForm.hidden = true;

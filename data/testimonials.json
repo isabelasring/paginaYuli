@@ -1,0 +1,50 @@
+{
+  "section": {
+    "eyebrow": "Amor de mis clientes",
+    "title": "Lo que dicen mis clientes."
+  },
+  "items": [
+    {
+      "id": "t1",
+      "order": 1,
+      "name": "Laura Gómez",
+      "stars": 5,
+      "quote": "Salí de la cita con la piel luminosa y calmada. Yuly es muy profesional y te explica cada paso con cariño. Me sentí en buenas manos desde el primer mensaje."
+    },
+    {
+      "id": "t2",
+      "order": 2,
+      "name": "Mariana Restrepo",
+      "stars": 5,
+      "quote": "Mi acné mejoró muchísimo. El tratamiento fue cómodo y los resultados se notan en las fotos de antes y después. ¡Totalmente recomendada en Medellín!"
+    },
+    {
+      "id": "t3",
+      "order": 3,
+      "name": "Valentina Rodríguez",
+      "stars": 5,
+      "quote": "Lo que más valoro es la honestidad: me armó un plan realista para mi piel sensible y ahora me veo descansada y con un glow natural hermoso."
+    },
+    {
+      "id": "t4",
+      "order": 4,
+      "name": "Camila Osorio",
+      "stars": 5,
+      "quote": "Un espacio íntimo, limpio y cálido. El Hydrafacial me dejó la cara suavecita y sin brotes. Ya agendé mi próximo cuidado."
+    },
+    {
+      "id": "t5",
+      "order": 5,
+      "name": "Daniela Mejía",
+      "stars": 5,
+      "quote": "Llevo años batallando con manchas y por fin veo un cambio de verdad. Yuly es detallada, cariñosa y transmite mucha tranquilidad."
+    },
+    {
+      "id": "t6",
+      "order": 6,
+      "name": "Isabella Cárdenas",
+      "stars": 5,
+      "quote": "Me recomendó productos que sí funcionan con mi rutina. Mi piel se siente más firme, hidratada y con un brillo sano que me encanta."
+    }
+  ]
+}

@@ -426,6 +426,136 @@ async function handleSave(req, res, cfg, body) {
   }
 }
 
+async function handleSaveContent(req, res, cfg, body) {
+  if (!cfg.password || !cfg.token) {
+    return json(res, 503, {
+      error: "Configura ADMIN_PASSWORD y GITHUB_TOKEN en Vercel.",
+    });
+  }
+  if (!verifySessionToken(cfg, getBearer(req))) {
+    return json(res, 401, { error: "Sesión inválida o expirada. Vuelve a entrar." });
+  }
+
+  const allowed = {
+    site: "data/site.json",
+    services: "data/services.json",
+    testimonials: "data/testimonials.json",
+    results: "data/results.json",
+  };
+  const folders = {
+    site: "assets/inicio",
+    services: "assets/servicios",
+    about: "assets/sobre-mi",
+    results: "assets/testimonios/antes-despues",
+    experiencia: "assets/experiencia",
+  };
+
+  const fileKey = String(body.file || "").trim();
+  const jsonPath = allowed[fileKey];
+  if (!jsonPath) {
+    return json(res, 400, {
+      error: "Archivo inválido. Usa site, services, testimonials o results.",
+    });
+  }
+
+  let data = body.data;
+  if (data == null || typeof data !== "object") {
+    return json(res, 400, { error: "Falta data del contenido." });
+  }
+
+  // deep clone via JSON
+  try {
+    data = JSON.parse(JSON.stringify(data));
+  } catch {
+    return json(res, 400, { error: "Contenido inválido." });
+  }
+
+  const newImages = Array.isArray(body.newImages) ? body.newImages : [];
+  const files = [];
+
+  const setByPath = (obj, pathStr, value) => {
+    const parts = String(pathStr)
+      .replace(/\[(\d+)\]/g, ".$1")
+      .split(".")
+      .filter(Boolean);
+    if (!parts.length) return;
+    let cur = obj;
+    for (let i = 0; i < parts.length - 1; i++) {
+      const key = parts[i];
+      const next = parts[i + 1];
+      const asIndex = /^\d+$/.test(key);
+      const nextIsIndex = /^\d+$/.test(next);
+      if (asIndex) {
+        const idx = Number(key);
+        if (!Array.isArray(cur)) return;
+        if (cur[idx] == null) cur[idx] = nextIsIndex ? [] : {};
+        cur = cur[idx];
+      } else {
+        if (cur[key] == null) cur[key] = nextIsIndex ? [] : {};
+        cur = cur[key];
+      }
+    }
+    const last = parts[parts.length - 1];
+    if (/^\d+$/.test(last)) {
+      if (!Array.isArray(cur)) return;
+      cur[Number(last)] = value;
+    } else {
+      cur[last] = value;
+    }
+  };
+
+  for (const img of newImages) {
+    const folderKey = String(img.folder || fileKey).trim();
+    const folder = folders[folderKey] || folders[fileKey] || "assets/inicio";
+    const id = slugify(img.id || img.fileName || "foto");
+    const ext = String(img.fileName || "foto.webp").split(".").pop()?.toLowerCase() || "webp";
+    const safeExt = ["jpg", "jpeg", "png", "webp", "gif"].includes(ext) ? ext : "webp";
+    const assetPath = `${folder}/${id}-${Date.now()}.${safeExt}`;
+    const base64 = String(img.base64 || "").replace(/^data:image\/[a-zA-Z0-9+.-]+;base64,/, "");
+    if (!base64 || base64.length < 32) {
+      return json(res, 400, { error: "La foto no se leyó bien. Prueba JPG/PNG más liviano." });
+    }
+    if (base64.length > 4_000_000) {
+      return json(res, 400, { error: "La foto es demasiado pesada (usa menos de 2 MB)." });
+    }
+    files.push({ path: assetPath, content: base64, encoding: "base64" });
+    if (img.setPath) setByPath(data, img.setPath, assetPath);
+  }
+
+  files.push({
+    path: jsonPath,
+    content: Buffer.from(`${JSON.stringify(data, null, 2)}\n`, "utf8").toString("base64"),
+    encoding: "base64",
+  });
+
+  try {
+    const sha = await commitFiles({
+      owner: cfg.owner,
+      repo: cfg.repo,
+      branch: cfg.branch,
+      token: cfg.token,
+      message: `Admin: actualiza ${fileKey}`,
+      files,
+    });
+    return json(res, 200, {
+      ok: true,
+      commit: sha,
+      file: fileKey,
+      data,
+      note: "Guardado. La web se actualiza en unos segundos (recarga la página).",
+      repo: `${cfg.owner}/${cfg.repo}`,
+      branch: cfg.branch,
+    });
+  } catch (e) {
+    console.error(e);
+    return json(res, e.status && e.status < 600 ? e.status : 500, {
+      error: e.message || "No se pudo guardar en GitHub",
+      repo: `${cfg.owner}/${cfg.repo}`,
+      branch: cfg.branch,
+    });
+  }
+}
+
 module.exports = async function handler(req, res) {
   if (req.method === "OPTIONS") {
     res.statusCode = 204;
@@ -458,5 +588,6 @@ module.exports = async function handler(req, res) {
   if (action === "login") return handleLogin(req, res, cfg, body);
   if (action === "save") return handleSave(req, res, cfg, body);
   if (action === "delete") return handleDelete(req, res, cfg, body);
-  return json(res, 400, { error: 'Usa action: "login", "save" o "delete"' });
+  if (action === "saveContent") return handleSaveContent(req, res, cfg, body);
+  return json(res, 400, { error: 'Usa action: "login", "save", "delete" o "saveContent"' });
 };

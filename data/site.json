@@ -1,0 +1,84 @@
+{
+  "hero": {
+    "eyebrow": "Yuly Sánchez · Skin Beauty",
+    "headlineBefore": "Cuidarte es",
+    "headlineScript": "mi arte",
+    "lead": "Un espacio íntimo de cuidado profesional donde tu bienestar brilla. Rituales personalizados, resultados visibles y una experiencia que se siente desde el primer momento.",
+    "imageUrl": "assets/inicio/hero-tratamiento.webp",
+    "floatLabel": "Tu bienestar es mi",
+    "floatStrong": "Prioridad",
+    "ctaPrimaryLabel": "Explorar servicios",
+    "ctaSecondaryLabel": "Agendar cita",
+    "trustItems": [
+      {
+        "strong": "Clientes",
+        "span": "Satisfechos"
+      },
+      {
+        "strong": "Cuidado",
+        "span": "Con propósito"
+      },
+      {
+        "strong": "Espacio",
+        "span": "Seguro y cálido"
+      },
+      {
+        "strong": "Atención",
+        "span": "Cercana y real"
+      }
+    ]
+  },
+  "experiencia": {
+    "eyebrow": "Tu experiencia",
+    "titleBefore": "Así se vive una cita ",
+    "titleScript": "conmigo.",
+    "steps": [
+      {
+        "num": "01",
+        "title": "Reservas tu momento",
+        "text": "Escribes por WhatsApp o Instagram y agendamos el día que mejor te quede.",
+        "imageUrl": "assets/experiencia/paso-01-reservas.webp"
+      },
+      {
+        "num": "02",
+        "title": "Evaluamos tu piel",
+        "text": "Conversamos sobre tu historial, hábitos y objetivos antes de elegir el protocolo.",
+        "imageUrl": "assets/experiencia/paso-02-evaluamos.webp"
+      },
+      {
+        "num": "03",
+        "title": "Recibes tu tratamiento",
+        "text": "En un ambiente calmado, con técnicas profesionales y productos de calidad.",
+        "imageUrl": "assets/experiencia/paso-03-tratamiento.webp"
+      },
+      {
+        "num": "04",
+        "title": "Te llevas tu plan",
+        "text": "Te oriento en el cuidado en casa para que los resultados se mantengan.",
+        "imageUrl": "assets/experiencia/paso-04-plan.webp"
+      }
+    ]
+  },
+  "about": {
+    "eyebrow": "Sobre mí",
+    "titleBefore": "Hola, soy ",
+    "titleEm": "Yuly Sánchez",
+    "paragraphs": [
+      "Soy cosmetóloga y cosmiatra, apasionada por el cuidado de la piel y convencida de que una piel sana es el reflejo del amor propio y el bienestar.",
+      "Elegí esta profesión porque disfruto acompañar a cada persona en el proceso de descubrir la mejor versión de su piel. Para mí, cada tratamiento va más allá de la estética: es un momento de cuidado, confianza y dedicación, donde cada usuario recibe una atención personalizada según sus necesidades.",
+      "En mi espacio encontrarás un ambiente cálido, tranquilo y profesional, donde podrás desconectarte de la rutina mientras recibes un servicio pensado especialmente para ti.",
+      "Cuidarte es mi arte, y será un honor acompañarte en el camino hacia una piel más saludable, luminosa y llena de vida."
+    ],
+    "signatureName": "Yuly Sánchez",
+    "signatureRole": "Cosmetóloga, Cosmiatra",
+    "signatureTagline": "Skin Beautiful – Cuidarte es mi arte.",
+    "imageUrl": "assets/sobre-mi/yuly-retrato.webp",
+    "ctaLabel": "Sígueme",
+    "ctaUrl": "https://www.instagram.com/yulysanchez_skinbeauty?igsh=NTQxcW8ybnJldWpq"
+  },
+  "productsSection": {
+    "eyebrow": "Catálogo",
+    "title": "Catálogo de productos.",
+    "sub": "Productos seleccionados · Filtra por categoría"
+  }
+}

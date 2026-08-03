@@ -4,6 +4,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   initHeader();
   initMobileNav();
   initPages();
+
+  if (window.SiteCMS?.mountAll) {
+    try {
+      await SiteCMS.mountAll();
+    } catch (e) {
+      console.warn("CMS:", e);
+    }
+  }
+
   initServicesCarousel();
   initServiceGalleries();
   initProductFlips();
@@ -402,25 +411,35 @@ function initRoutineLightbox() {
 }
 
 function initBeforeAfter() {
-  const RESULT_COUNT = 17;
   const carousel = document.getElementById("baCarousel");
   const track = document.getElementById("baCarouselTrack");
   const dotsWrap = document.getElementById("baDots");
   const counter = document.getElementById("baCounter");
   if (!carousel || !track || !dotsWrap) return;
 
+  const cmsItems = Array.isArray(window.__CMS_RESULTS__) ? window.__CMS_RESULTS__ : null;
+  let items = cmsItems;
+  if (!items || !items.length) {
+    items = Array.from({ length: 17 }, (_, i) => {
+      const n = String(i + 1).padStart(2, "0");
+      return {
+        imageUrl: `assets/testimonios/antes-despues/caso-${n}.webp`,
+        alt: `Resultado antes y después ${i + 1}`,
+      };
+    });
+  }
+
   track.innerHTML = "";
   dotsWrap.innerHTML = "";
 
-  for (let i = 0; i < RESULT_COUNT; i++) {
-    const n = String(i + 1).padStart(2, "0");
+  items.forEach((item, i) => {
     const slide = document.createElement("div");
     slide.className = `ba-slide${i === 0 ? " is-active" : ""}`;
     slide.innerHTML = `
       <figure class="ba-case">
         <img
-          src="assets/testimonios/antes-despues/caso-${n}.webp"
-          alt="Resultado antes y después ${i + 1}"
+          src="${item.imageUrl}"
+          alt="${item.alt || `Resultado antes y después ${i + 1}`}"
           loading="${i === 0 ? "eager" : "lazy"}"
           decoding="async"
         />
@@ -433,7 +452,7 @@ function initBeforeAfter() {
     dot.type = "button";
     dot.setAttribute("aria-label", `Resultado ${i + 1}`);
     dotsWrap.appendChild(dot);
-  }
+  });
 
   const slides = Array.from(track.querySelectorAll(".ba-slide"));
   const dots = Array.from(dotsWrap.querySelectorAll(".dot"));

@@ -7,6 +7,9 @@
     "api/catalog.js": {
       "maxDuration": 15
     },
+    "api/content.js": {
+      "maxDuration": 15
+    },
     "api/media.js": {
       "maxDuration": 20
     }

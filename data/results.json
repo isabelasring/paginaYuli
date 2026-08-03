@@ -1,0 +1,112 @@
+{
+  "section": {
+    "eyebrow": "Resultados reales",
+    "titleLine1": "Resultados que se ven",
+    "titleLine2": "y se sienten.",
+    "lead": "Casos reales de mis clientes: cada imagen muestra el antes y el después del tratamiento."
+  },
+  "items": [
+    {
+      "id": "ba-01",
+      "order": 1,
+      "imageUrl": "assets/testimonios/antes-despues/caso-01.webp",
+      "alt": "Resultado antes y después 1"
+    },
+    {
+      "id": "ba-02",
+      "order": 2,
+      "imageUrl": "assets/testimonios/antes-despues/caso-02.webp",
+      "alt": "Resultado antes y después 2"
+    },
+    {
+      "id": "ba-03",
+      "order": 3,
+      "imageUrl": "assets/testimonios/antes-despues/caso-03.webp",
+      "alt": "Resultado antes y después 3"
+    },
+    {
+      "id": "ba-04",
+      "order": 4,
+      "imageUrl": "assets/testimonios/antes-despues/caso-04.webp",
+      "alt": "Resultado antes y después 4"
+    },
+    {
+      "id": "ba-05",
+      "order": 5,
+      "imageUrl": "assets/testimonios/antes-despues/caso-05.webp",
+      "alt": "Resultado antes y después 5"
+    },
+    {
+      "id": "ba-06",
+      "order": 6,
+      "imageUrl": "assets/testimonios/antes-despues/caso-06.webp",
+      "alt": "Resultado antes y después 6"
+    },
+    {
+      "id": "ba-07",
+      "order": 7,
+      "imageUrl": "assets/testimonios/antes-despues/caso-07.webp",
+      "alt": "Resultado antes y después 7"
+    },
+    {
+      "id": "ba-08",
+      "order": 8,
+      "imageUrl": "assets/testimonios/antes-despues/caso-08.webp",
+      "alt": "Resultado antes y después 8"
+    },
+    {
+      "id": "ba-09",
+      "order": 9,
+      "imageUrl": "assets/testimonios/antes-despues/caso-09.webp",
+      "alt": "Resultado antes y después 9"
+    },
+    {
+      "id": "ba-10",
+      "order": 10,
+      "imageUrl": "assets/testimonios/antes-despues/caso-10.webp",
+      "alt": "Resultado antes y después 10"
+    },
+    {
+      "id": "ba-11",
+      "order": 11,
+      "imageUrl": "assets/testimonios/antes-despues/caso-11.webp",
+      "alt": "Resultado antes y después 11"
+    },
+    {
+      "id": "ba-12",
+      "order": 12,
+      "imageUrl": "assets/testimonios/antes-despues/caso-12.webp",
+      "alt": "Resultado antes y después 12"
+    },
+    {
+      "id": "ba-13",
+      "order": 13,
+      "imageUrl": "assets/testimonios/antes-despues/caso-13.webp",
+      "alt": "Resultado antes y después 13"
+    },
+    {
+      "id": "ba-14",
+      "order": 14,
+      "imageUrl": "assets/testimonios/antes-despues/caso-14.webp",
+      "alt": "Resultado antes y después 14"
+    },
+    {
+      "id": "ba-15",
+      "order": 15,
+      "imageUrl": "assets/testimonios/antes-despues/caso-15.webp",
+      "alt": "Resultado antes y después 15"
+    },
+    {
+      "id": "ba-16",
+      "order": 16,
+      "imageUrl": "assets/testimonios/antes-despues/caso-16.webp",
+      "alt": "Resultado antes y después 16"
+    },
+    {
+      "id": "ba-17",
+      "order": 17,
+      "imageUrl": "assets/testimonios/antes-despues/caso-17.webp",
+      "alt": "Resultado antes y después 17"
+    }
+  ]
+}
