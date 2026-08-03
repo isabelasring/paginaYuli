@@ -129,6 +129,78 @@
     }
   }
 
+  function bulletizeBenefits(list) {
+    const items = (list || []).map((b) => String(b).trim()).filter(Boolean);
+    if (!items.length) return "• ";
+    return items.map((b) => `• ${b.replace(/^[\s•\-\*]+/, "")}`).join("\n");
+  }
+
+  function parseBenefitsFromText(text) {
+    return String(text || "")
+      .split("\n")
+      .map((line) => line.replace(/^[\s•\-\*]+/, "").trim())
+      .filter(Boolean);
+  }
+
+  /** Mantiene viñetas al escribir Enter o al completar líneas. */
+  function syncBenefitsBullets(textarea, { forceCursorEnd = false } = {}) {
+    if (!textarea) return;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const lines = textarea.value.split("\n");
+    const next = lines
+      .map((line) => {
+        const bare = line.replace(/^[\s•\-\*]+/, "").trimStart();
+        // línea vacía al final (solo cursor de nueva viñeta)
+        if (!bare && lines.length > 1 && line === lines[lines.length - 1]) return "• ";
+        if (!bare && !line.trim()) return "• ";
+        if (!bare) return "• ";
+        return `• ${bare.replace(/^[\s•\-\*]+/, "")}`;
+      })
+      .join("\n");
+
+    if (next !== textarea.value) {
+      textarea.value = next;
+      if (!forceCursorEnd && start != null) {
+        // intenta conservar posición razonable al final de la edición
+        const pos = Math.min(next.length, Math.max(start, end) + 2);
+        try {
+          textarea.setSelectionRange(pos, pos);
+        } catch {
+          /* ignore */
+        }
+      }
+    }
+  }
+
+  function bindBenefitsField() {
+    const ta = document.getElementById("fieldBenefits");
+    if (!ta || ta.dataset.bulletsBound === "1") return;
+    ta.dataset.bulletsBound = "1";
+
+    ta.addEventListener("focus", () => {
+      if (!ta.value.trim()) {
+        ta.value = "• ";
+        ta.setSelectionRange(2, 2);
+      } else {
+        syncBenefitsBullets(ta);
+      }
+    });
+
+    ta.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter") return;
+      e.preventDefault();
+      const start = ta.selectionStart;
+      const before = ta.value.slice(0, start);
+      const after = ta.value.slice(ta.selectionEnd);
+      ta.value = `${before}\n• ${after.replace(/^\n?/, "")}`;
+      const pos = before.length + 3; // salto + "• "
+      ta.setSelectionRange(pos, pos);
+    });
+
+    ta.addEventListener("blur", () => syncBenefitsBullets(ta));
+  }
+
   function makeId(name) {
     const base = String(name || "producto")
       .normalize("NFD")
@@ -150,6 +222,7 @@
     document.getElementById("productId").value = "";
     document.getElementById("fieldBrand").value = "Eau Thermale Avène";
     document.getElementById("fieldOrder").value = String((products[products.length - 1]?.order || 0) + 1);
+    document.getElementById("fieldBenefits").value = "• ";
     btnDelete.hidden = true;
     imagePreview.hidden = true;
     showMsg(formError, "");
@@ -175,7 +248,7 @@
     document.getElementById("fieldPriceOld").value =
       p.priceOld != null ? ProductsCore.formatPriceInput(p.priceOld) : "";
     document.getElementById("fieldBadge").value = p.badge || "";
-    document.getElementById("fieldBenefits").value = (p.benefits || []).join("\n");
+    document.getElementById("fieldBenefits").value = bulletizeBenefits(p.benefits);
     fieldImage.value = "";
     btnDelete.hidden = false;
     if (p.imageUrl) {
@@ -323,11 +396,7 @@
     try {
       const name = document.getElementById("fieldName").value.trim();
       const id = document.getElementById("productId").value || makeId(name);
-      const benefits = document
-        .getElementById("fieldBenefits")
-        .value.split("\n")
-        .map((l) => l.trim())
-        .filter(Boolean);
+      const benefits = parseBenefitsFromText(document.getElementById("fieldBenefits").value);
 
       const price = ProductsCore.parsePrice(document.getElementById("fieldPrice").value);
       if (!name) throw new Error("Escribe el nombre");
@@ -407,6 +476,7 @@
   btnDelete?.addEventListener("click", () => deleteProduct(currentId));
 
   // boot
+  bindBenefitsField();
   if (getToken()) setAuthUI(true);
   else setAuthUI(false);
 })();

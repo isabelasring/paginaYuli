@@ -30,7 +30,7 @@
       <form id="loginForm" class="form">
         <label>
           Contraseña
-          <input type="password" id="loginPassword" required autocomplete="current-password" placeholder="••••••••" />
+          <input type="password" id="loginPassword" required autocomplete="current-password" />
         </label>
         <p class="form-error" id="loginError" hidden></p>
         <button class="btn btn--primary" type="submit">Entrar</button>
@@ -58,12 +58,12 @@
 
           <label>
             Nombre del producto
-            <input type="text" id="fieldName" required placeholder="Ej. Sérum Hyaluron Activ B3" />
+            <input type="text" id="fieldName" required autocomplete="off" />
           </label>
 
           <label>
             Marca
-            <input type="text" id="fieldBrand" value="Eau Thermale Avène" />
+            <input type="text" id="fieldBrand" value="Eau Thermale Avène" autocomplete="off" />
           </label>
 
           <div class="row">
@@ -95,13 +95,14 @@
 
           <label>
             Etiqueta (opcional)
-            <input type="text" id="fieldBadge" placeholder="Nuevo  o  -30%" />
+            <input type="text" id="fieldBadge" autocomplete="off" />
           </label>
 
-          <label>
-            Beneficios (uno por línea)
-            <textarea id="fieldBenefits" rows="5" placeholder="Ilumina el cutis&#10;Unifica el tono"></textarea>
-          </label>
+          <div class="benefits-field">
+            <span class="benefits-field__label">Beneficios</span>
+            <p class="muted benefits-field__hint">Cada línea es una viñeta. Pulsa Enter para agregar otra.</p>
+            <textarea id="fieldBenefits" rows="6" class="benefits-textarea" spellcheck="true"></textarea>
+          </div>
 
           <label>
             Foto del producto
