@@ -24,7 +24,7 @@
     "price": 38500,
     "priceOld": 55000,
     "badge": "-30%",
-    "imageUrl": "/api/media?path=assets%2Fproductos%2Fcicalfate-plus-crema.webp&v=709c1fc9bd34fc4f89e59af92e3ccb6831c211f8",
+    "imageUrl": "assets/productos/cicalfate-plus-crema.webp",
     "benefits": [
       "Repara piel irritada, dañada o sensibilizada",
       "Calma enrojecimiento e incomodidad",
@@ -58,7 +58,7 @@
     "price": 180000,
     "priceOld": 259000,
     "badge": "-30%",
-    "imageUrl": "assets/productos/serum-hyaluron-activ-b3.webp",
+    "imageUrl": "/api/media?path=assets%2Fproductos%2Fserum-hyaluron-activ-b3.webp&v=1785734350696",
     "benefits": [
       "Rellena y suaviza arrugas",
       "Efecto voluminizador e hidratación intensa",
