@@ -24,7 +24,7 @@
     "price": 38500,
     "priceOld": 55000,
     "badge": "-30%",
-    "imageUrl": "assets/productos/cicalfate-plus-crema.webp",
+    "imageUrl": "/api/media?path=assets%2Fproductos%2Fcicalfate-plus-crema.webp&v=1785734388888",
     "benefits": [
       "Repara piel irritada, dañada o sensibilizada",
       "Calma enrojecimiento e incomodidad",
@@ -38,10 +38,10 @@
     "name": "Sérum Iluminador Antiedad Vitamin Activ Cg 30ML",
     "brand": "Eau Thermale Avène",
     "category": "tratamiento",
-    "price": 191800,
-    "priceOld": 274000,
+    "price": 197000,
+    "priceOld": 279000,
     "badge": "-30%",
-    "imageUrl": "/api/media?path=assets%2Fproductos%2Fserum-vitamin-activ-cg.webp&v=709c1fc9bd34fc4f89e59af92e3ccb6831c211f8",
+    "imageUrl": "assets/productos/serum-vitamin-activ-cg.webp",
     "benefits": [
       "Ilumina el cutis y aporta glow visible",
       "Ayuda a unificar el tono y reducir manchas",
