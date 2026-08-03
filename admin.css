@@ -48,11 +48,9 @@ code {
   border-radius: 6px;
 }
 
-.admin {
-  width: min(1100px, calc(100% - 2rem));
-  margin: 0 auto;
-  padding: 1.75rem 0 3rem;
-}
+  #adminBanner {
+    margin-bottom: 1rem;
+  }
 
 .admin-top {
   display: flex;

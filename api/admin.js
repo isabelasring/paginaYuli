@@ -268,6 +268,88 @@ async function handleLogin(req, res, cfg, body) {
   });
 }
 
+async function fetchProductsFromGitHub({ owner, repo, branch, token }) {
+  const file = await github(
+    `/repos/${owner}/${repo}/contents/data/products.json?ref=${encodeURIComponent(branch)}`,
+    { token, owner, repo, branch }
+  );
+  const raw = Buffer.from(file.content, "base64").toString("utf8");
+  const list = JSON.parse(raw);
+  if (!Array.isArray(list)) throw new Error("data/products.json no es una lista válida");
+  return list;
+}
+
+async function handleDelete(req, res, cfg, body) {
+  if (!cfg.password || !cfg.token) {
+    return json(res, 503, {
+      error: "Configura ADMIN_PASSWORD y GITHUB_TOKEN en Vercel.",
+    });
+  }
+  if (!verifySessionToken(cfg, getBearer(req))) {
+    return json(res, 401, { error: "Sesión inválida o expirada. Vuelve a entrar." });
+  }
+
+  const productId = String(body.productId || "").trim();
+  if (!productId) {
+    return json(res, 400, { error: "Falta el id del producto a eliminar." });
+  }
+
+  let products;
+  try {
+    products = await fetchProductsFromGitHub(cfg);
+  } catch (e) {
+    console.error(e);
+    return json(res, e.status && e.status < 600 ? e.status : 500, {
+      error: e.message || "No se pudo leer el catálogo en GitHub",
+      repo: `${cfg.owner}/${cfg.repo}`,
+    });
+  }
+
+  const name =
+    products.find((p) => String(p.id) === productId)?.name || productId;
+  const next = products.filter((p) => String(p.id) !== productId);
+
+  if (next.length === products.length) {
+    return json(res, 404, {
+      error: `No se encontró el producto “${name}” en el catálogo. Recarga la página e intenta de nuevo.`,
+      products,
+    });
+  }
+
+  try {
+    const sha = await commitFiles({
+      owner: cfg.owner,
+      repo: cfg.repo,
+      branch: cfg.branch,
+      token: cfg.token,
+      message: `Admin: elimina producto "${name}"`,
+      files: [
+        {
+          path: "data/products.json",
+          content: Buffer.from(`${JSON.stringify(next, null, 2)}\n`, "utf8").toString("base64"),
+          encoding: "base64",
+        },
+      ],
+    });
+    return json(res, 200, {
+      ok: true,
+      commit: sha,
+      products: next,
+      deletedId: productId,
+      note: `“${name}” eliminado. En 1–2 min desaparece de la web pública.`,
+      repo: `${cfg.owner}/${cfg.repo}`,
+      branch: cfg.branch,
+    });
+  } catch (e) {
+    console.error(e);
+    return json(res, e.status && e.status < 600 ? e.status : 500, {
+      error: e.message || "No se pudo eliminar en GitHub",
+      repo: `${cfg.owner}/${cfg.repo}`,
+      branch: cfg.branch,
+    });
+  }
+}
+
 async function handleSave(req, res, cfg, body) {
   if (!cfg.password || !cfg.token) {
     return json(res, 503, {
@@ -375,5 +457,6 @@ module.exports = async function handler(req, res) {
   const action = body.action || (body.password && !body.products ? "login" : "save");
   if (action === "login") return handleLogin(req, res, cfg, body);
   if (action === "save") return handleSave(req, res, cfg, body);
-  return json(res, 400, { error: 'Usa action: "login" o "save"' });
+  if (action === "delete") return handleDelete(req, res, cfg, body);
+  return json(res, 400, { error: 'Usa action: "login", "save" o "delete"' });
 };

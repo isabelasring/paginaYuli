@@ -98,16 +98,30 @@
     listMeta.textContent = "Cargando…";
     productList.innerHTML = "";
     try {
-      const { products: list } = await ProductsCore.loadProducts();
-      products = list;
-      listMeta.textContent = `${list.length} producto(s) · desde el repositorio`;
-      if (!list.length) {
-        productList.innerHTML = `<p class="empty">No hay productos. Crea el primero.</p>`;
-        return;
-      }
-      productList.innerHTML = list
-        .map(
-          (p) => `
+      // evita caché de Vercel/CDN al administrar
+      const res = await fetch(`data/products.json?t=${Date.now()}`, { cache: "no-store" });
+      if (!res.ok) throw new Error("No se pudo cargar el catálogo");
+      const list = (await res.json()).map((p, i) =>
+        ProductsCore.normalizeProduct({ ...p, id: p.id || `p-${i}` }, p.id)
+      );
+      list.sort((a, b) => (a.order || 0) - (b.order || 0));
+      renderList(list, "desde el repositorio");
+    } catch (err) {
+      listMeta.textContent = "Error al cargar";
+      productList.innerHTML = `<p class="empty">${ProductsCore.escapeHtml(err.message)}</p>`;
+    }
+  }
+
+  function renderList(list, sourceNote = "actualizado") {
+    products = Array.isArray(list) ? list : [];
+    listMeta.textContent = `${products.length} producto(s) · ${sourceNote}`;
+    if (!products.length) {
+      productList.innerHTML = `<p class="empty">No hay productos. Crea el primero.</p>`;
+      return;
+    }
+    productList.innerHTML = products
+      .map(
+        (p) => `
         <div class="list-item${p.id === currentId ? " is-active" : ""}" data-id="${ProductsCore.escapeHtml(p.id)}">
           <button type="button" class="list-item__main" data-action="edit" data-id="${ProductsCore.escapeHtml(p.id)}">
             <img src="${ProductsCore.escapeHtml(p.imageUrl)}" alt="" />
@@ -117,15 +131,30 @@
             </span>
             <span class="list-item__price">${ProductsCore.escapeHtml(ProductsCore.formatPrice(p.price))}</span>
           </button>
-          <button type="button" class="btn btn--danger-sm" data-action="delete" data-id="${ProductsCore.escapeHtml(p.id)}" title="Eliminar producto">
+          <button type="button" class="btn btn--danger-sm" data-action="delete" data-id="${ProductsCore.escapeHtml(p.id)}" aria-label="Eliminar ${ProductsCore.escapeHtml(p.name)}">
             Eliminar
           </button>
         </div>`
-        )
-        .join("");
-    } catch (err) {
-      listMeta.textContent = "Error al cargar";
-      productList.innerHTML = `<p class="empty">${ProductsCore.escapeHtml(err.message)}</p>`;
+      )
+      .join("");
+  }
+
+  function showBanner(msg, isError = false) {
+    let el = document.getElementById("adminBanner");
+    if (!el) {
+      el = document.createElement("p");
+      el.id = "adminBanner";
+      el.setAttribute("role", "status");
+      const app = document.getElementById("appPanel");
+      app?.insertBefore(el, app.firstChild);
+    }
+    el.className = isError ? "form-error" : "form-ok";
+    el.hidden = false;
+    el.textContent = msg;
+    if (!isError) {
+      setTimeout(() => {
+        if (el.textContent === msg) el.hidden = true;
+      }, 6000);
     }
   }
 
@@ -346,10 +375,12 @@
 
   productList?.addEventListener("click", (e) => {
     const actionBtn = e.target.closest("[data-action]");
-    if (!actionBtn) return;
-    const id = actionBtn.dataset.id;
+    if (!actionBtn || !productList.contains(actionBtn)) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const id = actionBtn.getAttribute("data-id");
+    if (!id) return;
     if (actionBtn.dataset.action === "delete") {
-      e.preventDefault();
       deleteProduct(id);
       return;
     }
@@ -479,10 +510,13 @@
         body: { action: "save", products: next, newImages },
       });
 
-      products = result.products || next;
+      products = (result.products || next).map((p, i) =>
+        ProductsCore.normalizeProduct(p, p.id || `p-${i}`)
+      );
       showOk(result.note || "Guardado. En 1–2 minutos se ve en la web.");
+      showBanner(result.note || "Producto guardado.");
       closeForm();
-      await refreshList();
+      renderList(products, "guardado · se publica en 1–2 min");
     } catch (err) {
       showMsg(formError, err.message || String(err));
     } finally {
@@ -492,32 +526,54 @@
   });
 
   async function deleteProduct(id) {
-    if (!id) return;
-    const product = products.find((p) => p.id === id);
+    const productId = String(id || "").trim();
+    if (!productId) {
+      alert("No se pudo identificar el producto.");
+      return;
+    }
+    const product = products.find((p) => String(p.id) === productId);
     const label = product?.name ? `"${product.name}"` : "este producto";
     if (!confirm(`¿Eliminar ${label} del catálogo?\nSe quitará de la web en 1–2 minutos.`)) return;
 
+    const listBtns = productList.querySelectorAll('[data-action="delete"]');
+    listBtns.forEach((b) => {
+      b.disabled = true;
+    });
     if (btnDelete) btnDelete.disabled = true;
+    showBanner("Eliminando producto…");
+
     try {
-      const next = products.filter((p) => p.id !== id);
       const result = await api("/api/admin", {
         method: "POST",
         token: getToken(),
-        body: { action: "save", products: next, newImages: [] },
+        body: { action: "delete", productId },
       });
-      products = result.products || next;
-      if (currentId === id) closeForm();
-      await refreshList();
-      showOk("Producto eliminado. Se actualiza la web en 1–2 min.");
+
+      const next = (result.products || []).map((p, i) =>
+        ProductsCore.normalizeProduct(p, p.id || `p-${i}`)
+      );
+      if (currentId && String(currentId) === productId) closeForm();
+      renderList(next, "eliminado · se publica en 1–2 min");
+      showBanner(result.note || "Producto eliminado del catálogo.");
+      showOk(result.note || "Producto eliminado.");
     } catch (err) {
+      showBanner(err.message || "No se pudo eliminar", true);
       showMsg(formError, err.message || String(err));
       alert(err.message || "No se pudo eliminar");
+      await refreshList();
     } finally {
+      listBtns.forEach((b) => {
+        b.disabled = false;
+      });
       if (btnDelete) btnDelete.disabled = false;
     }
   }
 
-  btnDelete?.addEventListener("click", () => deleteProduct(currentId));
+  btnDelete?.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    deleteProduct(currentId);
+  });
 
   // boot
   bindBenefitsField();
