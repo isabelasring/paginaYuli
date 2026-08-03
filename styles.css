@@ -42,6 +42,9 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: calc(var(--header-h) + 12px);
   font-size: 110%;
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {
@@ -55,7 +58,12 @@ body {
     var(--cream);
   line-height: 1.7;
   -webkit-font-smoothing: antialiased;
+  position: relative;
+  width: 100%;
+  max-width: 100%;
   overflow-x: hidden;
+  overflow-x: clip;
+  overscroll-behavior-x: none;
 }
 
 img {
@@ -84,6 +92,12 @@ ul {
 .container {
   width: min(var(--container), calc(100% - 5.5rem));
   margin-inline: auto;
+  max-width: 100%;
+}
+
+main {
+  overflow-x: clip;
+  max-width: 100%;
 }
 
 /* Typography */
@@ -133,6 +147,8 @@ h3 {
 /* Page panels: solo se ve la sección del menú activo */
 .page-panel {
   display: none !important;
+  max-width: 100%;
+  overflow-x: clip;
 }
 
 .page-panel.is-active {
@@ -263,7 +279,8 @@ body:not([data-active-page="inicio"])
 
 .experience {
   position: relative;
-  overflow: visible;
+  overflow-x: clip;
+  overflow-y: visible;
   background:
     radial-gradient(ellipse 55% 45% at 12% 20%, rgba(240, 221, 212, 0.55), transparent 60%),
     radial-gradient(ellipse 50% 40% at 90% 80%, rgba(232, 213, 204, 0.4), transparent 55%),
@@ -1000,8 +1017,9 @@ body:not([data-active-page="inicio"])
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  /* visible: no recortar florituras de la tipografía script del título */
-  overflow: visible;
+  /* clip X: orbes/decorativos no empujan el scroll horizontal en iOS */
+  overflow-x: clip;
+  overflow-y: visible;
 }
 
 .hero__bg {
@@ -1140,6 +1158,7 @@ body:not([data-active-page="inicio"])
   justify-self: center;
   width: 100%;
   max-width: 520px;
+  overflow: clip;
 }
 
 .hero__orb {
@@ -1359,7 +1378,7 @@ body:not([data-active-page="inicio"])
 
 .trust-bar__grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
 }
 
@@ -1483,13 +1502,14 @@ body:not([data-active-page="inicio"])
   display: block;
   margin: 1.5rem 0 2rem;
   padding-inline: 0.25rem;
+  overflow-x: clip;
 }
 
 .services-carousel__viewport {
   position: relative;
   height: 900px;
   perspective: 1400px;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .services-carousel__track {
