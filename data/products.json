@@ -41,7 +41,7 @@
     "price": 197000,
     "priceOld": 279000,
     "badge": "-30%",
-    "imageUrl": "assets/productos/serum-vitamin-activ-cg.webp",
+    "imageUrl": "/api/media?path=assets%2Fproductos%2Fserum-vitamin-activ-cg.webp&v=1785734423908",
     "benefits": [
       "Ilumina el cutis y aporta glow visible",
       "Ayuda a unificar el tono y reducir manchas",
@@ -142,10 +142,10 @@
     "name": "Contorno de Ojos DermAbsolu",
     "brand": "Eau Thermale Avène",
     "category": "tratamiento",
-    "price": 179200,
-    "priceOld": 256000,
+    "price": 161000,
+    "priceOld": 230000,
     "badge": "-30%",
-    "imageUrl": "/api/media?path=assets%2Fproductos%2Fcontorno-ojos-dermabsolu.webp&v=709c1fc9bd34fc4f89e59af92e3ccb6831c211f8",
+    "imageUrl": "assets/productos/contorno-ojos-dermabsolu.webp",
     "benefits": [
       "Reafirma el contorno y párpados",
       "Ayuda a atenuar ojeras y bolsas",
