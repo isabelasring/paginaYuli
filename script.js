@@ -488,35 +488,57 @@ function initBeforeAfter() {
 
 function initTestimonials() {
   const track = document.getElementById("testimonialsTrack");
-  const dots = document.querySelectorAll("#testimonialDots .dot");
-  const cards = track?.querySelectorAll(".testimonial-card");
-  if (!track || !dots.length || !cards?.length) return;
+  const dots = Array.from(document.querySelectorAll("#testimonialDots .dot"));
+  const cards = track ? Array.from(track.querySelectorAll(".testimonial-card")) : [];
+  if (!track || !cards.length) return;
 
-  let index = 0;
+  let active = 0;
+  let scrollRaf = 0;
 
-  const show = (i) => {
-    index = i;
-    const isMobile = window.innerWidth <= 820;
-
-    if (isMobile) {
-      cards.forEach((card, idx) => {
-        card.style.display = idx === index ? "block" : "none";
-      });
-    } else {
-      cards.forEach((card) => {
-        card.style.display = "block";
-      });
-    }
-
+  const setActive = (i) => {
+    active = Math.max(0, Math.min(i, cards.length - 1));
     dots.forEach((dot, idx) => {
-      dot.classList.toggle("is-active", idx === index);
+      dot.classList.toggle("is-active", idx === active);
     });
   };
 
+  const scrollToCard = (i) => {
+    const card = cards[i];
+    if (!card) return;
+    setActive(i);
+    track.scrollTo({
+      left: card.offsetLeft - track.offsetLeft - 4,
+      behavior: "smooth",
+    });
+  };
+
+  const updateFromScroll = () => {
+    scrollRaf = 0;
+    const left = track.scrollLeft;
+    let best = 0;
+    let bestDist = Infinity;
+    cards.forEach((card, i) => {
+      const dist = Math.abs(card.offsetLeft - track.offsetLeft - left);
+      if (dist < bestDist) {
+        bestDist = dist;
+        best = i;
+      }
+    });
+    setActive(best);
+  };
+
+  track.addEventListener(
+    "scroll",
+    () => {
+      if (scrollRaf) return;
+      scrollRaf = requestAnimationFrame(updateFromScroll);
+    },
+    { passive: true }
+  );
+
   dots.forEach((dot, i) => {
-    dot.addEventListener("click", () => show(i));
+    dot.addEventListener("click", () => scrollToCard(i));
   });
 
-  window.addEventListener("resize", () => show(index));
-  show(0);
+  setActive(0);
 }

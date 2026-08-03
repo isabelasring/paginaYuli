@@ -1378,7 +1378,7 @@ body:not([data-active-page="inicio"])
 
 .trust-bar__grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
 }
 
@@ -2400,12 +2400,37 @@ body.lightbox-open {
 }
 
 .testimonials__track {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.35rem;
+  display: flex;
+  gap: 1.15rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 0.25rem;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  padding: 0.35rem 0.15rem 0.85rem;
+  margin-inline: -0.15rem;
+  /* scroll suave y barra sutil */
+  scrollbar-width: thin;
+  scrollbar-color: var(--sand) transparent;
+}
+
+.testimonials__track::-webkit-scrollbar {
+  height: 6px;
+}
+
+.testimonials__track::-webkit-scrollbar-thumb {
+  background: var(--sand);
+  border-radius: 999px;
+}
+
+.testimonials__track::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .testimonial-card {
+  flex: 0 0 min(340px, 82vw);
+  scroll-snap-align: start;
   background: linear-gradient(180deg, #ffffff 0%, #fff9f6 100%);
   border-radius: var(--radius-lg);
   padding: 1.75rem 1.5rem;
@@ -2414,8 +2439,14 @@ body.lightbox-open {
   transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
 }
 
+@media (min-width: 821px) {
+  .testimonial-card {
+    flex-basis: min(360px, 38%);
+  }
+}
+
 .testimonial-card:hover {
-  transform: translateY(-6px);
+  transform: translateY(-4px);
   box-shadow: var(--shadow);
 }
 
@@ -2456,7 +2487,7 @@ body.lightbox-open {
   display: flex;
   justify-content: center;
   gap: 0.5rem;
-  margin-top: 2rem;
+  margin-top: 1.25rem;
 }
 
 .dot {
@@ -3128,20 +3159,6 @@ body.lightbox-open {
 
   .product-card__inner {
     min-height: 520px;
-  }
-
-  .testimonials__track {
-    grid-template-columns: 1fr;
-    max-width: 420px;
-    margin-inline: auto;
-  }
-
-  .testimonials__track .testimonial-card:nth-child(n + 2) {
-    display: none;
-  }
-
-  .testimonials__track.show-all .testimonial-card {
-    display: block;
   }
 
 }
