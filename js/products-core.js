@@ -102,7 +102,7 @@
     return {
       id: id || raw.id || "",
       name: raw.name || "",
-      brand: raw.brand || "Eau Thermale Avène",
+      brand: raw.brand || "",
       category: raw.category || "tratamiento",
       price: parsePrice(raw.price),
       priceOld: parsePrice(raw.priceOld),

@@ -220,7 +220,7 @@
     formTitle.textContent = "Nuevo producto";
     productForm.reset();
     document.getElementById("productId").value = "";
-    document.getElementById("fieldBrand").value = "Eau Thermale Avène";
+    document.getElementById("fieldBrand").value = "";
     document.getElementById("fieldOrder").value = String((products[products.length - 1]?.order || 0) + 1);
     document.getElementById("fieldBenefits").value = "• ";
     btnDelete.hidden = true;
@@ -406,7 +406,7 @@
       const product = {
         id,
         name,
-        brand: document.getElementById("fieldBrand").value.trim() || "Eau Thermale Avène",
+        brand: document.getElementById("fieldBrand").value.trim(),
         category: document.getElementById("fieldCategory").value,
         order: Number(document.getElementById("fieldOrder").value) || products.length + 1,
         price,

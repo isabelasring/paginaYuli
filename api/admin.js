@@ -233,7 +233,7 @@ function normalizeList(list) {
     return {
       id,
       name: String(raw.name).trim(),
-      brand: String(raw.brand || "Eau Thermale Avène").trim(),
+      brand: String(raw.brand || "").trim(),
       category: String(raw.category || "tratamiento").trim(),
       price: Math.round(price * 100) / 100,
       priceOld: priceOld == null ? null : Math.round(priceOld * 100) / 100,
