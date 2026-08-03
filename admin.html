@@ -134,6 +134,31 @@
     </section>
   </div>
 
+  <div class="modal" id="confirmModal" hidden>
+    <button class="modal__backdrop" type="button" aria-label="Cerrar" data-modal-cancel></button>
+    <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="confirmModalTitle">
+      <p class="modal__eyebrow">Confirmar</p>
+      <h2 class="modal__title" id="confirmModalTitle">¿Eliminar este producto?</h2>
+      <p class="modal__text" id="confirmModalText">Se quitará del catálogo y de la web en unos segundos.</p>
+      <div class="modal__actions">
+        <button class="btn btn--ghost" type="button" data-modal-cancel>Cancelar</button>
+        <button class="btn btn--danger" type="button" id="confirmModalOk">Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal modal--alert" id="alertModal" hidden>
+    <button class="modal__backdrop" type="button" aria-label="Cerrar" data-alert-ok></button>
+    <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="alertModalTitle">
+      <p class="modal__eyebrow">Aviso</p>
+      <h2 class="modal__title" id="alertModalTitle">Mensaje</h2>
+      <p class="modal__text" id="alertModalText"></p>
+      <div class="modal__actions">
+        <button class="btn btn--primary" type="button" data-alert-ok>Entendido</button>
+      </div>
+    </div>
+  </div>
+
   <script src="js/products-core.js"></script>
   <script src="admin.js"></script>
 </body>

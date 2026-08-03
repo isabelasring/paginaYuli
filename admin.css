@@ -537,18 +537,106 @@ a {
   }
 }
 
-/* Móviles muy estrechos */
-@media (max-width: 380px) {
-  .admin-top__actions .btn {
-    min-width: 100%;
+/* Modal centrado (confirmar eliminar / avisos) */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: max(1.25rem, env(safe-area-inset-top)) max(1.25rem, env(safe-area-inset-right))
+    max(1.25rem, env(safe-area-inset-bottom)) max(1.25rem, env(safe-area-inset-left));
+}
+
+.modal[hidden] {
+  display: none !important;
+}
+
+.modal__backdrop {
+  position: absolute;
+  inset: 0;
+  border: none;
+  margin: 0;
+  padding: 0;
+  background: rgba(47, 41, 38, 0.45);
+  backdrop-filter: blur(4px);
+  cursor: pointer;
+}
+
+.modal__dialog {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 420px);
+  background: var(--white);
+  border-radius: 20px;
+  border: 1px solid rgba(176, 122, 104, 0.2);
+  box-shadow: 0 28px 60px rgba(47, 41, 38, 0.22);
+  padding: 1.6rem 1.5rem 1.4rem;
+  animation: modalIn 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  text-align: center;
+}
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.modal__eyebrow {
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 0.45rem;
+}
+
+.modal__title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.35rem, 3.5vw, 1.6rem);
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--ink);
+  margin-bottom: 0.65rem;
+}
+
+.modal__text {
+  color: var(--ink-soft);
+  font-size: 0.98rem;
+  line-height: 1.55;
+  margin-bottom: 1.4rem;
+}
+
+.modal__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  justify-content: center;
+}
+
+.modal__actions .btn {
+  min-width: 7.5rem;
+}
+
+.modal__actions .btn--danger {
+  margin-left: 0;
+  background: #c45c5c;
+}
+
+.modal__actions .btn--danger:hover {
+  background: #a34444;
+}
+
+@media (max-width: 420px) {
+  .modal__actions {
+    flex-direction: column-reverse;
   }
 
-  .list-item__main {
-    grid-template-columns: 48px minmax(0, 1fr);
-  }
-
-  .list-item img {
-    width: 48px;
-    height: 48px;
+  .modal__actions .btn {
+    width: 100%;
   }
 }

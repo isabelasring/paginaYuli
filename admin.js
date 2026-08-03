@@ -562,15 +562,85 @@
     }
   });
 
+  function showAlert(message, title = "Aviso") {
+    const modal = document.getElementById("alertModal");
+    const titleEl = document.getElementById("alertModalTitle");
+    const textEl = document.getElementById("alertModalText");
+    if (!modal || !textEl) {
+      window.alert(message);
+      return Promise.resolve();
+    }
+    if (titleEl) titleEl.textContent = title;
+    textEl.textContent = message;
+    modal.hidden = false;
+    document.body.style.overflow = "hidden";
+
+    return new Promise((resolve) => {
+      const finish = () => {
+        modal.hidden = true;
+        document.body.style.overflow = "";
+        resolve();
+      };
+      modal.querySelectorAll("[data-alert-ok]").forEach((el) => {
+        el.addEventListener("click", finish, { once: true });
+      });
+    });
+  }
+
+  function showConfirm({ title, text, confirmLabel = "Eliminar" } = {}) {
+    const modal = document.getElementById("confirmModal");
+    const titleEl = document.getElementById("confirmModalTitle");
+    const textEl = document.getElementById("confirmModalText");
+    const okBtn = document.getElementById("confirmModalOk");
+    if (!modal) {
+      return Promise.resolve(window.confirm(`${title || ""}\n${text || ""}`.trim()));
+    }
+    if (titleEl) titleEl.textContent = title || "¿Continuar?";
+    if (textEl) textEl.textContent = text || "";
+    if (okBtn) okBtn.textContent = confirmLabel;
+    modal.hidden = false;
+    document.body.style.overflow = "hidden";
+
+    return new Promise((resolve) => {
+      const cleanup = (result) => {
+        modal.hidden = true;
+        document.body.style.overflow = "";
+        okBtn?.removeEventListener("click", onOk);
+        modal.querySelectorAll("[data-modal-cancel]").forEach((el) => {
+          el.removeEventListener("click", onCancel);
+        });
+        document.removeEventListener("keydown", onKey);
+        resolve(result);
+      };
+      const onOk = () => cleanup(true);
+      const onCancel = () => cleanup(false);
+      const onKey = (e) => {
+        if (e.key === "Escape") cleanup(false);
+        if (e.key === "Enter") cleanup(true);
+      };
+      okBtn?.addEventListener("click", onOk);
+      modal.querySelectorAll("[data-modal-cancel]").forEach((el) => {
+        el.addEventListener("click", onCancel);
+      });
+      document.addEventListener("keydown", onKey);
+      okBtn?.focus();
+    });
+  }
+
   async function deleteProduct(id) {
     const productId = String(id || "").trim();
     if (!productId) {
-      alert("No se pudo identificar el producto.");
+      await showAlert("No se pudo identificar el producto.", "Error");
       return;
     }
     const product = products.find((p) => String(p.id) === productId);
-    const label = product?.name ? `"${product.name}"` : "este producto";
-    if (!confirm(`¿Eliminar ${label} del catálogo?\nSe quitará de la web en 1–2 minutos.`)) return;
+    const name = product?.name || "este producto";
+    const ok = await showConfirm({
+      title: `¿Eliminar “${name}”?`,
+      text: "Se quitará del catálogo y dejará de verse en la web en unos segundos.",
+      confirmLabel: "Sí, eliminar",
+    });
+    if (!ok) return;
 
     const listBtns = productList.querySelectorAll('[data-action="delete"]');
     listBtns.forEach((b) => {
@@ -586,9 +656,14 @@
         body: { action: "delete", productId },
       });
 
-      const next = (result.products || []).map((p, i) =>
-        ProductsCore.normalizeProduct(p, p.id || `p-${i}`)
-      );
+      const next = (result.products || []).map((p, i) => {
+        const n = ProductsCore.normalizeProduct(p, p.id || `p-${i}`);
+        n.imagePath = p.imageUrl || n.imageUrl;
+        n.imageUrl = ProductsCore.toLiveImageUrl
+          ? ProductsCore.toLiveImageUrl(n.imagePath || n.imageUrl)
+          : n.imageUrl;
+        return n;
+      });
       if (currentId && String(currentId) === productId) closeForm();
       renderList(next, "eliminado · en vivo");
       showBanner(result.note || "Producto eliminado. Ya no debe verse en la web (recarga Productos).");
@@ -596,7 +671,7 @@
     } catch (err) {
       showBanner(err.message || "No se pudo eliminar", true);
       showMsg(formError, err.message || String(err));
-      alert(err.message || "No se pudo eliminar");
+      await showAlert(err.message || "No se pudo eliminar", "Error al eliminar");
       await refreshList();
     } finally {
       listBtns.forEach((b) => {
