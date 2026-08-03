@@ -7,7 +7,7 @@
     "price": 160000,
     "priceOld": 256000,
     "badge": "Nuevo kit",
-    "imageUrl": "assets/productos/kit-dermabsolu-contorno-ojos.webp",
+    "imageUrl": "/api/media?path=assets%2Fproductos%2Fkit-dermabsolu-contorno-ojos.webp&v=1785734293859",
     "benefits": [
       "Reafirma y redensifica el contorno de ojos",
       "Suaviza arrugas y líneas de expresión",
@@ -54,16 +54,17 @@
     "id": "hyaluron-b3-serum",
     "name": "Sérum Concentrado Voluminizador Hyaluron Activ B3 30ML",
     "brand": "Eau Thermale Avène",
-    "category": "tratamiento",
-    "price": 188300,
-    "priceOld": 269000,
+    "category": "hidratacion",
+    "price": 180000,
+    "priceOld": 259000,
     "badge": "-30%",
-    "imageUrl": "/api/media?path=assets%2Fproductos%2Fserum-hyaluron-activ-b3.webp&v=709c1fc9bd34fc4f89e59af92e3ccb6831c211f8",
+    "imageUrl": "assets/productos/serum-hyaluron-activ-b3.webp",
     "benefits": [
       "Rellena y suaviza arrugas",
       "Efecto voluminizador e hidratación intensa",
       "Niacinamida para reforzar la barrera cutánea",
-      "Piel más firme, tersa y confortable"
+      "Piel más firme, tersa y confortable",
+      "Hialuronico para más hidratación"
     ],
     "order": 4
   },
