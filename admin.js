@@ -196,9 +196,11 @@
   }
 
   function bindListFilters() {
+    const wrap = document.querySelector(".admin-filters");
     const filters = document.querySelectorAll(".admin-filter");
     const search = document.getElementById("adminProductSearch");
-    if (filters.dataset?.bound === "1") return;
+    if (!wrap || wrap.dataset.bound === "1") return;
+    wrap.dataset.bound = "1";
 
     filters.forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -209,7 +211,6 @@
       });
     });
     search?.addEventListener("input", applyListFilter);
-    if (filters.length) filters.forEach((f) => (f.dataset.bound = "1"));
   }
 
   function showBanner(msg, isError = false) {
