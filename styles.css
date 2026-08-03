@@ -1158,7 +1158,11 @@ body:not([data-active-page="inicio"])
   justify-self: center;
   width: 100%;
   max-width: 520px;
-  overflow: clip;
+  /* visible: la bolita no se moche */
+  overflow: visible;
+  /* aire interno para que la bolita quepa entera */
+  padding: 0.35rem;
+  box-sizing: border-box;
 }
 
 .hero__orb {
@@ -1260,7 +1264,7 @@ body:not([data-active-page="inicio"])
 
 .hero__float-card {
   position: absolute;
-  left: -4%;
+  left: 6%;
   bottom: 12%;
   width: 148px;
   height: 148px;
@@ -1275,7 +1279,10 @@ body:not([data-active-page="inicio"])
   padding: 1rem;
   box-shadow: var(--shadow);
   animation: floatSoft 5.5s ease-in-out infinite;
-  z-index: 3;
+  z-index: 5;
+  /* nunca salirse del área visible del hero */
+  max-width: calc(100% - 1rem);
+  box-sizing: border-box;
 }
 
 .hero__float-card span {
@@ -1507,7 +1514,7 @@ body:not([data-active-page="inicio"])
 
 .services-carousel__viewport {
   position: relative;
-  height: 900px;
+  height: 980px;
   perspective: 1400px;
   overflow: hidden;
 }
@@ -1608,10 +1615,6 @@ body:not([data-active-page="inicio"])
   line-height: 1.45;
   color: var(--ink-soft);
   margin: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 5;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
 .service-card__price {
@@ -2897,6 +2900,15 @@ body.lightbox-open {
     max-width: 520px;
     margin-inline: auto;
     width: 100%;
+    overflow: visible;
+  }
+
+  .hero__float-card {
+    left: 8%;
+    bottom: 10%;
+    width: 132px;
+    height: 132px;
+    z-index: 5;
   }
 
   .hero {
@@ -2972,7 +2984,7 @@ body.lightbox-open {
   }
 
   .services-carousel__viewport {
-    height: 560px;
+    height: 740px;
   }
 
   .services-carousel__nav {
@@ -3040,7 +3052,6 @@ body.lightbox-open {
 
   .service-card__body p {
     font-size: 0.9rem;
-    -webkit-line-clamp: 3;
     margin-bottom: 0.5rem;
   }
 
@@ -3186,7 +3197,7 @@ body.lightbox-open {
   }
 
   .services-carousel__viewport {
-    height: 520px;
+    height: 680px;
   }
 
   .service-card {
@@ -3271,14 +3282,20 @@ body.lightbox-open {
   }
 
   .hero__float-card {
-    width: 118px;
-    height: 118px;
-    left: 4%;
-    bottom: 8%;
+    width: 112px;
+    height: 112px;
+    left: 10%;
+    bottom: 9%;
+    padding: 0.7rem;
+  }
+
+  .hero__float-card span {
+    font-size: 0.55rem;
+    letter-spacing: 0.08em;
   }
 
   .hero__float-card strong {
-    font-size: 1.35rem;
+    font-size: 1.2rem;
   }
 
   .hero__mini {
