@@ -98,14 +98,10 @@
     listMeta.textContent = "Cargando…";
     productList.innerHTML = "";
     try {
-      // evita caché de Vercel/CDN al administrar
-      const res = await fetch(`data/products.json?t=${Date.now()}`, { cache: "no-store" });
-      if (!res.ok) throw new Error("No se pudo cargar el catálogo");
-      const list = (await res.json()).map((p, i) =>
-        ProductsCore.normalizeProduct({ ...p, id: p.id || `p-${i}` }, p.id)
-      );
-      list.sort((a, b) => (a.order || 0) - (b.order || 0));
-      renderList(list, "desde el repositorio");
+      const { products: list, source } = await ProductsCore.loadProducts();
+      const note =
+        source === "live" ? "en vivo (sin esperar redeploy)" : "archivo local";
+      renderList(list, note);
     } catch (err) {
       listMeta.textContent = "Error al cargar";
       productList.innerHTML = `<p class="empty">${ProductsCore.escapeHtml(err.message)}</p>`;
@@ -113,7 +109,12 @@
   }
 
   function renderList(list, sourceNote = "actualizado") {
-    products = Array.isArray(list) ? list : [];
+    products = (Array.isArray(list) ? list : []).map((p) => ({
+      ...p,
+      imageUrl: ProductsCore.toLiveImageUrl
+        ? ProductsCore.toLiveImageUrl(p.imagePath || p.imageUrl)
+        : p.imageUrl,
+    }));
     listMeta.textContent = `${products.length} producto(s) · ${sourceNote}`;
     if (!products.length) {
       productList.innerHTML = `<p class="empty">No hay productos. Crea el primero.</p>`;
@@ -259,11 +260,26 @@
     productForm.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
+  function toRepoImagePath(url) {
+    if (!url) return "";
+    const s = String(url);
+    if (s.includes("/api/media")) {
+      try {
+        const u = new URL(s, window.location.origin);
+        return u.searchParams.get("path") || "";
+      } catch {
+        return "";
+      }
+    }
+    if (/^https?:\/\//i.test(s)) return s;
+    return s.replace(/^\.?\/+/, "");
+  }
+
   function openEdit(id) {
     const p = products.find((x) => x.id === id);
     if (!p) return;
     currentId = id;
-    existingImageUrl = p.imageUrl || "";
+    existingImageUrl = toRepoImagePath(p.imagePath || p.imageUrl) || "";
     pendingImage = null;
     productForm.hidden = false;
     formTitle.textContent = "Editar producto";
@@ -510,13 +526,16 @@
         body: { action: "save", products: next, newImages },
       });
 
-      products = (result.products || next).map((p, i) =>
-        ProductsCore.normalizeProduct(p, p.id || `p-${i}`)
-      );
-      showOk(result.note || "Guardado. En 1–2 minutos se ve en la web.");
-      showBanner(result.note || "Producto guardado.");
+      products = (result.products || next).map((p, i) => {
+        const n = ProductsCore.normalizeProduct(p, p.id || `p-${i}`);
+        n.imagePath = p.imageUrl || n.imageUrl;
+        n.imageUrl = ProductsCore.toLiveImageUrl(n.imagePath || n.imageUrl);
+        return n;
+      });
+      showOk(result.note || "Guardado. Ya se ve en la web (recarga Productos).");
+      showBanner(result.note || "Producto guardado · visible de inmediato en la web.");
       closeForm();
-      renderList(products, "guardado · se publica en 1–2 min");
+      renderList(products, "guardado · en vivo");
     } catch (err) {
       showMsg(formError, err.message || String(err));
     } finally {
@@ -553,8 +572,8 @@
         ProductsCore.normalizeProduct(p, p.id || `p-${i}`)
       );
       if (currentId && String(currentId) === productId) closeForm();
-      renderList(next, "eliminado · se publica en 1–2 min");
-      showBanner(result.note || "Producto eliminado del catálogo.");
+      renderList(next, "eliminado · en vivo");
+      showBanner(result.note || "Producto eliminado. Ya no debe verse en la web (recarga Productos).");
       showOk(result.note || "Producto eliminado.");
     } catch (err) {
       showBanner(err.message || "No se pudo eliminar", true);

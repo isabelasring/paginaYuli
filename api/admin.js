@@ -336,7 +336,7 @@ async function handleDelete(req, res, cfg, body) {
       commit: sha,
       products: next,
       deletedId: productId,
-      note: `“${name}” eliminado. En 1–2 min desaparece de la web pública.`,
+      note: `“${name}” eliminado. La web se actualiza en unos segundos (recarga Productos).`,
       repo: `${cfg.owner}/${cfg.repo}`,
       branch: cfg.branch,
     });
@@ -412,7 +412,7 @@ async function handleSave(req, res, cfg, body) {
       ok: true,
       commit: sha,
       products,
-      note: "Guardado en GitHub. En 1–2 min se ve en la web.",
+      note: "Guardado. El catálogo se actualiza en la web en unos segundos (recarga la sección Productos).",
       repo: `${cfg.owner}/${cfg.repo}`,
       branch: cfg.branch,
     });

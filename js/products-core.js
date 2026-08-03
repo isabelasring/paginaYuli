@@ -114,14 +114,38 @@
   }
 
   async function loadProducts() {
-    const res = await fetch("data/products.json", { cache: "no-store" });
+    // 1) Catálogo en vivo (GitHub vía API) — cambios se ven en segundos
+    try {
+      const live = await fetch(`/api/catalog?t=${Date.now()}`, { cache: "no-store" });
+      if (live.ok) {
+        const data = await live.json();
+        const products = (Array.isArray(data.products) ? data.products : []).map((p, i) =>
+          normalizeProduct({ ...p, id: p.id || `p-${i}` }, p.id)
+        );
+        products.sort((a, b) => (a.order || 0) - (b.order || 0));
+        return { products, source: "live", version: data.version };
+      }
+    } catch (e) {
+      console.warn("Catálogo en vivo no disponible, usando archivo local", e);
+    }
+
+    // 2) Fallback local / sin API (dev con only serve)
+    const res = await fetch(`data/products.json?t=${Date.now()}`, { cache: "no-store" });
     if (!res.ok) throw new Error("No se pudo cargar el catálogo");
     const list = await res.json();
     const products = (Array.isArray(list) ? list : []).map((p, i) =>
       normalizeProduct({ ...p, id: p.id || `p-${i}` })
     );
     products.sort((a, b) => (a.order || 0) - (b.order || 0));
-    return { products, source: "repo" };
+    return { products, source: "file" };
+  }
+
+  /** Para el admin: ver fotos subidas de inmediato aunque no haya redeploy. */
+  function toLiveImageUrl(imageUrl) {
+    if (!imageUrl) return "";
+    if (/^https?:\/\//i.test(imageUrl) || imageUrl.startsWith("/api/")) return imageUrl;
+    const path = String(imageUrl).replace(/^\.?\/+/, "");
+    return `/api/media?path=${encodeURIComponent(path)}&v=${Date.now()}`;
   }
 
   function badgeClass(badge) {
@@ -200,5 +224,6 @@
     mountPublicCatalog,
     productCardHtml,
     normalizeProduct,
+    toLiveImageUrl,
   };
 })();
