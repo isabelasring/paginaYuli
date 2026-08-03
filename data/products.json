@@ -7,7 +7,7 @@
     "price": 256000,
     "priceOld": null,
     "badge": "Nuevo",
-    "imageUrl": "assets/productos/kit-dermabsolu-contorno-ojos.webp",
+    "imageUrl": "/api/media?path=assets%2Fproductos%2Fkit-dermabsolu-contorno-ojos.webp&v=709c1fc9bd34fc4f89e59af92e3ccb6831c211f8",
     "benefits": [
       "Reafirma y redensifica el contorno de ojos",
       "Suaviza arrugas y líneas de expresión",
@@ -24,7 +24,7 @@
     "price": 38500,
     "priceOld": 55000,
     "badge": "-30%",
-    "imageUrl": "assets/productos/cicalfate-plus-crema.webp",
+    "imageUrl": "/api/media?path=assets%2Fproductos%2Fcicalfate-plus-crema.webp&v=709c1fc9bd34fc4f89e59af92e3ccb6831c211f8",
     "benefits": [
       "Repara piel irritada, dañada o sensibilizada",
       "Calma enrojecimiento e incomodidad",
@@ -41,7 +41,7 @@
     "price": 191800,
     "priceOld": 274000,
     "badge": "-30%",
-    "imageUrl": "assets/productos/serum-vitamin-activ-cg.webp",
+    "imageUrl": "/api/media?path=assets%2Fproductos%2Fserum-vitamin-activ-cg.webp&v=709c1fc9bd34fc4f89e59af92e3ccb6831c211f8",
     "benefits": [
       "Ilumina el cutis y aporta glow visible",
       "Ayuda a unificar el tono y reducir manchas",
@@ -58,7 +58,7 @@
     "price": 188300,
     "priceOld": 269000,
     "badge": "-30%",
-    "imageUrl": "assets/productos/serum-hyaluron-activ-b3.webp",
+    "imageUrl": "/api/media?path=assets%2Fproductos%2Fserum-hyaluron-activ-b3.webp&v=709c1fc9bd34fc4f89e59af92e3ccb6831c211f8",
     "benefits": [
       "Rellena y suaviza arrugas",
       "Efecto voluminizador e hidratación intensa",
@@ -75,7 +75,7 @@
     "price": 107100,
     "priceOld": 153000,
     "badge": "-30%",
-    "imageUrl": "assets/productos/cleanance-aqua-gel.webp",
+    "imageUrl": "/api/media?path=assets%2Fproductos%2Fcleanance-aqua-gel.webp&v=709c1fc9bd34fc4f89e59af92e3ccb6831c211f8",
     "benefits": [
       "Controla el brillo y el exceso de sebo",
       "Acabado matificante y fresca sensación",
@@ -92,7 +92,7 @@
     "price": 196000,
     "priceOld": 280000,
     "badge": "-30%",
-    "imageUrl": "assets/productos/crema-noche-hyaluron-activ-b3.webp",
+    "imageUrl": "/api/media?path=assets%2Fproductos%2Fcrema-noche-hyaluron-activ-b3.webp&v=709c1fc9bd34fc4f89e59af92e3ccb6831c211f8",
     "benefits": [
       "Regeneración intensiva durante la noche",
       "Reduce signos de fatiga y arrugas",
@@ -109,7 +109,7 @@
     "price": 59500,
     "priceOld": 85000,
     "badge": "-30%",
-    "imageUrl": "assets/productos/agua-termal-150ml.webp",
+    "imageUrl": "/api/media?path=assets%2Fproductos%2Fagua-termal-150ml.webp&v=709c1fc9bd34fc4f89e59af92e3ccb6831c211f8",
     "benefits": [
       "Calma y suaviza piel sensible",
       "Reduce sensación de irritación",
@@ -126,7 +126,7 @@
     "price": 186200,
     "priceOld": 266000,
     "badge": "-30%",
-    "imageUrl": "assets/productos/crema-dia-hyaluron-activ-b3.webp",
+    "imageUrl": "/api/media?path=assets%2Fproductos%2Fcrema-dia-hyaluron-activ-b3.webp&v=709c1fc9bd34fc4f89e59af92e3ccb6831c211f8",
     "benefits": [
       "Hidratación duradera durante el día",
       "Acción antiarrugas visible",
@@ -143,7 +143,7 @@
     "price": 179200,
     "priceOld": 256000,
     "badge": "-30%",
-    "imageUrl": "assets/productos/contorno-ojos-dermabsolu.webp",
+    "imageUrl": "/api/media?path=assets%2Fproductos%2Fcontorno-ojos-dermabsolu.webp&v=709c1fc9bd34fc4f89e59af92e3ccb6831c211f8",
     "benefits": [
       "Reafirma el contorno y párpados",
       "Ayuda a atenuar ojeras y bolsas",
@@ -160,7 +160,7 @@
     "price": 137900,
     "priceOld": 197000,
     "badge": "-30%",
-    "imageUrl": "assets/productos/protector-solar-spf50.webp",
+    "imageUrl": "/api/media?path=assets%2Fproductos%2Fprotector-solar-spf50.webp&v=709c1fc9bd34fc4f89e59af92e3ccb6831c211f8",
     "benefits": [
       "Alta protección SPF 50+ frente a UV",
       "Formato spray de aplicación rápida",
@@ -177,7 +177,7 @@
     "price": 264000,
     "priceOld": null,
     "badge": "Nuevo",
-    "imageUrl": "assets/productos/retrinal-crema-01.webp",
+    "imageUrl": "/api/media?path=assets%2Fproductos%2Fretrinal-crema-01.webp&v=709c1fc9bd34fc4f89e59af92e3ccb6831c211f8",
     "benefits": [
       "Renueva la piel con retinaldehído",
       "Mejora arrugas, textura y firmeza",
@@ -185,5 +185,21 @@
       "Buena tolerancia para rutinas antiedad"
     ],
     "order": 11
+  },
+  {
+    "id": "prueba-mschwxdu",
+    "name": "prueba",
+    "brand": "marca",
+    "category": "limpieza",
+    "price": 10000,
+    "priceOld": 15000,
+    "badge": "kaflkjsdf",
+    "imageUrl": "assets/productos/prueba-mschwxdu-1785717200118.png",
+    "benefits": [
+      "skddjklf",
+      "fjglfjgld",
+      "ksflksjd"
+    ],
+    "order": 12
   }
 ]
