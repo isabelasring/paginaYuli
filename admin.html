@@ -19,6 +19,7 @@
         <h1>Editar la web</h1>
       </div>
       <div class="admin-top__actions">
+        <button class="btn btn--ghost" type="button" id="btnProducts" hidden>Productos</button>
         <a class="btn btn--ghost" href="index.html" target="_blank" rel="noopener">Ver web pública</a>
         <button class="btn btn--ghost" type="button" id="btnLogout" hidden>Cerrar sesión</button>
       </div>
@@ -38,19 +39,6 @@
     </section>
 
     <section class="panel panel--app panel--live" id="appPanel" hidden>
-      <p class="muted live-hint" id="sessionLabel">
-        Así se ve tu página · toca el <strong>lápiz</strong> junto a un texto o foto para cambiarlo · Productos se editan en su pestaña
-      </p>
-
-      <nav class="editor-tabs" id="editorTabs" aria-label="Secciones">
-        <button type="button" class="editor-tab is-active" data-tab="inicio" data-hash="inicio">Inicio</button>
-        <button type="button" class="editor-tab" data-tab="servicios" data-hash="servicios">Servicios</button>
-        <button type="button" class="editor-tab" data-tab="productos" data-hash="productos">Productos</button>
-        <button type="button" class="editor-tab" data-tab="sobre-mi" data-hash="sobre-mi">Sobre mí</button>
-        <button type="button" class="editor-tab" data-tab="resultados" data-hash="testimonios">Antes/después</button>
-        <button type="button" class="editor-tab" data-tab="testimonios" data-hash="testimonios">Testimonios</button>
-      </nav>
-
       <div class="live-frame-wrap" id="liveFrameWrap">
         <iframe
           id="siteFrame"

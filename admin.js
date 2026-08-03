@@ -6,6 +6,7 @@
   const loginForm = document.getElementById("loginForm");
   const loginError = document.getElementById("loginError");
   const btnLogout = document.getElementById("btnLogout");
+  const btnProducts = document.getElementById("btnProducts");
   const productList = document.getElementById("productList");
   const listMeta = document.getElementById("listMeta");
   const productForm = document.getElementById("productForm");
@@ -68,50 +69,32 @@
     loginPanel.hidden = loggedIn;
     appPanel.hidden = !loggedIn;
     btnLogout.hidden = !loggedIn;
+    if (btnProducts) btnProducts.hidden = !loggedIn;
     if (loggedIn) {
       showEditor(false);
       refreshList();
-      setupLiveTabs();
-      // Recargar iframe para que lea el token (localStorage) y muestre lapicitos
+      showProducts(false);
       const frame = document.getElementById("siteFrame");
       if (frame) {
         frame.src = `index.html?edit=1&t=${Date.now()}#inicio`;
       }
-      showLiveTab("inicio");
     } else {
       showEditor(false);
       productForm.hidden = true;
       pendingImage = null;
+      showProducts(false);
     }
   }
 
-  let liveTabsWired = false;
-  function setupLiveTabs() {
-    if (liveTabsWired) return;
-    liveTabsWired = true;
-    document.querySelectorAll("#editorTabs .editor-tab").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const tab = btn.dataset.tab || "inicio";
-        document.querySelectorAll("#editorTabs .editor-tab").forEach((b) => {
-          b.classList.toggle("is-active", b === btn);
-        });
-        showLiveTab(tab, btn.dataset.hash || tab);
-      });
-    });
-  }
-
-  function showLiveTab(tab, hash) {
+  function showProducts(open) {
     const frameWrap = document.getElementById("liveFrameWrap");
     const productsPanel = document.getElementById("productsPanel");
-    const frame = document.getElementById("siteFrame");
-    const isProducts = tab === "productos";
-
     if (frameWrap) {
-      frameWrap.hidden = isProducts;
-      frameWrap.style.display = isProducts ? "none" : "block";
+      frameWrap.hidden = open;
+      frameWrap.style.display = open ? "none" : "block";
     }
     if (productsPanel) {
-      if (isProducts) {
+      if (open) {
         productsPanel.removeAttribute("hidden");
         productsPanel.style.display = "";
       } else {
@@ -119,33 +102,7 @@
         productsPanel.style.display = "none";
       }
     }
-
-    if (!isProducts && frame) {
-      const targetHash = hash || tab;
-      // resultados shares testimonios page but we can still hash to resultados / testimonios
-      const pageHash =
-        tab === "resultados" ? "testimonios" : targetHash === "resultados" ? "testimonios" : targetHash;
-      const next = `index.html?edit=1#${pageHash}`;
-      if (!frame.src.includes("edit=1") || !frame.src.includes(`#${pageHash}`)) {
-        frame.src = next;
-      } else {
-        try {
-          frame.contentWindow.location.hash = pageHash;
-        } catch {
-          frame.src = next;
-        }
-      }
-      // scroll iframe to section when resultados vs testimonios
-      if (tab === "resultados") {
-        setTimeout(() => {
-          try {
-            frame.contentWindow.location.hash = "resultados";
-          } catch {
-            /* ignore */
-          }
-        }, 600);
-      }
-    }
+    if (btnProducts) btnProducts.textContent = open ? "Volver a la web" : "Productos";
   }
 
   async function api(path, { method = "GET", body, token } = {}) {
@@ -537,6 +494,12 @@
   btnLogout?.addEventListener("click", () => {
     setToken("");
     setAuthUI(false);
+  });
+
+  btnProducts?.addEventListener("click", () => {
+    const productsPanel = document.getElementById("productsPanel");
+    const open = productsPanel?.hasAttribute("hidden") ?? true;
+    showProducts(open);
   });
 
   btnNew?.addEventListener("click", openNew);
