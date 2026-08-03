@@ -67,7 +67,23 @@
       showEditor(false);
       refreshList();
       if (window.AdminPageEditor?.init) {
-        window.AdminPageEditor.init().catch((e) => console.warn("Editor:", e));
+        window.AdminPageEditor.init().catch((e) => {
+          console.warn("Editor:", e);
+          const root = document.getElementById("pageEditorRoot");
+          if (root) {
+            root.removeAttribute("hidden");
+            root.style.display = "grid";
+            root.innerHTML = `<div class="editor-block"><p class="form-error">No se pudo cargar el editor: ${
+              e.message || e
+            }</p></div>`;
+          }
+        });
+      } else {
+        const root = document.getElementById("pageEditorRoot");
+        if (root) {
+          root.innerHTML =
+            `<div class="editor-block"><p class="form-error">Falta editor.js. Recarga con Ctrl+F5.</p></div>`;
+        }
       }
     } else {
       showEditor(false);

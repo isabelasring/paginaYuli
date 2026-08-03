@@ -753,6 +753,17 @@ a {
   color: #fff;
 }
 
+#pageEditorRoot {
+  display: grid;
+  gap: 1rem;
+  min-height: 12rem;
+}
+
+#pageEditorRoot[hidden],
+#productsPanel[hidden] {
+  display: none !important;
+}
+
 .editor-root {
   display: grid;
   gap: 1rem;

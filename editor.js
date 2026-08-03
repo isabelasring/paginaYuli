@@ -47,16 +47,34 @@
   }
 
   async function loadAll() {
+    if (!window.SiteCMS?.loadFile) {
+      throw new Error("No se cargó js/cms.js. Recarga con Ctrl+F5.");
+    }
     const [s, svc, t, r] = await Promise.all([
-      SiteCMS.loadFile("site"),
-      SiteCMS.loadFile("services"),
-      SiteCMS.loadFile("testimonials"),
-      SiteCMS.loadFile("results"),
+      SiteCMS.loadFile("site").catch((e) => {
+        console.warn(e);
+        return null;
+      }),
+      SiteCMS.loadFile("services").catch((e) => {
+        console.warn(e);
+        return null;
+      }),
+      SiteCMS.loadFile("testimonials").catch((e) => {
+        console.warn(e);
+        return null;
+      }),
+      SiteCMS.loadFile("results").catch((e) => {
+        console.warn(e);
+        return null;
+      }),
     ]);
-    site = s.data;
-    services = svc.data;
-    testimonials = t.data;
-    results = r.data;
+    site = s?.data || site || { hero: {}, experiencia: { steps: [] }, about: {}, productsSection: {} };
+    services = svc?.data || services || { section: {}, items: [] };
+    testimonials = t?.data || testimonials || { section: {}, items: [] };
+    results = r?.data || results || { section: {}, items: [] };
+    if (!s?.data && !svc?.data) {
+      throw new Error("No se pudo cargar el contenido. Revisa /api/content o data/*.json");
+    }
   }
 
   function stripLive(url) {
@@ -114,12 +132,23 @@
     </div>`;
   }
 
+  function escAttr(str) {
+    return String(str ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/"/g, "&quot;")
+      .replace(/</g, "&lt;");
+  }
+
   function imgRow(label, src, action, meta) {
     const url = src || "";
     return `<div class="editor-row">
       <div>
         <div class="editor-row__label">${label}</div>
-        ${url ? `<img class="editor-thumb" src="${url}" alt="" />` : `<div class="editor-row__value">Sin foto</div>`}
+        ${
+          url
+            ? `<img class="editor-thumb" src="${escAttr(url)}" alt="" />`
+            : `<div class="editor-row__value">Sin foto</div>`
+        }
       </div>
       ${pencilBtn(action, meta)}
     </div>`;
@@ -761,14 +790,42 @@
     const pageRoot = $("#pageEditorRoot");
     const productsPanel = $("#productsPanel");
     const isProducts = tab === "productos";
-    if (pageRoot) pageRoot.hidden = isProducts;
-    if (productsPanel) productsPanel.hidden = !isProducts;
-    if (!isProducts) render();
+    if (pageRoot) {
+      pageRoot.hidden = false;
+      if (isProducts) pageRoot.setAttribute("hidden", "");
+      else pageRoot.removeAttribute("hidden");
+      pageRoot.style.display = isProducts ? "none" : "grid";
+    }
+    if (productsPanel) {
+      if (isProducts) {
+        productsPanel.removeAttribute("hidden");
+        productsPanel.style.display = "";
+      } else {
+        productsPanel.setAttribute("hidden", "");
+        productsPanel.style.display = "none";
+      }
+    }
+    if (!isProducts) {
+      try {
+        render();
+      } catch (e) {
+        console.error(e);
+        if (pageRoot) {
+          pageRoot.innerHTML = `<div class="editor-block"><p class="form-error">Error al mostrar esta sección: ${
+            e.message || e
+          }</p></div>`;
+        }
+      }
+    }
   }
 
   function render() {
     const root = $("#pageEditorRoot");
-    if (!root || root.hidden) return;
+    if (!root) return;
+    if (!site) site = { hero: {}, experiencia: { steps: [] }, about: {}, productsSection: {} };
+    if (!services) services = { section: {}, items: [] };
+    if (!testimonials) testimonials = { section: {}, items: [] };
+    if (!results) results = { section: {}, items: [] };
     const map = {
       inicio: renderInicio,
       servicios: renderServicios,
@@ -777,7 +834,8 @@
       resultados: renderResultados,
       testimonios: renderTestimonios,
     };
-    root.innerHTML = (map[tab] || renderInicio)();
+    const html = (map[tab] || renderInicio)();
+    root.innerHTML = html || `<div class="editor-block"><p class="muted">Nada para mostrar en esta pestaña.</p></div>`;
   }
 
   function wireOnce() {
@@ -811,10 +869,22 @@
     wireOnce();
     const root = $("#pageEditorRoot");
     if (root) {
-      root.hidden = false;
-      root.innerHTML = `<p class="muted">Cargando contenido…</p>`;
+      root.removeAttribute("hidden");
+      root.style.display = "grid";
+      root.innerHTML = `<div class="editor-block"><p class="muted">Cargando contenido…</p></div>`;
     }
-    await loadAll();
+    try {
+      await loadAll();
+    } catch (e) {
+      console.error(e);
+      if (root) {
+        root.innerHTML = `<div class="editor-block"><p class="form-error">${
+          e.message || "No se pudo cargar"
+        }</p><button class="btn btn--primary" type="button" id="retryEditorLoad">Reintentar</button></div>`;
+        $("#retryEditorLoad")?.addEventListener("click", () => init());
+      }
+      throw e;
+    }
     tab = "inicio";
     $$("#editorTabs .editor-tab").forEach((b) => {
       b.classList.toggle("is-active", b.dataset.tab === "inicio");
