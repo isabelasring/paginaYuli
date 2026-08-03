@@ -35,12 +35,17 @@
   }
 
   function getToken() {
-    return sessionStorage.getItem(TOKEN_KEY) || "";
+    return localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY) || "";
   }
 
   function setToken(t) {
-    if (t) sessionStorage.setItem(TOKEN_KEY, t);
-    else sessionStorage.removeItem(TOKEN_KEY);
+    if (t) {
+      localStorage.setItem(TOKEN_KEY, t);
+      sessionStorage.setItem(TOKEN_KEY, t);
+    } else {
+      localStorage.removeItem(TOKEN_KEY);
+      sessionStorage.removeItem(TOKEN_KEY);
+    }
   }
 
   function showMsg(el, msg) {
@@ -66,29 +71,80 @@
     if (loggedIn) {
       showEditor(false);
       refreshList();
-      if (window.AdminPageEditor?.init) {
-        window.AdminPageEditor.init().catch((e) => {
-          console.warn("Editor:", e);
-          const root = document.getElementById("pageEditorRoot");
-          if (root) {
-            root.removeAttribute("hidden");
-            root.style.display = "grid";
-            root.innerHTML = `<div class="editor-block"><p class="form-error">No se pudo cargar el editor: ${
-              e.message || e
-            }</p></div>`;
-          }
-        });
-      } else {
-        const root = document.getElementById("pageEditorRoot");
-        if (root) {
-          root.innerHTML =
-            `<div class="editor-block"><p class="form-error">Falta editor.js. Recarga con Ctrl+F5.</p></div>`;
-        }
+      setupLiveTabs();
+      // Recargar iframe para que lea el token (localStorage) y muestre lapicitos
+      const frame = document.getElementById("siteFrame");
+      if (frame) {
+        frame.src = `index.html?edit=1&t=${Date.now()}#inicio`;
       }
+      showLiveTab("inicio");
     } else {
       showEditor(false);
       productForm.hidden = true;
       pendingImage = null;
+    }
+  }
+
+  let liveTabsWired = false;
+  function setupLiveTabs() {
+    if (liveTabsWired) return;
+    liveTabsWired = true;
+    document.querySelectorAll("#editorTabs .editor-tab").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const tab = btn.dataset.tab || "inicio";
+        document.querySelectorAll("#editorTabs .editor-tab").forEach((b) => {
+          b.classList.toggle("is-active", b === btn);
+        });
+        showLiveTab(tab, btn.dataset.hash || tab);
+      });
+    });
+  }
+
+  function showLiveTab(tab, hash) {
+    const frameWrap = document.getElementById("liveFrameWrap");
+    const productsPanel = document.getElementById("productsPanel");
+    const frame = document.getElementById("siteFrame");
+    const isProducts = tab === "productos";
+
+    if (frameWrap) {
+      frameWrap.hidden = isProducts;
+      frameWrap.style.display = isProducts ? "none" : "block";
+    }
+    if (productsPanel) {
+      if (isProducts) {
+        productsPanel.removeAttribute("hidden");
+        productsPanel.style.display = "";
+      } else {
+        productsPanel.setAttribute("hidden", "");
+        productsPanel.style.display = "none";
+      }
+    }
+
+    if (!isProducts && frame) {
+      const targetHash = hash || tab;
+      // resultados shares testimonios page but we can still hash to resultados / testimonios
+      const pageHash =
+        tab === "resultados" ? "testimonios" : targetHash === "resultados" ? "testimonios" : targetHash;
+      const next = `index.html?edit=1#${pageHash}`;
+      if (!frame.src.includes("edit=1") || !frame.src.includes(`#${pageHash}`)) {
+        frame.src = next;
+      } else {
+        try {
+          frame.contentWindow.location.hash = pageHash;
+        } catch {
+          frame.src = next;
+        }
+      }
+      // scroll iframe to section when resultados vs testimonios
+      if (tab === "resultados") {
+        setTimeout(() => {
+          try {
+            frame.contentWindow.location.hash = "resultados";
+          } catch {
+            /* ignore */
+          }
+        }, 600);
+      }
     }
   }
 

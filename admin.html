@@ -11,22 +11,22 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="admin.css" />
 </head>
-<body>
-  <div class="admin">
-    <header class="admin-top">
+<body class="admin-body--live">
+  <div class="admin admin--live">
+    <header class="admin-top admin-top--live">
       <div>
         <p class="admin-top__eyebrow">Yuly Sánchez Skin Beauty</p>
-        <h1>Panel de edición</h1>
+        <h1>Editar la web</h1>
       </div>
       <div class="admin-top__actions">
-        <a class="btn btn--ghost" href="index.html" target="_blank" rel="noopener">Ver web</a>
+        <a class="btn btn--ghost" href="index.html" target="_blank" rel="noopener">Ver web pública</a>
         <button class="btn btn--ghost" type="button" id="btnLogout" hidden>Cerrar sesión</button>
       </div>
     </header>
 
     <section class="panel" id="loginPanel">
       <h2>Entrar</h2>
-      <p class="muted">Solo para ti. Usa la contraseña que te compartieron. Todo lo que guardes se sube al sitio automáticamente.</p>
+      <p class="muted">Verás tu página tal cual. El lapicito deja editar textos y fotos. Al guardar se sube solo a la web.</p>
       <form id="loginForm" class="form">
         <label>
           Contraseña
@@ -37,22 +37,30 @@
       </form>
     </section>
 
-    <section class="panel panel--app" id="appPanel" hidden>
-      <p class="muted" id="sessionLabel">Sesión activa · lapicito = editar texto o foto · Guardar sube a main</p>
+    <section class="panel panel--app panel--live" id="appPanel" hidden>
+      <p class="muted live-hint" id="sessionLabel">
+        Así se ve tu página · toca el <strong>lápiz</strong> junto a un texto o foto para cambiarlo · Productos se editan en su pestaña
+      </p>
 
       <nav class="editor-tabs" id="editorTabs" aria-label="Secciones">
-        <button type="button" class="editor-tab is-active" data-tab="inicio">Inicio</button>
-        <button type="button" class="editor-tab" data-tab="servicios">Servicios</button>
-        <button type="button" class="editor-tab" data-tab="productos">Productos</button>
-        <button type="button" class="editor-tab" data-tab="sobre-mi">Sobre mí</button>
-        <button type="button" class="editor-tab" data-tab="resultados">Antes/después</button>
-        <button type="button" class="editor-tab" data-tab="testimonios">Testimonios</button>
+        <button type="button" class="editor-tab is-active" data-tab="inicio" data-hash="inicio">Inicio</button>
+        <button type="button" class="editor-tab" data-tab="servicios" data-hash="servicios">Servicios</button>
+        <button type="button" class="editor-tab" data-tab="productos" data-hash="productos">Productos</button>
+        <button type="button" class="editor-tab" data-tab="sobre-mi" data-hash="sobre-mi">Sobre mí</button>
+        <button type="button" class="editor-tab" data-tab="resultados" data-hash="testimonios">Antes/después</button>
+        <button type="button" class="editor-tab" data-tab="testimonios" data-hash="testimonios">Testimonios</button>
       </nav>
 
-      <!-- Contenido editable (inicio, servicios, etc.) -->
-      <div id="pageEditorPanel" class="editor-root"></div>
+      <div class="live-frame-wrap" id="liveFrameWrap">
+        <iframe
+          id="siteFrame"
+          class="live-frame"
+          title="Vista editable de la web"
+          src="about:blank"
+        ></iframe>
+      </div>
 
-      <!-- Productos (panel original) -->
+      <!-- Productos (lista admin) -->
       <div id="productsPanel" class="products-panel" hidden>
         <div class="app-bar">
           <p class="muted" id="listMeta">—</p>
@@ -64,7 +72,6 @@
         <div class="layout">
           <div class="list-wrap">
             <h2>Productos</h2>
-
             <div class="admin-toolbar">
               <div class="admin-filters" role="tablist" aria-label="Filtrar por categoría">
                 <button class="admin-filter is-active" type="button" data-filter="todos">Todos</button>
@@ -79,34 +86,23 @@
                 <input type="search" id="adminProductSearch" autocomplete="off" enterkeyhint="search" />
               </label>
             </div>
-
             <div class="list" id="productList"></div>
           </div>
 
           <div class="editor-side">
             <div class="editor-empty" id="editorEmpty">
               <p class="editor-empty__title">Añadir o editar</p>
-              <p class="muted">Pulsa el botón para crear un producto nuevo, o elige uno de la lista para modificarlo.</p>
+              <p class="muted">Pulsa el botón para crear un producto nuevo, o elige uno de la lista.</p>
               <button class="btn btn--primary" type="button" id="btnNewEmpty">+ Añadir nuevo producto</button>
             </div>
 
             <form class="form form--editor" id="productForm" hidden>
               <h2 id="formTitle">Nuevo producto</h2>
               <input type="hidden" id="productId" />
-
-              <label>
-                Nombre del producto
-                <input type="text" id="fieldName" required autocomplete="off" />
-              </label>
-
-              <label>
-                Marca
-                <input type="text" id="fieldBrand" autocomplete="off" />
-              </label>
-
+              <label>Nombre del producto<input type="text" id="fieldName" required autocomplete="off" /></label>
+              <label>Marca<input type="text" id="fieldBrand" autocomplete="off" /></label>
               <div class="row">
-                <label>
-                  Categoría
+                <label>Categoría
                   <select id="fieldCategory" required>
                     <option value="limpieza">Limpieza</option>
                     <option value="hidratacion">Hidratación</option>
@@ -114,46 +110,25 @@
                     <option value="proteccion">Protección</option>
                   </select>
                 </label>
-                <label>
-                  Orden (menor = primero)
-                  <input type="number" id="fieldOrder" min="1" step="1" value="1" />
-                </label>
+                <label>Orden<input type="number" id="fieldOrder" min="1" step="1" value="1" /></label>
               </div>
-
               <div class="row">
-                <label>
-                  Precio actual
-                  <input type="text" id="fieldPrice" required inputmode="decimal" autocomplete="off" />
-                </label>
-                <label>
-                  Precio anterior (opcional)
-                  <input type="text" id="fieldPriceOld" inputmode="decimal" autocomplete="off" />
-                </label>
+                <label>Precio actual<input type="text" id="fieldPrice" required inputmode="decimal" autocomplete="off" /></label>
+                <label>Precio anterior (opcional)<input type="text" id="fieldPriceOld" inputmode="decimal" autocomplete="off" /></label>
               </div>
-
-              <label>
-                Etiqueta (opcional)
-                <input type="text" id="fieldBadge" autocomplete="off" />
-              </label>
-
+              <label>Etiqueta (opcional)<input type="text" id="fieldBadge" autocomplete="off" /></label>
               <div class="benefits-field">
                 <span class="benefits-field__label">Beneficios</span>
-                <p class="muted benefits-field__hint">Cada línea es una viñeta. Pulsa Enter para agregar otra.</p>
+                <p class="muted benefits-field__hint">Cada línea es una viñeta. Enter para otra.</p>
                 <textarea id="fieldBenefits" rows="6" class="benefits-textarea" spellcheck="true"></textarea>
               </div>
-
-              <label>
-                Foto del producto
-                <input type="file" id="fieldImage" accept="image/*" />
-              </label>
+              <label>Foto del producto<input type="file" id="fieldImage" accept="image/*" /></label>
               <div class="preview" id="imagePreview" hidden>
                 <img id="imagePreviewImg" alt="Vista previa" />
                 <p class="muted" id="imagePreviewNote"></p>
               </div>
-
               <p class="form-error" id="formError" hidden></p>
               <p class="form-ok" id="formOk" hidden></p>
-
               <div class="form-actions">
                 <button class="btn btn--primary" type="submit" id="btnSave">Guardar en la web</button>
                 <button class="btn btn--ghost" type="button" id="btnCancel">Cancelar</button>
@@ -190,23 +165,7 @@
     </div>
   </div>
 
-  <div class="modal" id="editModal" hidden>
-    <div class="modal__backdrop" data-close></div>
-    <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
-      <p class="modal__eyebrow">Editar</p>
-      <h3 class="modal__title" id="editModalTitle">Campo</h3>
-      <div id="editModalBody" class="edit-modal-body"></div>
-      <p class="form-error" id="editModalError" hidden></p>
-      <div class="modal__actions">
-        <button class="btn btn--ghost" type="button" data-close>Cancelar</button>
-        <button class="btn btn--primary" type="button" id="editModalSave">Guardar en la web</button>
-      </div>
-    </div>
-  </div>
-
   <script src="js/products-core.js"></script>
-  <script src="js/cms.js"></script>
-  <script src="editor.js"></script>
   <script src="admin.js"></script>
 </body>
 </html>

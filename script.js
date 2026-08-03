@@ -26,6 +26,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
   initProductFilters();
   initReveals();
+
+  if (window.CmsEditMode?.start) {
+    window.CmsEditMode.start();
+  }
 });
 
 const PAGE_IDS = ["inicio", "servicios", "productos", "sobre-mi", "testimonios"];
