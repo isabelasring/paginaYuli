@@ -370,17 +370,61 @@
     }
   });
 
-  // Formato colombiano al escribir precios (punto miles, coma decimales)
+  // Formato colombiano; solo números, punto y coma
+  function sanitizePriceInput(raw) {
+    return String(raw || "")
+      .replace(/[^\d.,]/g, "") // solo dígitos, punto (miles) y coma (decimales)
+      .replace(/,/g, (m, offset, str) => {
+        // una sola coma decimal
+        return str.indexOf(",") === offset ? "," : "";
+      });
+  }
+
   function bindPriceInput(el) {
     if (!el) return;
+
+    el.setAttribute("inputmode", "decimal");
+    el.setAttribute("pattern", "[0-9.,]*");
+    el.setAttribute("autocomplete", "off");
+
+    el.addEventListener("beforeinput", (e) => {
+      if (e.inputType && e.inputType.startsWith("delete")) return;
+      if (e.inputType === "insertFromPaste" || e.inputType === "insertFromDrop") return;
+      if (e.data == null) return;
+      if (!/^[0-9.,]+$/.test(e.data)) e.preventDefault();
+    });
+
+    el.addEventListener("input", () => {
+      const cleaned = sanitizePriceInput(el.value);
+      if (cleaned !== el.value) {
+        const pos = el.selectionStart;
+        el.value = cleaned;
+        try {
+          el.setSelectionRange(pos - 1, pos - 1);
+        } catch {
+          /* ignore */
+        }
+      }
+    });
+
+    el.addEventListener("keypress", (e) => {
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      const ch = e.key;
+      if (ch.length === 1 && !/[0-9.,]/.test(ch)) e.preventDefault();
+    });
+
+    el.addEventListener("paste", (e) => {
+      e.preventDefault();
+      const text = (e.clipboardData || window.clipboardData).getData("text");
+      const cleaned = sanitizePriceInput(text);
+      const start = el.selectionStart ?? el.value.length;
+      const end = el.selectionEnd ?? el.value.length;
+      el.value = sanitizePriceInput(el.value.slice(0, start) + cleaned + el.value.slice(end));
+    });
+
     el.addEventListener("blur", () => {
       const n = ProductsCore.parsePrice(el.value);
-      el.value = n == null ? el.value : ProductsCore.formatPriceInput(n);
-    });
-    el.addEventListener("focus", () => {
-      // al enfocar deja el número legible sin forzar si está vacío
-      const n = ProductsCore.parsePrice(el.value);
-      if (n != null) el.value = ProductsCore.formatPriceInput(n);
+      el.value = n == null ? sanitizePriceInput(el.value) : ProductsCore.formatPriceInput(n);
     });
   }
   bindPriceInput(document.getElementById("fieldPrice"));
