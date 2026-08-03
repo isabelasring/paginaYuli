@@ -185,21 +185,5 @@
       "Buena tolerancia para rutinas antiedad"
     ],
     "order": 11
-  },
-  {
-    "id": "prueba-mschwxdu",
-    "name": "prueba",
-    "brand": "marca",
-    "category": "limpieza",
-    "price": 10000,
-    "priceOld": 15000,
-    "badge": "kaflkjsdf",
-    "imageUrl": "assets/productos/prueba-mschwxdu-1785717200118.png",
-    "benefits": [
-      "skddjklf",
-      "fjglfjgld",
-      "ksflksjd"
-    ],
-    "order": 12
   }
 ]
