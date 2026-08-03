@@ -26,6 +26,8 @@
   let currentId = null;
   let existingImageUrl = "";
   let pendingImage = null; // { id, fileName, base64 }
+  let listSourceNote = "";
+  let activeFilter = "todos";
 
   function showEditor(open) {
     if (productForm) productForm.hidden = !open;
@@ -124,15 +126,17 @@
         ? ProductsCore.toLiveImageUrl(p.imagePath || p.imageUrl)
         : p.imageUrl,
     }));
-    listMeta.textContent = `${products.length} producto(s) · ${sourceNote}`;
+    listSourceNote = sourceNote;
     if (!products.length) {
+      listMeta.textContent = `0 producto(s) · ${sourceNote}`;
       productList.innerHTML = `<p class="empty">No hay productos. Crea el primero.</p>`;
       return;
     }
     productList.innerHTML = products
-      .map(
-        (p) => `
-        <div class="list-item${p.id === currentId ? " is-active" : ""}" data-id="${ProductsCore.escapeHtml(p.id)}">
+      .map((p) => {
+        const searchName = `${p.brand || ""} ${p.name || ""} ${p.badge || ""}`.toLowerCase().trim();
+        return `
+        <div class="list-item${p.id === currentId ? " is-active" : ""}" data-id="${ProductsCore.escapeHtml(p.id)}" data-category="${ProductsCore.escapeHtml(p.category || "")}" data-name="${ProductsCore.escapeHtml(searchName)}">
           <button type="button" class="list-item__main" data-action="edit" data-id="${ProductsCore.escapeHtml(p.id)}">
             <img src="${ProductsCore.escapeHtml(p.imageUrl)}" alt="" />
             <span>
@@ -144,9 +148,68 @@
           <button type="button" class="btn btn--danger-sm" data-action="delete" data-id="${ProductsCore.escapeHtml(p.id)}" aria-label="Eliminar ${ProductsCore.escapeHtml(p.name)}">
             Eliminar
           </button>
-        </div>`
-      )
+        </div>`;
+      })
       .join("");
+    applyListFilter();
+  }
+
+  function applyListFilter() {
+    const search = document.getElementById("adminProductSearch");
+    const query = (search?.value || "").trim().toLowerCase();
+    const cards = productList.querySelectorAll(".list-item");
+    if (!cards.length) {
+      listMeta.textContent = `0 producto(s) · ${listSourceNote || ""}`;
+      return;
+    }
+
+    let visible = 0;
+    cards.forEach((card) => {
+      const category = card.dataset.category || "";
+      const name = card.dataset.name || "";
+      const matchFilter = activeFilter === "todos" || category === activeFilter;
+      const matchSearch = !query || name.includes(query);
+      const show = matchFilter && matchSearch;
+      card.hidden = !show;
+      if (show) visible += 1;
+    });
+
+    const filterLabel =
+      activeFilter === "todos"
+        ? "todos"
+        : ProductsCore.CATEGORY_LABELS[activeFilter] || activeFilter;
+    const searchNote = query ? ` · “${query}”` : "";
+    listMeta.textContent = `${visible} de ${products.length} · ${filterLabel}${searchNote} · ${listSourceNote || ""}`;
+
+    let emptyEl = productList.querySelector(".empty--filter");
+    if (visible === 0 && products.length) {
+      if (!emptyEl) {
+        emptyEl = document.createElement("p");
+        emptyEl.className = "empty empty--filter";
+        productList.appendChild(emptyEl);
+      }
+      emptyEl.textContent = "Ningún producto coincide con la búsqueda o categoría.";
+      emptyEl.hidden = false;
+    } else if (emptyEl) {
+      emptyEl.hidden = true;
+    }
+  }
+
+  function bindListFilters() {
+    const filters = document.querySelectorAll(".admin-filter");
+    const search = document.getElementById("adminProductSearch");
+    if (filters.dataset?.bound === "1") return;
+
+    filters.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        filters.forEach((f) => f.classList.remove("is-active"));
+        btn.classList.add("is-active");
+        activeFilter = btn.dataset.filter || "todos";
+        applyListFilter();
+      });
+    });
+    search?.addEventListener("input", applyListFilter);
+    if (filters.length) filters.forEach((f) => (f.dataset.bound = "1"));
   }
 
   function showBanner(msg, isError = false) {
@@ -677,6 +740,7 @@
   }
 
   // boot
+  bindListFilters();
   bindBenefitsField();
   if (getToken()) setAuthUI(true);
   else setAuthUI(false);

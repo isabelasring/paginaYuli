@@ -49,6 +49,22 @@
         <div class="list-wrap">
           <h2>Productos</h2>
           <p class="muted" id="listMeta">—</p>
+
+          <div class="admin-toolbar">
+            <div class="admin-filters" role="tablist" aria-label="Filtrar por categoría">
+              <button class="admin-filter is-active" type="button" data-filter="todos">Todos</button>
+              <button class="admin-filter" type="button" data-filter="limpieza">Limpieza</button>
+              <button class="admin-filter" type="button" data-filter="hidratacion">Hidratación</button>
+              <button class="admin-filter" type="button" data-filter="tratamiento">Tratamiento</button>
+              <button class="admin-filter" type="button" data-filter="proteccion">Protección</button>
+            </div>
+            <label class="admin-search">
+              <span class="visually-hidden">Buscar producto</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg>
+              <input type="search" id="adminProductSearch" autocomplete="off" enterkeyhint="search" />
+            </label>
+          </div>
+
           <div class="list" id="productList"></div>
         </div>
 
