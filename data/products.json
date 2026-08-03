@@ -75,7 +75,7 @@
     "price": 120000,
     "priceOld": 153000,
     "badge": "-30%",
-    "imageUrl": "assets/productos/cleanance-aqua-gel.webp",
+    "imageUrl": "/api/media?path=assets%2Fproductos%2Fcleanance-aqua-gel.webp&v=1785734145180",
     "benefits": [
       "Controla el brillo y el exceso de sebo",
       "Acabado matificante y fresca sensación",
@@ -88,16 +88,17 @@
     "id": "hyaluron-noche",
     "name": "Crema De Noche Multi-Intensiva Hyaluron Activ B3",
     "brand": "Eau Thermale Avène",
-    "category": "hidratacion",
+    "category": "tratamiento",
     "price": 196000,
     "priceOld": 280000,
     "badge": "-30%",
-    "imageUrl": "/api/media?path=assets%2Fproductos%2Fcrema-noche-hyaluron-activ-b3.webp&v=709c1fc9bd34fc4f89e59af92e3ccb6831c211f8",
+    "imageUrl": "assets/productos/crema-noche-hyaluron-activ-b3.webp",
     "benefits": [
       "Regeneración intensiva durante la noche",
       "Reduce signos de fatiga y arrugas",
       "Hidratación profunda y confort",
-      "Piel más firme al despertar"
+      "Piel más firme al despertar",
+      "Aclarante"
     ],
     "order": 6
   },
