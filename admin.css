@@ -287,12 +287,37 @@ a {
   align-items: start;
 }
 
-.list-wrap {
+.editor-side {
   min-width: 0;
-  padding: clamp(0.85rem, 2vw, 1.15rem);
+  display: grid;
+  gap: 1rem;
+}
+
+.editor-empty {
+  display: grid;
+  gap: 0.85rem;
+  justify-items: start;
+  padding: clamp(1.4rem, 3.5vw, 2.25rem);
   background: var(--cream);
-  border: 1px solid rgba(176, 122, 104, 0.12);
+  border: 1px dashed rgba(176, 122, 104, 0.35);
   border-radius: calc(var(--radius) - 2px);
+  min-height: 12rem;
+  align-content: center;
+}
+
+.editor-empty[hidden] {
+  display: none !important;
+}
+
+.editor-empty__title {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.form--editor[hidden] {
+  display: none !important;
 }
 
 .list-wrap h2 {

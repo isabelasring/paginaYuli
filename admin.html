@@ -52,7 +52,14 @@
           <div class="list" id="productList"></div>
         </div>
 
-        <form class="form form--editor" id="productForm" hidden>
+        <div class="editor-side">
+          <div class="editor-empty" id="editorEmpty">
+            <p class="editor-empty__title">Añadir o editar</p>
+            <p class="muted">Pulsa el botón para crear un producto nuevo, o elige uno de la lista para modificarlo.</p>
+            <button class="btn btn--primary" type="button" id="btnNewEmpty">+ Añadir nuevo producto</button>
+          </div>
+
+          <form class="form form--editor" id="productForm" hidden>
           <h2 id="formTitle">Nuevo producto</h2>
           <input type="hidden" id="productId" />
 
@@ -122,6 +129,7 @@
             <button class="btn btn--danger" type="button" id="btnDelete" hidden>Eliminar de la web</button>
           </div>
         </form>
+        </div>
       </div>
     </section>
   </div>

@@ -13,6 +13,8 @@
   const formError = document.getElementById("formError");
   const formOk = document.getElementById("formOk");
   const btnNew = document.getElementById("btnNew");
+  const btnNewEmpty = document.getElementById("btnNewEmpty");
+  const editorEmpty = document.getElementById("editorEmpty");
   const btnCancel = document.getElementById("btnCancel");
   const btnDelete = document.getElementById("btnDelete");
   const btnSave = document.getElementById("btnSave");
@@ -25,6 +27,11 @@
   let currentId = null;
   let existingImageUrl = "";
   let pendingImage = null; // { id, fileName, base64 }
+
+  function showEditor(open) {
+    if (productForm) productForm.hidden = !open;
+    if (editorEmpty) editorEmpty.hidden = open;
+  }
 
   function getToken() {
     return sessionStorage.getItem(TOKEN_KEY) || "";
@@ -55,8 +62,11 @@
     loginPanel.hidden = loggedIn;
     appPanel.hidden = !loggedIn;
     btnLogout.hidden = !loggedIn;
-    if (loggedIn) refreshList();
-    else {
+    if (loggedIn) {
+      showEditor(false);
+      refreshList();
+    } else {
+      showEditor(false);
       productForm.hidden = true;
       pendingImage = null;
     }
@@ -246,18 +256,23 @@
     currentId = null;
     existingImageUrl = "";
     pendingImage = null;
-    productForm.hidden = false;
+    showEditor(true);
     formTitle.textContent = "Nuevo producto";
     productForm.reset();
     document.getElementById("productId").value = "";
     document.getElementById("fieldBrand").value = "";
     document.getElementById("fieldOrder").value = String((products[products.length - 1]?.order || 0) + 1);
     document.getElementById("fieldBenefits").value = "• ";
+    document.getElementById("fieldName").value = "";
+    document.getElementById("fieldPrice").value = "";
+    document.getElementById("fieldPriceOld").value = "";
+    document.getElementById("fieldBadge").value = "";
     btnDelete.hidden = true;
     imagePreview.hidden = true;
     showMsg(formError, "");
     showMsg(formOk, "");
     productForm.scrollIntoView({ behavior: "smooth", block: "start" });
+    document.getElementById("fieldName")?.focus();
   }
 
   function toRepoImagePath(url) {
@@ -281,7 +296,7 @@
     currentId = id;
     existingImageUrl = toRepoImagePath(p.imagePath || p.imageUrl) || "";
     pendingImage = null;
-    productForm.hidden = false;
+    showEditor(true);
     formTitle.textContent = "Editar producto";
     document.getElementById("productId").value = p.id;
     document.getElementById("fieldName").value = p.name || "";
@@ -312,10 +327,12 @@
   }
 
   function closeForm() {
-    productForm.hidden = true;
+    showEditor(false);
     currentId = null;
     pendingImage = null;
+    existingImageUrl = "";
     fieldImage.value = "";
+    productForm.reset();
     productList.querySelectorAll(".list-item").forEach((b) => b.classList.remove("is-active"));
   }
 
@@ -387,6 +404,7 @@
   });
 
   btnNew?.addEventListener("click", openNew);
+  btnNewEmpty?.addEventListener("click", openNew);
   btnCancel?.addEventListener("click", closeForm);
 
   productList?.addEventListener("click", (e) => {
