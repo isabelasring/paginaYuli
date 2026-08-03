@@ -16,7 +16,6 @@
   const btnNewEmpty = document.getElementById("btnNewEmpty");
   const editorEmpty = document.getElementById("editorEmpty");
   const btnCancel = document.getElementById("btnCancel");
-  const btnDelete = document.getElementById("btnDelete");
   const btnSave = document.getElementById("btnSave");
   const fieldImage = document.getElementById("fieldImage");
   const imagePreview = document.getElementById("imagePreview");
@@ -267,7 +266,6 @@
     document.getElementById("fieldPrice").value = "";
     document.getElementById("fieldPriceOld").value = "";
     document.getElementById("fieldBadge").value = "";
-    btnDelete.hidden = true;
     imagePreview.hidden = true;
     showMsg(formError, "");
     showMsg(formOk, "");
@@ -310,7 +308,6 @@
     document.getElementById("fieldBadge").value = p.badge || "";
     document.getElementById("fieldBenefits").value = bulletizeBenefits(p.benefits);
     fieldImage.value = "";
-    btnDelete.hidden = false;
     if (p.imageUrl) {
       imagePreview.hidden = false;
       imagePreviewImg.src = p.imageUrl;
@@ -646,7 +643,6 @@
     listBtns.forEach((b) => {
       b.disabled = true;
     });
-    if (btnDelete) btnDelete.disabled = true;
     showBanner("Eliminando producto…");
 
     try {
@@ -677,15 +673,8 @@
       listBtns.forEach((b) => {
         b.disabled = false;
       });
-      if (btnDelete) btnDelete.disabled = false;
     }
   }
-
-  btnDelete?.addEventListener("click", (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    deleteProduct(currentId);
-  });
 
   // boot
   bindBenefitsField();
