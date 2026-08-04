@@ -407,19 +407,12 @@
       loadFile("results").catch(() => null),
     ]);
 
-    if (site?.data) {
-      applyHero(site.data);
-      applyPromesa(site.data);
-      applyExperiencia(site.data);
-      applyAtmosfera(site.data);
-      applyRutinas(site.data);
-      applyInicioCita(site.data);
-      applyAbout(site.data);
-      applyProductsSection(site.data);
-    }
-    if (services?.data) mountServices(services.data);
-    if (testimonials?.data) mountTestimonials(testimonials.data);
-    if (results?.data) mountResults(results.data);
+    applyBundle({
+      site: site?.data,
+      services: services?.data,
+      testimonials: testimonials?.data,
+      results: results?.data,
+    });
 
     return {
       site: site?.data,
@@ -429,9 +422,26 @@
     };
   }
 
+  function applyBundle({ site, services, testimonials, results } = {}) {
+    if (site) {
+      applyHero(site);
+      applyPromesa(site);
+      applyExperiencia(site);
+      applyAtmosfera(site);
+      applyRutinas(site);
+      applyInicioCita(site);
+      applyAbout(site);
+      applyProductsSection(site);
+    }
+    if (services) mountServices(services);
+    if (testimonials) mountTestimonials(testimonials);
+    if (results) mountResults(results);
+  }
+
   window.SiteCMS = {
     loadFile,
     mountAll,
+    applyBundle,
     formatServicePrice,
     escapeHtml,
   };

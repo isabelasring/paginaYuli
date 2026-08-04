@@ -444,10 +444,12 @@ async function handleSaveContent(req, res, cfg, body) {
   };
   const folders = {
     site: "assets/inicio",
+    inicio: "assets/inicio",
     services: "assets/servicios",
     about: "assets/sobre-mi",
     results: "assets/testimonios/antes-despues",
     experiencia: "assets/experiencia",
+    rutinas: "assets/rutinas",
   };
 
   const fileKey = String(body.file || "").trim();

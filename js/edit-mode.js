@@ -69,6 +69,134 @@
     });
   }
 
+  function liveify(value, version = Date.now()) {
+    if (typeof value === "string") {
+      if (
+        value.startsWith("assets/") ||
+        value.startsWith("./assets/") ||
+        value.startsWith("/assets/")
+      ) {
+        const path = value.replace(/^\.?\/+/, "").split("?")[0];
+        return `/api/media?path=${encodeURIComponent(path)}&v=${encodeURIComponent(version)}`;
+      }
+      return value;
+    }
+    if (Array.isArray(value)) return value.map((v) => liveify(v, version));
+    if (value && typeof value === "object") {
+      const out = {};
+      for (const [k, v] of Object.entries(value)) out[k] = liveify(v, version);
+      return out;
+    }
+    return value;
+  }
+
+  function getByPath(obj, pathStr) {
+    const parts = String(pathStr || "")
+      .replace(/\[(\d+)\]/g, ".$1")
+      .split(".")
+      .filter(Boolean);
+    let cur = obj;
+    for (const key of parts) {
+      if (cur == null) return "";
+      cur = cur[/^\d+$/.test(key) ? Number(key) : key];
+    }
+    return cur;
+  }
+
+  function teardownEditUi() {
+    document.querySelectorAll(".cms-wrap--img").forEach((wrapEl) => {
+      const img = wrapEl.querySelector("img");
+      wrapEl.querySelector(".cms-pencil")?.remove();
+      if (img) wrapEl.parentNode?.insertBefore(img, wrapEl);
+      wrapEl.remove();
+    });
+    document.querySelectorAll(".cms-pencil").forEach((btn) => btn.remove());
+    document.querySelectorAll("[data-cms-edit]").forEach((el) => {
+      delete el.dataset.cmsEdit;
+      el.classList.remove("is-hot");
+    });
+    document.querySelectorAll(".cms-section-add").forEach((el) => el.remove());
+  }
+
+  function flashSaved(msg) {
+    let el = document.getElementById("cmsSavedToast");
+    if (!el) {
+      el = document.createElement("div");
+      el.id = "cmsSavedToast";
+      el.className = "cms-toast";
+      document.body.appendChild(el);
+    }
+    el.textContent = msg;
+    el.classList.add("is-on");
+    clearTimeout(flashSaved._t);
+    flashSaved._t = setTimeout(() => el.classList.remove("is-on"), 2500);
+  }
+
+  function rebindAll() {
+    bindHero();
+    bindPromesa();
+    bindExperiencia();
+    bindAtmosfera();
+    bindRutinas();
+    bindInicioCita();
+    bindAbout();
+    bindServices();
+    bindTestimonials();
+    bindResults();
+    fabs();
+  }
+
+  async function refreshAfterSave(result, { previewImg, previewBase64, setPath } = {}) {
+    const version = Date.now();
+    if (result?.file === "site" && result.data) site = result.data;
+    if (result?.file === "services" && result.data) services = result.data;
+    if (result?.file === "testimonials" && result.data) testimonials = result.data;
+    if (result?.file === "results" && result.data) results = result.data;
+
+    // Vista inmediata de la foto nueva
+    const imgEl =
+      previewImg?.tagName === "IMG" ? previewImg : previewImg?.querySelector?.("img");
+    if (imgEl && previewBase64) {
+      imgEl.src = previewBase64;
+    }
+
+    // Servicios / testimonios / resultados: flash y recarga corta (carruseles)
+    if (result?.file && result.file !== "site") {
+      flashSaved("Guardado · ya se ve la foto");
+      setTimeout(() => {
+        const u = new URL(location.href);
+        u.searchParams.set("edit", "1");
+        u.searchParams.set("t", String(Date.now()));
+        location.replace(u.pathname + u.search + u.hash);
+      }, 650);
+      return;
+    }
+
+    teardownEditUi();
+
+    if (window.SiteCMS?.applyBundle) {
+      SiteCMS.applyBundle({
+        site: site ? liveify(site, version) : null,
+        services: services ? liveify(services, version) : null,
+        testimonials: testimonials ? liveify(testimonials, version) : null,
+        results: results ? liveify(results, version) : null,
+      });
+    }
+
+    if (imgEl && previewBase64) {
+      imgEl.src = previewBase64;
+      const repoPath = setPath && result?.data ? getByPath(result.data, setPath) : "";
+      if (repoPath && String(repoPath).startsWith("assets/")) {
+        setTimeout(() => {
+          imgEl.src = `/api/media?path=${encodeURIComponent(repoPath)}&v=${Date.now()}`;
+        }, 1800);
+      }
+    }
+
+    rebindAll();
+    flashSaved("Guardado · ya lo ves aquí");
+  }
+
   function ensureStyles() {
     if (document.getElementById("cmsEditStyles")) return;
     const style = document.createElement("style");
@@ -102,6 +230,14 @@
       body.cms-editing .services-carousel__viewport {
         overflow: visible !important;
       }
+      .cms-toast {
+        position: fixed; left: 50%; bottom: 1.25rem; z-index: 10060;
+        transform: translateX(-50%) translateY(120%);
+        background: #2f2926; color: #fbf7f2; padding: 0.7rem 1.15rem;
+        border-radius: 999px; font-family: Outfit, system-ui, sans-serif; font-size: 0.85rem;
+        box-shadow: 0 12px 30px rgba(0,0,0,.25); transition: transform .25s ease; pointer-events: none;
+      }
+      .cms-toast.is-on { transform: translateX(-50%) translateY(0); }
       .cms-bar {
         position: fixed; top: 0.75rem; right: 0.75rem; z-index: 10001;
         display: flex; gap: 0.4rem;
@@ -210,7 +346,7 @@
     host.appendChild(btn);
   }
 
-  function openModal({ title, fieldsHtml, onSave }) {
+  function openModal({ title, fieldsHtml, onSave, previewImg }) {
     pendingImage = null;
     let modal = document.getElementById("cmsEditModal");
     if (!modal) {
@@ -265,11 +401,13 @@
 
     const saveBtn = modal.querySelector("#cmsModalSave");
     saveBtn.onclick = async () => {
+      const previewBase64 = pendingImage?.base64 || null;
+      const setPath = pendingImage?.setPath || file?.dataset?.setpath || "";
       try {
         saveBtn.disabled = true;
-        await onSave(modal);
+        const result = await onSave(modal);
         modal.hidden = true;
-        location.reload();
+        await refreshAfterSave(result || {}, { previewImg, previewBase64, setPath });
       } catch (e) {
         err.textContent = e.message || "No se pudo guardar";
         err.hidden = false;
@@ -303,7 +441,7 @@
           fieldsHtml: textField("v", "Texto", h.eyebrow),
           onSave: async (m) => {
             site.hero.eyebrow = m.querySelector("[name=v]").value;
-            await saveFile("site", site);
+            return await saveFile("site", site);
           },
         }),
     });
@@ -320,7 +458,7 @@
             onSave: async (m) => {
               site.hero.headlineBefore = m.querySelector("[name=before]").value;
               site.hero.headlineScript = m.querySelector("[name=script]").value;
-              await saveFile("site", site);
+              return await saveFile("site", site);
             },
           }),
       });
@@ -333,7 +471,7 @@
           fieldsHtml: textField("v", "Texto", h.lead, true),
           onSave: async (m) => {
             site.hero.lead = m.querySelector("[name=v]").value;
-            await saveFile("site", site);
+            return await saveFile("site", site);
           },
         }),
     });
@@ -349,7 +487,7 @@
             onSave: async (m) => {
               site.hero.floatLabel = m.querySelector("[name=label]").value;
               site.hero.floatStrong = m.querySelector("[name=strong]").value;
-              await saveFile("site", site);
+              return await saveFile("site", site);
             },
           }),
       });
@@ -360,13 +498,14 @@
         img: true,
         onEdit: () =>
           openModal({
+            previewImg: img,
             title: "Foto del hero",
             fieldsHtml: fileField("site", "hero.imageUrl", h.imageUrl),
             onSave: async () => {
               if (!pendingImage) throw new Error("Elige una foto");
               pendingImage.folder = "site";
               pendingImage.setPath = "hero.imageUrl";
-              await saveFile("site", site, [pendingImage]);
+              return await saveFile("site", site, [pendingImage]);
             },
           }),
       });
@@ -383,7 +522,7 @@
             onSave: async (m) => {
               site.hero.trustItems[i].strong = m.querySelector("[name=strong]").value;
               site.hero.trustItems[i].span = m.querySelector("[name=span]").value;
-              await saveFile("site", site);
+              return await saveFile("site", site);
             },
           }),
       });
@@ -398,7 +537,7 @@
             fieldsHtml: textField("v", "Texto", h.ctaPrimaryLabel),
             onSave: async (m) => {
               site.hero.ctaPrimaryLabel = m.querySelector("[name=v]").value;
-              await saveFile("site", site);
+              return await saveFile("site", site);
             },
           }),
       });
@@ -411,7 +550,7 @@
             fieldsHtml: textField("v", "Texto", h.ctaSecondaryLabel),
             onSave: async (m) => {
               site.hero.ctaSecondaryLabel = m.querySelector("[name=v]").value;
-              await saveFile("site", site);
+              return await saveFile("site", site);
             },
           }),
       });
@@ -438,7 +577,7 @@
               p.titleLine1 = m.querySelector("[name=l1]").value;
               p.titleLine2 = m.querySelector("[name=l2]").value;
               p.sub = m.querySelector("[name=sub]").value;
-              await saveFile("site", site);
+              return await saveFile("site", site);
             },
           }),
       });
@@ -453,13 +592,14 @@
           img: true,
           onEdit: () =>
             openModal({
+            previewImg: img,
               title: `Foto card ${i + 1}`,
               fieldsHtml: fileField("inicio", `promesa.inviteCards.${i}.imageUrl`, item.imageUrl),
               onSave: async () => {
                 if (!pendingImage) throw new Error("Elige una foto");
                 pendingImage.folder = "inicio";
                 pendingImage.setPath = `promesa.inviteCards.${i}.imageUrl`;
-                await saveFile("site", site, [pendingImage]);
+                return await saveFile("site", site, [pendingImage]);
               },
             }),
         });
@@ -476,7 +616,7 @@
               item.label = m.querySelector("[name=label]").value;
               item.title = m.querySelector("[name=title]").value;
               item.text = m.querySelector("[name=text]").value;
-              await saveFile("site", site);
+              return await saveFile("site", site);
             },
           }),
       });
@@ -493,7 +633,7 @@
             onSave: async (m) => {
               item.title = m.querySelector("[name=title]").value;
               item.text = m.querySelector("[name=text]").value;
-              await saveFile("site", site);
+              return await saveFile("site", site);
             },
           }),
       });
@@ -508,7 +648,7 @@
             fieldsHtml: textField("v", "Texto (sin comillas)", p.quote, true),
             onSave: async (m) => {
               p.quote = m.querySelector("[name=v]").value;
-              await saveFile("site", site);
+              return await saveFile("site", site);
             },
           }),
       });
@@ -536,7 +676,7 @@
               a.titleLine2 = m.querySelector("[name=l2]").value;
               a.text = m.querySelector("[name=text]").value;
               a.ctaLabel = m.querySelector("[name=cta]").value;
-              await saveFile("site", site);
+              return await saveFile("site", site);
             },
           }),
       });
@@ -549,7 +689,7 @@
               fieldsHtml: textField("v", "Texto", a.list[i] || ""),
               onSave: async (m) => {
                 a.list[i] = m.querySelector("[name=v]").value;
-                await saveFile("site", site);
+                return await saveFile("site", site);
               },
             }),
         });
@@ -561,13 +701,14 @@
         img: true,
         onEdit: () =>
           openModal({
+            previewImg: img,
             title: "Foto del espacio",
             fieldsHtml: fileField("inicio", "atmosfera.imageUrl", a.imageUrl),
             onSave: async () => {
               if (!pendingImage) throw new Error("Elige una foto");
               pendingImage.folder = "inicio";
               pendingImage.setPath = "atmosfera.imageUrl";
-              await saveFile("site", site, [pendingImage]);
+              return await saveFile("site", site, [pendingImage]);
             },
           }),
       });
@@ -595,7 +736,7 @@
               r.titleBefore = m.querySelector("[name=before]").value;
               r.titleEm = m.querySelector("[name=em]").value;
               r.intro = m.querySelector("[name=intro]").value;
-              await saveFile("site", site);
+              return await saveFile("site", site);
             },
           }),
       });
@@ -615,7 +756,7 @@
               fieldsHtml: textField("v", "Nombre en cursiva", panel.headEm),
               onSave: async (m) => {
                 panel.headEm = m.querySelector("[name=v]").value;
-                await saveFile("site", site);
+                return await saveFile("site", site);
               },
             }),
         });
@@ -629,13 +770,14 @@
             img: true,
             onEdit: () =>
               openModal({
+            previewImg: img,
                 title: `Foto ${key} paso ${i + 1}`,
                 fieldsHtml: fileField("rutinas", `rutinas.panels.${key}.steps.${i}.imageUrl`, step.imageUrl),
                 onSave: async () => {
                   if (!pendingImage) throw new Error("Elige una foto");
                   pendingImage.folder = "rutinas";
                   pendingImage.setPath = `rutinas.panels.${key}.steps.${i}.imageUrl`;
-                  await saveFile("site", site, [pendingImage]);
+                  return await saveFile("site", site, [pendingImage]);
                 },
               }),
           });
@@ -648,7 +790,7 @@
               onSave: async (m) => {
                 step.title = m.querySelector("[name=title]").value;
                 step.text = m.querySelector("[name=text]").value;
-                await saveFile("site", site);
+                return await saveFile("site", site);
               },
             }),
         });
@@ -676,7 +818,7 @@
             c.titleLine1 = m.querySelector("[name=l1]").value;
             c.titleLine2 = m.querySelector("[name=l2]").value;
             c.text = m.querySelector("[name=text]").value;
-            await saveFile("site", site);
+            return await saveFile("site", site);
           },
         }),
     });
@@ -699,7 +841,7 @@
               site.experiencia.eyebrow = m.querySelector("[name=eyebrow]").value;
               site.experiencia.titleBefore = m.querySelector("[name=before]").value;
               site.experiencia.titleScript = m.querySelector("[name=script]").value;
-              await saveFile("site", site);
+              return await saveFile("site", site);
             },
           }),
       });
@@ -713,13 +855,14 @@
           img: true,
           onEdit: () =>
             openModal({
+            previewImg: img,
               title: `Foto paso ${step.num || i + 1}`,
               fieldsHtml: fileField("experiencia", `experiencia.steps.${i}.imageUrl`, step.imageUrl),
               onSave: async () => {
                 if (!pendingImage) throw new Error("Elige una foto");
                 pendingImage.folder = "experiencia";
                 pendingImage.setPath = `experiencia.steps.${i}.imageUrl`;
-                await saveFile("site", site, [pendingImage]);
+                return await saveFile("site", site, [pendingImage]);
               },
             }),
         });
@@ -733,7 +876,7 @@
             onSave: async (m) => {
               site.experiencia.steps[i].title = m.querySelector("[name=title]").value;
               site.experiencia.steps[i].text = m.querySelector("[name=text]").value;
-              await saveFile("site", site);
+              return await saveFile("site", site);
             },
           }),
       });
@@ -752,7 +895,7 @@
             onSave: async (m) => {
               site.about.titleBefore = m.querySelector("[name=before]").value;
               site.about.titleEm = m.querySelector("[name=em]").value;
-              await saveFile("site", site);
+              return await saveFile("site", site);
             },
           }),
       });
@@ -765,7 +908,7 @@
               fieldsHtml: textField("v", "Texto", (a.paragraphs || [])[i] || "", true),
               onSave: async (m) => {
                 site.about.paragraphs[i] = m.querySelector("[name=v]").value;
-                await saveFile("site", site);
+                return await saveFile("site", site);
               },
             }),
         });
@@ -777,13 +920,14 @@
         img: true,
         onEdit: () =>
           openModal({
+            previewImg: img,
             title: "Foto Sobre mí",
             fieldsHtml: fileField("about", "about.imageUrl", a.imageUrl),
             onSave: async () => {
               if (!pendingImage) throw new Error("Elige una foto");
               pendingImage.folder = "about";
               pendingImage.setPath = "about.imageUrl";
-              await saveFile("site", site, [pendingImage]);
+              return await saveFile("site", site, [pendingImage]);
             },
           }),
       });
@@ -809,7 +953,7 @@
               services.section.titleBefore = m.querySelector("[name=before]").value;
               services.section.titleEm = m.querySelector("[name=em]").value;
               services.section.sub = m.querySelector("[name=sub]").value;
-              await saveFile("services", services);
+              return await saveFile("services", services);
             },
           }),
       });
@@ -826,6 +970,7 @@
           img: true,
           onEdit: () =>
             openModal({
+            previewImg: mediaImg,
               title: `Foto · ${item.name}`,
               fieldsHtml: fileField("services", `items.${idx}.images.0`, (item.images || [])[0]),
               onSave: async () => {
@@ -833,7 +978,7 @@
                 if (!item.images?.length) item.images = [""];
                 pendingImage.folder = "services";
                 pendingImage.setPath = `items.${idx}.images.0`;
-                await saveFile("services", services, [pendingImage]);
+                return await saveFile("services", services, [pendingImage]);
               },
             }),
         });
@@ -855,7 +1000,7 @@
                 item.price = Number(String(m.querySelector("[name=price]").value).replace(/\D/g, ""));
                 if (!item.name) throw new Error("Pon un nombre");
                 if (!Number.isFinite(item.price)) throw new Error("Precio inválido");
-                await saveFile("services", services);
+                return await saveFile("services", services);
               },
             }),
         });
@@ -876,7 +1021,7 @@
             onSave: async (m) => {
               testimonials.section.eyebrow = m.querySelector("[name=eyebrow]").value;
               testimonials.section.title = m.querySelector("[name=title]").value;
-              await saveFile("testimonials", testimonials);
+              return await saveFile("testimonials", testimonials);
             },
           }),
       });
@@ -898,7 +1043,7 @@
               item.name = m.querySelector("[name=name]").value.trim();
               item.quote = m.querySelector("[name=quote]").value.trim();
               item.stars = Math.max(1, Math.min(5, Number(m.querySelector("[name=stars]").value) || 5));
-              await saveFile("testimonials", testimonials);
+              return await saveFile("testimonials", testimonials);
             },
           }),
       });
@@ -924,7 +1069,7 @@
               results.section.titleLine1 = m.querySelector("[name=l1]").value;
               results.section.titleLine2 = m.querySelector("[name=l2]").value;
               results.section.lead = m.querySelector("[name=lead]").value;
-              await saveFile("results", results);
+              return await saveFile("results", results);
             },
           }),
       });
@@ -936,13 +1081,14 @@
         img: true,
         onEdit: () =>
           openModal({
+            previewImg: img,
             title: `Imagen ${i + 1}`,
             fieldsHtml: fileField("results", `items.${i}.imageUrl`, item.imageUrl),
             onSave: async () => {
               if (!pendingImage) throw new Error("Elige una foto");
               pendingImage.folder = "results";
               pendingImage.setPath = `items.${i}.imageUrl`;
-              await saveFile("results", results, [pendingImage]);
+              return await saveFile("results", results, [pendingImage]);
             },
           }),
       });
@@ -994,7 +1140,7 @@
           });
           pendingImage.folder = "services";
           pendingImage.setPath = `items.${services.items.length - 1}.images.0`;
-          await saveFile("services", services, [pendingImage]);
+          return await saveFile("services", services, [pendingImage]);
         },
       });
     });
@@ -1026,7 +1172,7 @@
             });
             pendingImage.folder = "results";
             pendingImage.setPath = `items.${results.items.length - 1}.imageUrl`;
-            await saveFile("results", results, [pendingImage]);
+            return await saveFile("results", results, [pendingImage]);
           },
         });
       },
@@ -1053,7 +1199,7 @@
             quote,
             stars,
           });
-          await saveFile("testimonials", testimonials);
+          return await saveFile("testimonials", testimonials);
         },
       });
     });
