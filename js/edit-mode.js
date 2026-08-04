@@ -236,6 +236,10 @@
       .cms-pencil svg { width: 15px; height: 15px; }
       [data-cms-edit] { position: relative; }
       [data-cms-edit].is-hot { outline: 2px dashed rgba(176,122,104,.7); outline-offset: 4px; border-radius: 8px; }
+      body.cms-editing .service-card,
+      body.cms-editing .service-card__body,
+      body.cms-editing .testimonial-card,
+      body.cms-editing .ba-case,
       body.cms-editing .product-card {
         overflow: visible !important;
       }
