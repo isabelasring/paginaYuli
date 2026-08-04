@@ -11,23 +11,22 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="admin.css" />
 </head>
-<body class="admin-body--live">
-  <div class="admin admin--live">
-    <header class="admin-top admin-top--live">
+<body>
+  <div class="admin">
+    <header class="admin-top">
       <div>
         <p class="admin-top__eyebrow">Yuly Sánchez Skin Beauty</p>
-        <h1>Editar la web</h1>
+        <h1 id="adminTitle">Entrar</h1>
       </div>
       <div class="admin-top__actions">
-        <button class="btn btn--ghost" type="button" id="btnProducts" hidden>Productos</button>
-        <a class="btn btn--ghost" href="index.html" target="_blank" rel="noopener">Ver web pública</a>
+        <a class="btn btn--ghost" href="index.html?edit=1" id="btnBackWeb" hidden>Volver a la web</a>
         <button class="btn btn--ghost" type="button" id="btnLogout" hidden>Cerrar sesión</button>
       </div>
     </header>
 
     <section class="panel" id="loginPanel">
-      <h2>Entrar</h2>
-      <p class="muted">Verás tu página tal cual. El lapicito deja editar textos y fotos. Al guardar se sube solo a la web.</p>
+      <h2>Contraseña</h2>
+      <p class="muted">Al entrar verás tu página normal. Los lapicitos sirven para cambiar textos y fotos.</p>
       <form id="loginForm" class="form">
         <label>
           Contraseña
@@ -38,18 +37,8 @@
       </form>
     </section>
 
-    <section class="panel panel--app panel--live" id="appPanel" hidden>
-      <div class="live-frame-wrap" id="liveFrameWrap">
-        <iframe
-          id="siteFrame"
-          class="live-frame"
-          title="Vista editable de la web"
-          src="about:blank"
-        ></iframe>
-      </div>
-
-      <!-- Productos (lista admin) -->
-      <div id="productsPanel" class="products-panel" hidden>
+    <section class="panel panel--app" id="appPanel" hidden>
+      <div id="productsPanel" class="products-panel">
         <div class="app-bar">
           <p class="muted" id="listMeta">—</p>
           <div class="app-bar__actions">

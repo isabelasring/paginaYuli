@@ -74,15 +74,6 @@
     const style = document.createElement("style");
     style.id = "cmsEditStyles";
     style.textContent = `
-      body.cms-editing { outline: 3px solid rgba(176,122,104,.45); outline-offset: -3px; }
-      .cms-banner {
-        position: sticky; top: 0; z-index: 10000;
-        background: #2f2926; color: #fbf7f2;
-        padding: .65rem 1rem; font-size: .85rem;
-        display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; justify-content: space-between;
-        font-family: Outfit, system-ui, sans-serif;
-      }
-      .cms-banner strong { color: #f0ddd4; }
       .cms-wrap { position: relative; display: inline-block; max-width: 100%; vertical-align: baseline; }
       .cms-wrap--block { display: block; }
       .cms-wrap--img { display: inline-block; line-height: 0; }
@@ -96,6 +87,16 @@
       .cms-pencil:hover { background: #8f5f50; transform: scale(1.06); }
       .cms-pencil svg { width: 15px; height: 15px; }
       .cms-wrap.is-hot { outline: 2px dashed rgba(176,122,104,.7); outline-offset: 4px; border-radius: 8px; }
+      .cms-bar {
+        position: fixed; top: 0.75rem; right: 0.75rem; z-index: 10001;
+        display: flex; gap: 0.4rem;
+      }
+      .cms-bar a, .cms-bar button {
+        border: 0; border-radius: 999px; padding: 0.55rem 0.9rem;
+        background: #2f2926; color: #fbf7f2; font-weight: 500; cursor: pointer;
+        box-shadow: 0 8px 22px rgba(47,41,38,.28); text-decoration: none;
+        font-family: Outfit, system-ui, sans-serif; font-size: 0.78rem;
+      }
       .cms-fab {
         position: fixed; bottom: 1.25rem; right: 1.25rem; z-index: 10001;
         display: flex; flex-direction: column; gap: .5rem;
@@ -132,22 +133,27 @@
     document.head.appendChild(style);
   }
 
-  function banner() {
-    if (!token()) {
-      const b = document.createElement("div");
-      b.className = "cms-banner";
-      b.innerHTML =
-        "<span>Modo edición: entra primero en <strong>admin.html</strong> con tu contraseña (misma pestaña del navegador).</span>";
-      document.body.prepend(b);
-      return false;
-    }
-    const b = document.createElement("div");
-    b.className = "cms-banner";
-    b.innerHTML =
-      "<span>Modo edición activo · toca el <strong>lápiz</strong> para cambiar texto o foto · se guarda en la web al instante</span>";
-    document.body.prepend(b);
-    document.body.classList.add("cms-editing");
-    return true;
+  function ensureAuth() {
+    if (token()) return true;
+    location.replace("admin.html");
+    return false;
+  }
+
+  function topBar() {
+    if (document.getElementById("cmsTopBar")) return;
+    const bar = document.createElement("div");
+    bar.id = "cmsTopBar";
+    bar.className = "cms-bar";
+    bar.innerHTML = `
+      <a href="admin.html?view=productos">Productos</a>
+      <button type="button" id="cmsLogout">Salir</button>
+    `;
+    document.body.appendChild(bar);
+    bar.querySelector("#cmsLogout")?.addEventListener("click", () => {
+      localStorage.removeItem(TOKEN_KEY);
+      sessionStorage.removeItem(TOKEN_KEY);
+      location.href = "index.html";
+    });
   }
 
   function wrap(el, opts) {
@@ -708,8 +714,8 @@
 
   async function boot() {
     ensureStyles();
-    const ok = banner();
-    if (!ok) return;
+    if (!ensureAuth()) return;
+    topBar();
 
     const [s, svc, t, r] = await Promise.all([
       SiteCMS.loadFile("site"),

@@ -6,7 +6,8 @@
   const loginForm = document.getElementById("loginForm");
   const loginError = document.getElementById("loginError");
   const btnLogout = document.getElementById("btnLogout");
-  const btnProducts = document.getElementById("btnProducts");
+  const btnBackWeb = document.getElementById("btnBackWeb");
+  const adminTitle = document.getElementById("adminTitle");
   const productList = document.getElementById("productList");
   const listMeta = document.getElementById("listMeta");
   const productForm = document.getElementById("productForm");
@@ -65,44 +66,30 @@
     if (msg) setTimeout(() => showMsg(formOk, ""), 5000);
   }
 
+  function wantsProducts() {
+    return new URLSearchParams(location.search).get("view") === "productos";
+  }
+
   function setAuthUI(loggedIn) {
+    if (loggedIn && !wantsProducts()) {
+      location.replace("index.html?edit=1");
+      return;
+    }
+
     loginPanel.hidden = loggedIn;
     appPanel.hidden = !loggedIn;
     btnLogout.hidden = !loggedIn;
-    if (btnProducts) btnProducts.hidden = !loggedIn;
+    if (btnBackWeb) btnBackWeb.hidden = !loggedIn;
+    if (adminTitle) adminTitle.textContent = loggedIn ? "Productos" : "Entrar";
+
     if (loggedIn) {
       showEditor(false);
       refreshList();
-      showProducts(false);
-      const frame = document.getElementById("siteFrame");
-      if (frame) {
-        frame.src = `index.html?edit=1&t=${Date.now()}#inicio`;
-      }
     } else {
       showEditor(false);
       productForm.hidden = true;
       pendingImage = null;
-      showProducts(false);
     }
-  }
-
-  function showProducts(open) {
-    const frameWrap = document.getElementById("liveFrameWrap");
-    const productsPanel = document.getElementById("productsPanel");
-    if (frameWrap) {
-      frameWrap.hidden = open;
-      frameWrap.style.display = open ? "none" : "block";
-    }
-    if (productsPanel) {
-      if (open) {
-        productsPanel.removeAttribute("hidden");
-        productsPanel.style.display = "";
-      } else {
-        productsPanel.setAttribute("hidden", "");
-        productsPanel.style.display = "none";
-      }
-    }
-    if (btnProducts) btnProducts.textContent = open ? "Volver a la web" : "Productos";
   }
 
   async function api(path, { method = "GET", body, token } = {}) {
@@ -478,7 +465,7 @@
         body: { action: "login", password: document.getElementById("loginPassword").value },
       });
       setToken(data.token);
-      setAuthUI(true);
+      location.href = wantsProducts() ? "admin.html?view=productos" : "index.html?edit=1";
     } catch (err) {
       if (err.status === 404 || String(err.message).includes("Failed to fetch")) {
         showMsg(
@@ -493,13 +480,7 @@
 
   btnLogout?.addEventListener("click", () => {
     setToken("");
-    setAuthUI(false);
-  });
-
-  btnProducts?.addEventListener("click", () => {
-    const productsPanel = document.getElementById("productsPanel");
-    const open = productsPanel?.hasAttribute("hidden") ?? true;
-    showProducts(open);
+    location.href = "admin.html";
   });
 
   btnNew?.addEventListener("click", openNew);
