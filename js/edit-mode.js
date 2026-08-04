@@ -112,6 +112,7 @@
       wrapEl.remove();
     });
     document.querySelectorAll(".cms-pencil").forEach((btn) => btn.remove());
+    document.querySelectorAll(".cms-trash").forEach((btn) => btn.remove());
     document.querySelectorAll("[data-cms-edit]").forEach((el) => {
       delete el.dataset.cmsEdit;
       el.classList.remove("is-hot");
@@ -234,6 +235,15 @@
       }
       .cms-pencil:hover { background: #8f5f50; transform: scale(1.06); }
       .cms-pencil svg { width: 15px; height: 15px; }
+      .cms-trash {
+        position: absolute; top: 8px; left: 8px; z-index: 40;
+        border: 2px solid #fff; background: #c45c5c; color: #fff;
+        font-family: Outfit, system-ui, sans-serif; font-size: 0.72rem; font-weight: 600;
+        padding: 0.35rem 0.65rem; border-radius: 999px; cursor: pointer;
+        box-shadow: 0 6px 16px rgba(79,52,42,.28);
+      }
+      .cms-trash:hover { background: #a34444; }
+      body.cms-editing .service-card { position: relative; }
       [data-cms-edit] { position: relative; }
       [data-cms-edit].is-hot { outline: 2px dashed rgba(176,122,104,.7); outline-offset: 4px; border-radius: 8px; }
       body.cms-editing .service-card,
@@ -498,104 +508,16 @@
     </label>`;
   }
 
-  async function saveProducts(next, newImages = []) {
-    const repoProducts = next.map((p) => {
-      const imageUrl = stripLive(p.imagePath || p.imageUrl || "");
-      return {
-        id: p.id,
-        name: p.name,
-        brand: p.brand || "",
-        category: p.category || "tratamiento",
-        order: Number(p.order) || 1,
-        price: p.price,
-        priceOld: p.priceOld ?? null,
-        badge: p.badge || "",
-        benefits: Array.isArray(p.benefits) ? p.benefits : [],
-        imageUrl,
-      };
-    });
-    return api({
-      action: "save",
-      products: repoProducts,
-      newImages,
-    });
-  }
-
-  function productFieldsHtml(p = {}) {
-    const cat = p.category || "tratamiento";
-    const benefits = Array.isArray(p.benefits) ? p.benefits.join("\n") : "";
-    return (
-      textField("name", "Nombre", p.name || "") +
-      textField("brand", "Marca", p.brand || "") +
-      `<label>Categoría
-        <select name="category">
-          <option value="limpieza"${cat === "limpieza" ? " selected" : ""}>Limpieza</option>
-          <option value="hidratacion"${cat === "hidratacion" ? " selected" : ""}>Hidratación</option>
-          <option value="tratamiento"${cat === "tratamiento" ? " selected" : ""}>Tratamiento</option>
-          <option value="proteccion"${cat === "proteccion" ? " selected" : ""}>Protección</option>
-        </select>
-      </label>` +
-      textField("price", "Precio (solo números)", p.price != null ? String(p.price) : "") +
-      textField("priceOld", "Precio anterior (opcional)", p.priceOld != null ? String(p.priceOld) : "") +
-      textField("badge", "Etiqueta (opcional)", p.badge || "") +
-      textField("order", "Orden", String(p.order ?? products.length + 1)) +
-      textField("benefits", "Beneficios (uno por línea)", benefits, true) +
-      fileField("productos", "", p.imageUrl || "")
-    );
-  }
-
-  function readProductForm(m, existing) {
-    const name = m.querySelector("[name=name]").value.trim();
-    const price = Number(String(m.querySelector("[name=price]").value).replace(/\D/g, ""));
-    if (!name) throw new Error("Escribe el nombre");
-    if (!Number.isFinite(price) || price <= 0) throw new Error("Escribe un precio válido");
-    const priceOldRaw = String(m.querySelector("[name=priceOld]").value || "").replace(/\D/g, "");
-    const priceOld = priceOldRaw ? Number(priceOldRaw) : null;
-    const benefits = String(m.querySelector("[name=benefits]").value || "")
-      .split("\n")
-      .map((l) => l.replace(/^[•\-\*\s]+/, "").trim())
-      .filter(Boolean);
-    return {
-      id: existing?.id || `producto-${Date.now().toString(36)}`,
-      name,
-      brand: m.querySelector("[name=brand]").value.trim(),
-      category: m.querySelector("[name=category]").value || "tratamiento",
-      order: Number(m.querySelector("[name=order]").value) || products.length + 1,
-      price,
-      priceOld: Number.isFinite(priceOld) && priceOld > 0 ? priceOld : null,
-      badge: m.querySelector("[name=badge]").value.trim(),
-      benefits,
-      imageUrl: stripLive(existing?.imagePath || existing?.imageUrl || ""),
-      imagePath: stripLive(existing?.imagePath || existing?.imageUrl || ""),
-    };
-  }
-
-  function openProductEditor(product, previewImg) {
-    const isNew = !product?.id;
-    openModal({
-      title: isNew ? "Nuevo producto" : "Editar producto",
-      previewImg,
-      fieldsHtml: productFieldsHtml(product || {}),
-      onSave: async (m) => {
-        const nextProduct = readProductForm(m, product);
-        if (!pendingImage && !nextProduct.imageUrl) {
-          throw new Error("Sube una foto del producto");
-        }
-        const next = products.filter((p) => p.id !== nextProduct.id);
-        next.push(nextProduct);
-        next.sort((a, b) => (a.order || 0) - (b.order || 0));
-        const imgs = [];
-        if (pendingImage) {
-          pendingImage.id = nextProduct.id;
-          imgs.push({
-            id: nextProduct.id,
-            fileName: pendingImage.fileName,
-            base64: pendingImage.base64,
-          });
-        }
-        return await saveProducts(next, imgs);
-      },
-    });
+  function goToProductsAdmin({ id, isNew } = {}) {
+    if (isNew) {
+      location.href = "admin.html?view=productos&new=1";
+      return;
+    }
+    if (id) {
+      location.href = `admin.html?view=productos&edit=${encodeURIComponent(id)}`;
+      return;
+    }
+    location.href = "admin.html?view=productos";
   }
 
   function bindProducts() {
@@ -603,12 +525,46 @@
       const id = card.dataset.id;
       const product = products.find((p) => p.id === id);
       if (!product) return;
-      const img = card.querySelector(".product-card__media img");
       wrap(card, {
         block: true,
-        onEdit: () => openProductEditor(product, img),
+        onEdit: () => goToProductsAdmin({ id: product.id }),
       });
     });
+  }
+
+  async function deleteService(item, { ask = true } = {}) {
+    if (!item?.id) throw new Error("Servicio no encontrado");
+    if (ask && !confirm(`¿Eliminar “${item.name || "este servicio"}” de la web?`)) return null;
+    services.items = (services.items || []).filter((s) => s.id !== item.id);
+    services.items.forEach((s, i) => {
+      s.order = i + 1;
+    });
+    return await saveFile("services", services);
+  }
+
+  function addServiceTrash(card, item) {
+    if (!card || !item || card.querySelector(":scope > .cms-trash")) return;
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "cms-trash";
+    btn.setAttribute("aria-label", `Eliminar ${item.name || "servicio"}`);
+    btn.textContent = "Eliminar";
+    btn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      try {
+        btn.disabled = true;
+        const result = await deleteService(item);
+        if (!result) return;
+        await refreshAfterSave(result, {});
+        flashSaved("Servicio eliminado");
+      } catch (err) {
+        alert(err.message || "No se pudo eliminar");
+      } finally {
+        btn.disabled = false;
+      }
+    });
+    card.appendChild(btn);
   }
 
   function bindHero() {
@@ -1140,9 +1096,14 @@
 
     document.querySelectorAll("#servicesTrack .service-card").forEach((card) => {
       const id = card.dataset.id;
-      const item = (services.items || []).find((s) => s.id === id);
+      const sorted = [...(services.items || [])].sort((a, b) => (a.order || 0) - (b.order || 0));
+      const idxFromDom = Number(card.dataset.index);
+      const item =
+        sorted.find((s) => s.id === id) ||
+        (Number.isFinite(idxFromDom) ? sorted[idxFromDom] : null);
       if (!item) return;
       const idx = services.items.indexOf(item);
+      addServiceTrash(card, item);
       const mediaImg = card.querySelector(".service-card__media img, .service-card__gallery img.is-active");
       if (mediaImg) {
         wrap(mediaImg, {
@@ -1158,6 +1119,11 @@
                 pendingImage.folder = "services";
                 pendingImage.setPath = `items.${idx}.images.0`;
                 return await saveFile("services", services, [pendingImage]);
+              },
+              onDelete: async () => {
+                const result = await deleteService(item, { ask: false });
+                if (!result) throw new Error("No se pudo eliminar");
+                return result;
               },
             }),
         });
@@ -1182,11 +1148,9 @@
                 return await saveFile("services", services);
               },
               onDelete: async () => {
-                services.items = (services.items || []).filter((s) => s.id !== item.id);
-                services.items.forEach((s, i) => {
-                  s.order = i + 1;
-                });
-                return await saveFile("services", services);
+                const result = await deleteService(item, { ask: false });
+                if (!result) throw new Error("No se pudo eliminar");
+                return result;
               },
             }),
         });
@@ -1334,7 +1298,7 @@
     addSectionButton(
       document.querySelector("#productos .products__toolbar") || document.getElementById("productsGrid"),
       "+ Producto",
-      () => openProductEditor(null, null)
+      () => goToProductsAdmin({ isNew: true })
     );
 
     addSectionButton(

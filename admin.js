@@ -764,8 +764,12 @@
   bindBenefitsField();
   if (getToken()) {
     setAuthUI(true);
-    if (wantsProducts() && new URLSearchParams(location.search).get("new") === "1") {
-      setTimeout(() => openNew(), 300);
+    if (wantsProducts()) {
+      const params = new URLSearchParams(location.search);
+      refreshList().then(() => {
+        if (params.get("new") === "1") openNew();
+        else if (params.get("edit")) openEdit(params.get("edit"));
+      });
     }
   } else setAuthUI(false);
 })();
