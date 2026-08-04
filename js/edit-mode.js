@@ -243,19 +243,13 @@
         box-shadow: 0 6px 16px rgba(79,52,42,.28);
       }
       .cms-trash:hover { background: #a34444; }
-      body.cms-editing .service-card { position: relative; }
       [data-cms-edit] { position: relative; }
       [data-cms-edit].is-hot { outline: 2px dashed rgba(176,122,104,.7); outline-offset: 4px; border-radius: 8px; }
-      body.cms-editing .service-card,
-      body.cms-editing .service-card__body,
+      /* No tocar position/overflow del carrusel 3D de servicios */
       body.cms-editing .testimonial-card,
       body.cms-editing .ba-case,
       body.cms-editing .product-card {
         overflow: visible !important;
-      }
-      /* media sigue con overflow hidden para que la foto no se salga */
-      body.cms-editing .service-card__media {
-        overflow: hidden !important;
       }
       body.cms-editing .testimonials__track {
         overflow-x: auto !important;
@@ -263,11 +257,13 @@
         padding-top: 0.35rem;
         padding-right: 0.35rem;
       }
-      body.cms-editing .services-carousel__viewport {
-        overflow: visible !important;
-        padding-top: 0.5rem;
+      body.cms-editing .service-card > .cms-trash {
+        top: 10px;
+        left: 10px;
+        z-index: 50;
       }
       body.cms-editing .service-card__media > .cms-pencil,
+      body.cms-editing .service-card__body > .cms-pencil,
       body.cms-editing .ba-case > .cms-pencil,
       body.cms-editing .experience-step__visual > .cms-pencil,
       body.cms-editing .home-invite__media > .cms-pencil,
