@@ -7,6 +7,7 @@
   const loginError = document.getElementById("loginError");
   const btnLogout = document.getElementById("btnLogout");
   const btnBackWeb = document.getElementById("btnBackWeb");
+  const btnGoSite = document.getElementById("btnGoSite");
   const adminTitle = document.getElementById("adminTitle");
   const productList = document.getElementById("productList");
   const listMeta = document.getElementById("listMeta");
@@ -80,6 +81,7 @@
     appPanel.hidden = !loggedIn;
     btnLogout.hidden = !loggedIn;
     if (btnBackWeb) btnBackWeb.hidden = !loggedIn;
+    if (btnGoSite) btnGoSite.hidden = !loggedIn;
     if (adminTitle) adminTitle.textContent = loggedIn ? "Productos" : "Entrar";
 
     if (loggedIn) {
