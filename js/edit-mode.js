@@ -350,7 +350,8 @@
     document.querySelectorAll("#inicio .trust-item").forEach((el, i) => {
       const item = (h.trustItems || [])[i];
       if (!item) return;
-      wrap(el, {
+      const textHost = el.querySelector(":scope > div") || el;
+      wrap(textHost, {
         onEdit: () =>
           openModal({
             title: `Trust ${i + 1}`,

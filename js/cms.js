@@ -80,8 +80,11 @@
     (h.trustItems || []).forEach((item, i) => {
       const el = trust[i];
       if (!el) return;
-      const strong = el.querySelector("strong");
-      const textSpan = el.querySelector("div > span");
+      // Nunca tocar .trust-item__icon (ahí vive el SVG)
+      const strong = el.querySelector(":scope > div > strong");
+      const textSpan =
+        el.querySelector(":scope > div > .trust-item__label") ||
+        el.querySelector(":scope > div > span:not(.trust-item__icon)");
       if (strong && item.strong) strong.textContent = item.strong;
       if (textSpan && item.span) textSpan.textContent = item.span;
     });

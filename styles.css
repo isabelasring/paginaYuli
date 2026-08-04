@@ -1419,7 +1419,8 @@ body:not([data-active-page="inicio"])
   line-height: 1.2;
 }
 
-.trust-item span {
+.trust-item__label {
+  display: block;
   font-size: 0.75rem;
   color: var(--ink-soft);
   letter-spacing: 0.02em;
