@@ -1505,17 +1505,21 @@ body:not([data-active-page="inicio"])
   color: var(--terracotta);
 }
 
+.services .section__head {
+  margin-bottom: 0.85rem;
+}
+
 .services-carousel {
   position: relative;
   display: block;
-  margin: 1.5rem 0 2rem;
+  margin: 0.75rem 0 2rem;
   padding-inline: 0.25rem;
   overflow-x: clip;
 }
 
 .services-carousel__viewport {
   position: relative;
-  height: 980px;
+  height: 720px;
   perspective: 1400px;
   overflow: hidden;
 }
@@ -1529,7 +1533,7 @@ body:not([data-active-page="inicio"])
 
 .service-card {
   position: absolute;
-  top: 50%;
+  top: 1rem;
   left: 50%;
   width: min(340px, 82vw);
   height: auto;
@@ -2990,7 +2994,7 @@ body.lightbox-open {
   }
 
   .services-carousel__viewport {
-    height: 740px;
+    height: 620px;
   }
 
   .services-carousel__nav {
@@ -3253,7 +3257,7 @@ body.lightbox-open {
   }
 
   .services-carousel__viewport {
-    height: 680px;
+    height: 560px;
   }
 
   .service-card {

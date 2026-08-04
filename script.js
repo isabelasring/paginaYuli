@@ -137,7 +137,7 @@ function initServicesCarousel() {
       const z = 100 - abs * 10;
       const opacity = abs > 3 ? 0 : Math.max(0.25, 1 - abs * 0.22);
 
-      card.style.transform = `translate(-50%, -50%) translateX(${x}px) rotateY(${rot}deg) scale(${scale})`;
+      card.style.transform = `translateX(-50%) translateX(${x}px) rotateY(${rot}deg) scale(${scale})`;
       card.style.zIndex = String(z);
       card.style.opacity = String(opacity);
       card.style.filter = abs === 0 ? "none" : `brightness(${Math.max(0.75, 1 - abs * 0.08)})`;
