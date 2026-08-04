@@ -18,13 +18,10 @@
   }
 
   function formatServicePrice(n) {
+    if (typeof n === "string" && n.trim()) return n.trim();
     const num = Number(n);
     if (!Number.isFinite(num)) return "";
-    return new Intl.NumberFormat("es-CO", {
-      style: "currency",
-      currency: "COP",
-      maximumFractionDigits: 0,
-    }).format(num);
+    return `$${new Intl.NumberFormat("es-CO", { maximumFractionDigits: 0 }).format(num)}`;
   }
 
   function stars(n) {
@@ -63,19 +60,19 @@
     const primary = document.querySelector("#inicio .hero__actions .btn--primary");
     const secondary = document.querySelector("#inicio .hero__actions .btn--outline");
 
-    if (eyebrow) eyebrow.textContent = h.eyebrow || "";
-    if (h1) {
+    if (eyebrow && h.eyebrow) eyebrow.textContent = h.eyebrow;
+    if (h1 && (h.headlineBefore || h.headlineScript)) {
       h1.innerHTML = `${escapeHtml(h.headlineBefore || "")}<br /><em class="hero__script">${escapeHtml(
         h.headlineScript || ""
       )}</em>`;
     }
-    if (lead) lead.textContent = h.lead || "";
+    if (lead && h.lead) lead.textContent = h.lead;
     if (img && h.imageUrl) {
       img.src = h.imageUrl;
-      img.alt = h.eyebrow || "Hero";
+      if (h.eyebrow) img.alt = h.eyebrow;
     }
-    if (floatSpan) floatSpan.textContent = h.floatLabel || "";
-    if (floatStrong) floatStrong.textContent = h.floatStrong || "";
+    if (floatSpan && h.floatLabel) floatSpan.textContent = h.floatLabel;
+    if (floatStrong && h.floatStrong) floatStrong.textContent = h.floatStrong;
     if (primary && h.ctaPrimaryLabel) primary.textContent = h.ctaPrimaryLabel;
     if (secondary && h.ctaSecondaryLabel) secondary.textContent = h.ctaSecondaryLabel;
 
@@ -85,8 +82,8 @@
       if (!el) return;
       const strong = el.querySelector("strong");
       const textSpan = el.querySelector("div > span");
-      if (strong) strong.textContent = item.strong || "";
-      if (textSpan) textSpan.textContent = item.span || "";
+      if (strong && item.strong) strong.textContent = item.strong;
+      if (textSpan && item.span) textSpan.textContent = item.span;
     });
   }
 
@@ -95,10 +92,10 @@
     if (!ex) return;
     const eyebrow = document.querySelector("#experiencia .experience__eyebrow");
     const h2 = document.querySelector("#experiencia .experience__head h2");
-    if (eyebrow) {
-      eyebrow.innerHTML = `${escapeHtml(ex.eyebrow || "")} <span aria-hidden="true">♡</span>`;
+    if (eyebrow && ex.eyebrow) {
+      eyebrow.innerHTML = `${escapeHtml(ex.eyebrow)} <span aria-hidden="true">♡</span>`;
     }
-    if (h2) {
+    if (h2 && (ex.titleBefore || ex.titleScript)) {
       h2.innerHTML = `${escapeHtml(ex.titleBefore || "")}<em class="experience__script">${escapeHtml(
         ex.titleScript || ""
       )}</em>`;
@@ -113,9 +110,9 @@
       const title = el.querySelector("h3");
       const p = el.querySelector("p");
       if (img && step.imageUrl) img.src = step.imageUrl;
-      if (num) num.textContent = step.num || "";
-      if (title) title.textContent = step.title || "";
-      if (p) p.textContent = step.text || "";
+      if (num && step.num) num.textContent = step.num;
+      if (title && step.title) title.textContent = step.title;
+      if (p && step.text) p.textContent = step.text;
     });
   }
 
@@ -132,23 +129,23 @@
     const cta = root.querySelector(".btn");
     const img = document.querySelector("#sobre-mi .about__frame img");
 
-    if (eyebrow) eyebrow.textContent = a.eyebrow || "";
-    if (h2) {
+    if (eyebrow && a.eyebrow) eyebrow.textContent = a.eyebrow;
+    if (h2 && (a.titleBefore || a.titleEm)) {
       h2.innerHTML = `${escapeHtml(a.titleBefore || "")}<em>${escapeHtml(a.titleEm || "")}</em>`;
     }
     (a.paragraphs || []).forEach((text, i) => {
-      if (paras[i]) paras[i].textContent = text;
+      if (paras[i] && text) paras[i].textContent = text;
     });
-    if (sigStrong) sigStrong.textContent = a.signatureName || "";
-    if (sigSpans[0]) sigSpans[0].textContent = a.signatureRole || "";
-    if (sigSpans[1]) sigSpans[1].textContent = a.signatureTagline || "";
+    if (sigStrong && a.signatureName) sigStrong.textContent = a.signatureName;
+    if (sigSpans[0] && a.signatureRole) sigSpans[0].textContent = a.signatureRole;
+    if (sigSpans[1] && a.signatureTagline) sigSpans[1].textContent = a.signatureTagline;
     if (cta) {
       if (a.ctaLabel) cta.textContent = a.ctaLabel;
       if (a.ctaUrl) cta.href = a.ctaUrl;
     }
     if (img && a.imageUrl) {
       img.src = a.imageUrl;
-      img.alt = a.signatureName || "Sobre mí";
+      if (a.signatureName) img.alt = a.signatureName;
     }
   }
 
@@ -160,9 +157,9 @@
     const eyebrow = head.querySelector(".eyebrow");
     const h2 = head.querySelector("h2");
     const sub = head.querySelector(".section__sub");
-    if (eyebrow) eyebrow.textContent = p.eyebrow || "";
-    if (h2) h2.textContent = p.title || "";
-    if (sub) sub.textContent = p.sub || "";
+    if (eyebrow && p.eyebrow) eyebrow.textContent = p.eyebrow;
+    if (h2 && p.title) h2.textContent = p.title;
+    if (sub && p.sub) sub.textContent = p.sub;
   }
 
   function serviceCardHtml(item, index) {
@@ -204,13 +201,13 @@
       const eyebrow = head.querySelector(".eyebrow");
       const h2 = head.querySelector("h2");
       const sub = head.querySelector(".section__sub");
-      if (eyebrow) eyebrow.textContent = section.eyebrow || "";
-      if (h2) {
+      if (eyebrow && section.eyebrow) eyebrow.textContent = section.eyebrow;
+      if (h2 && (section.titleBefore || section.titleEm)) {
         h2.innerHTML = `${escapeHtml(section.titleBefore || "")}<em>${escapeHtml(
           section.titleEm || ""
         )}</em>${escapeHtml(section.titleAfter || "")}`;
       }
-      if (sub) sub.textContent = section.sub || "";
+      if (sub && section.sub) sub.textContent = section.sub;
     }
     const cta = document.querySelector("#servicios .section__cta .btn");
     if (cta) {
@@ -219,7 +216,10 @@
     }
 
     const items = [...(data.items || [])].sort((a, b) => (a.order || 0) - (b.order || 0));
-    track.innerHTML = items.map((item, i) => serviceCardHtml(item, i)).join("");
+    // No vaciar el HTML original si no hay items
+    if (items.length) {
+      track.innerHTML = items.map((item, i) => serviceCardHtml(item, i)).join("");
+    }
   }
 
   function mountTestimonials(data) {
@@ -232,11 +232,13 @@
     if (head) {
       const eyebrow = head.querySelector(".eyebrow");
       const h2 = head.querySelector("h2");
-      if (eyebrow) eyebrow.textContent = section.eyebrow || "";
-      if (h2) h2.textContent = section.title || "";
+      if (eyebrow && section.eyebrow) eyebrow.textContent = section.eyebrow;
+      if (h2 && section.title) h2.textContent = section.title;
     }
 
     const items = [...(data.items || [])].sort((a, b) => (a.order || 0) - (b.order || 0));
+    if (!items.length) return;
+
     track.innerHTML = items
       .map(
         (item) => `<article class="testimonial-card" data-id="${escapeHtml(item.id || "")}">

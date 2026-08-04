@@ -74,9 +74,7 @@
     const style = document.createElement("style");
     style.id = "cmsEditStyles";
     style.textContent = `
-      .cms-wrap { position: relative; display: inline-block; max-width: 100%; vertical-align: baseline; }
-      .cms-wrap--block { display: block; }
-      .cms-wrap--img { display: inline-block; line-height: 0; }
+      .cms-wrap--img { position: relative; display: inline-block; line-height: 0; max-width: 100%; }
       .cms-pencil {
         position: absolute; top: -10px; right: -10px; z-index: 30;
         width: 34px; height: 34px; border-radius: 50%;
@@ -86,7 +84,7 @@
       }
       .cms-pencil:hover { background: #8f5f50; transform: scale(1.06); }
       .cms-pencil svg { width: 15px; height: 15px; }
-      .cms-wrap.is-hot { outline: 2px dashed rgba(176,122,104,.7); outline-offset: 4px; border-radius: 8px; }
+      [data-cms-edit].is-hot { outline: 2px dashed rgba(176,122,104,.7); outline-offset: 4px; border-radius: 8px; }
       .cms-bar {
         position: fixed; top: 0.75rem; right: 0.75rem; z-index: 10001;
         display: flex; gap: 0.4rem;
@@ -156,12 +154,23 @@
     });
   }
 
-  function wrap(el, opts) {
-    if (!el || el.closest(".cms-wrap")) return;
-    const wrapEl = document.createElement("span");
-    wrapEl.className = `cms-wrap${opts.block ? " cms-wrap--block" : ""}${opts.img ? " cms-wrap--img" : ""}`;
-    el.parentNode.insertBefore(wrapEl, el);
-    wrapEl.appendChild(el);
+  function wrap(el, opts = {}) {
+    if (!el || el.dataset.cmsEdit || el.closest("[data-cms-edit]")) return;
+
+    let host = el;
+    if (opts.img || el.tagName === "IMG") {
+      const wrapEl = document.createElement("span");
+      wrapEl.className = "cms-wrap cms-wrap--img";
+      el.parentNode.insertBefore(wrapEl, el);
+      wrapEl.appendChild(el);
+      host = wrapEl;
+    } else {
+      host = el;
+      const pos = getComputedStyle(host).position;
+      if (pos === "static") host.style.position = "relative";
+    }
+
+    host.dataset.cmsEdit = "1";
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "cms-pencil";
@@ -172,9 +181,9 @@
       e.stopPropagation();
       opts.onEdit();
     });
-    wrapEl.addEventListener("mouseenter", () => wrapEl.classList.add("is-hot"));
-    wrapEl.addEventListener("mouseleave", () => wrapEl.classList.remove("is-hot"));
-    wrapEl.appendChild(btn);
+    host.addEventListener("mouseenter", () => host.classList.add("is-hot"));
+    host.addEventListener("mouseleave", () => host.classList.remove("is-hot"));
+    host.appendChild(btn);
   }
 
   function openModal({ title, fieldsHtml, onSave }) {
