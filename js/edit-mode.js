@@ -316,10 +316,7 @@
     const bar = document.createElement("div");
     bar.id = "cmsTopBar";
     bar.className = "cms-bar";
-    bar.innerHTML = `
-      <a href="admin.html?view=productos">Productos</a>
-      <button type="button" id="cmsLogout">Salir</button>
-    `;
+    bar.innerHTML = `<button type="button" id="cmsLogout">Salir</button>`;
     document.body.appendChild(bar);
     bar.querySelector("#cmsLogout")?.addEventListener("click", () => {
       localStorage.removeItem(TOKEN_KEY);
