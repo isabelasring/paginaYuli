@@ -215,11 +215,14 @@
       [data-cms-edit] { position: relative; }
       [data-cms-edit].is-hot { outline: 2px dashed rgba(176,122,104,.7); outline-offset: 4px; border-radius: 8px; }
       body.cms-editing .service-card,
-      body.cms-editing .service-card__media,
       body.cms-editing .service-card__body,
       body.cms-editing .testimonial-card,
       body.cms-editing .ba-case {
         overflow: visible !important;
+      }
+      /* media sigue con overflow hidden para que la foto no se salga */
+      body.cms-editing .service-card__media {
+        overflow: hidden !important;
       }
       body.cms-editing .testimonials__track {
         overflow-x: auto !important;
@@ -229,6 +232,17 @@
       }
       body.cms-editing .services-carousel__viewport {
         overflow: visible !important;
+        padding-top: 0.5rem;
+      }
+      body.cms-editing .service-card__media > .cms-pencil,
+      body.cms-editing .ba-case > .cms-pencil,
+      body.cms-editing .experience-step__visual > .cms-pencil,
+      body.cms-editing .home-invite__media > .cms-pencil,
+      body.cms-editing .home-atmosphere__visual > .cms-pencil,
+      body.cms-editing .about__frame > .cms-pencil,
+      body.cms-editing .hero__frame > .cms-pencil {
+        top: 10px;
+        right: 10px;
       }
       .cms-toast {
         position: fixed; left: 50%; bottom: 1.25rem; z-index: 10060;
@@ -319,11 +333,23 @@
 
     let host = el;
     if (opts.img || el.tagName === "IMG") {
-      const wrapEl = document.createElement("span");
-      wrapEl.className = "cms-wrap cms-wrap--img";
-      el.parentNode.insertBefore(wrapEl, el);
-      wrapEl.appendChild(el);
-      host = wrapEl;
+      // No envolver <img>: rompe galerías (opacity/absolute) y deja el recuadro vacío.
+      // Ponemos el lápiz en el contenedor de la foto.
+      const mediaHost = el.closest(
+        ".service-card__media, .ba-case, .experience-step__visual, .home-invite__media, .home-atmosphere__visual, .about__frame, .hero__frame, .hero__visual"
+      );
+      if (mediaHost) {
+        if (mediaHost.dataset.cmsEdit || mediaHost.querySelector(":scope > .cms-pencil")) return;
+        host = mediaHost;
+        const pos = getComputedStyle(host).position;
+        if (pos === "static") host.style.position = "relative";
+      } else {
+        const wrapEl = document.createElement("span");
+        wrapEl.className = "cms-wrap cms-wrap--img";
+        el.parentNode.insertBefore(wrapEl, el);
+        wrapEl.appendChild(el);
+        host = wrapEl;
+      }
     } else {
       host = el;
       const pos = getComputedStyle(host).position;
