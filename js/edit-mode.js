@@ -929,10 +929,11 @@
     });
   }
 
-  function addSectionButton(sectionEl, label, onClick) {
-    if (!sectionEl || sectionEl.querySelector(".cms-section-add")) return;
+  function addSectionButton(beforeEl, label, onClick) {
+    if (!beforeEl || beforeEl.parentElement?.querySelector(`.cms-section-add[data-label="${label}"]`)) return;
     const wrapEl = document.createElement("div");
     wrapEl.className = "cms-section-add";
+    wrapEl.dataset.label = label;
     const btn = document.createElement("button");
     btn.type = "button";
     btn.textContent = label;
@@ -942,12 +943,11 @@
       onClick();
     });
     wrapEl.appendChild(btn);
-    const container = sectionEl.querySelector(".container") || sectionEl;
-    container.insertBefore(wrapEl, container.firstChild);
+    beforeEl.parentNode.insertBefore(wrapEl, beforeEl);
   }
 
   function fabs() {
-    addSectionButton(document.getElementById("servicios"), "+ Servicio", () => {
+    addSectionButton(document.getElementById("servicesCarousel"), "+ Servicio", () => {
       openModal({
         title: "Nuevo servicio",
         fieldsHtml:
@@ -977,11 +977,15 @@
       });
     });
 
-    addSectionButton(document.getElementById("productos"), "+ Producto", () => {
-      location.href = "admin.html?view=productos&new=1";
-    });
+    addSectionButton(
+      document.querySelector("#productos .products__toolbar") || document.getElementById("productsGrid"),
+      "+ Producto",
+      () => {
+        location.href = "admin.html?view=productos&new=1";
+      }
+    );
 
-    addSectionButton(document.getElementById("resultados"), "+ Foto antes/después", () => {
+    addSectionButton(document.getElementById("baCarousel"), "+ Foto antes/después", () => {
       openModal({
         title: "Nueva foto antes/después",
         fieldsHtml: fileField("results", "items.NEW.imageUrl"),
@@ -1002,7 +1006,7 @@
       });
     });
 
-    addSectionButton(document.getElementById("testimonios"), "+ Testimonio", () => {
+    addSectionButton(document.getElementById("testimonialsTrack"), "+ Testimonio", () => {
       openModal({
         title: "Nuevo testimonio",
         fieldsHtml:
