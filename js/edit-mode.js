@@ -351,7 +351,7 @@
     bar.querySelector("#cmsLogout")?.addEventListener("click", () => {
       localStorage.removeItem(TOKEN_KEY);
       sessionStorage.removeItem(TOKEN_KEY);
-      location.href = "index.html";
+      location.href = "admin.html";
     });
   }
 
