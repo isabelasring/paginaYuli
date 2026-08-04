@@ -74,9 +74,9 @@
     const style = document.createElement("style");
     style.id = "cmsEditStyles";
     style.textContent = `
-      .cms-wrap--img { position: relative; display: inline-block; line-height: 0; max-width: 100%; }
+      .cms-wrap--img { position: relative; display: inline-block; line-height: 0; max-width: 100%; overflow: visible; }
       .cms-pencil {
-        position: absolute; top: -10px; right: -10px; z-index: 30;
+        position: absolute; top: 8px; right: 8px; z-index: 40;
         width: 34px; height: 34px; border-radius: 50%;
         border: 2px solid #fff; background: #b07a68; color: #fff;
         display: grid; place-items: center; cursor: pointer;
@@ -84,7 +84,24 @@
       }
       .cms-pencil:hover { background: #8f5f50; transform: scale(1.06); }
       .cms-pencil svg { width: 15px; height: 15px; }
+      [data-cms-edit] { position: relative; }
       [data-cms-edit].is-hot { outline: 2px dashed rgba(176,122,104,.7); outline-offset: 4px; border-radius: 8px; }
+      body.cms-editing .service-card,
+      body.cms-editing .service-card__media,
+      body.cms-editing .service-card__body,
+      body.cms-editing .testimonial-card,
+      body.cms-editing .ba-case {
+        overflow: visible !important;
+      }
+      body.cms-editing .testimonials__track {
+        overflow-x: auto !important;
+        overflow-y: visible !important;
+        padding-top: 0.35rem;
+        padding-right: 0.35rem;
+      }
+      body.cms-editing .services-carousel__viewport {
+        overflow: visible !important;
+      }
       .cms-bar {
         position: fixed; top: 0.75rem; right: 0.75rem; z-index: 10001;
         display: flex; gap: 0.4rem;
@@ -100,7 +117,10 @@
         display: flex; flex-direction: column; gap: .5rem;
       }
       .cms-section-add {
-        display: flex; justify-content: center; margin: 0 0 1rem;
+        display: flex; justify-content: center; margin: 0.85rem 0 1rem;
+      }
+      .cms-section-add--after {
+        margin: 1rem 0 0.5rem;
       }
       .cms-section-add button, .cms-fab button {
         border: 0; border-radius: 999px; padding: .75rem 1.1rem;
@@ -929,10 +949,11 @@
     });
   }
 
-  function addSectionButton(beforeEl, label, onClick) {
-    if (!beforeEl || beforeEl.parentElement?.querySelector(`.cms-section-add[data-label="${label}"]`)) return;
+  function addSectionButton(anchorEl, label, onClick, { after = false } = {}) {
+    if (!anchorEl || !anchorEl.parentNode) return;
+    if (anchorEl.parentElement?.querySelector(`.cms-section-add[data-label="${label}"]`)) return;
     const wrapEl = document.createElement("div");
-    wrapEl.className = "cms-section-add";
+    wrapEl.className = `cms-section-add${after ? " cms-section-add--after" : ""}`;
     wrapEl.dataset.label = label;
     const btn = document.createElement("button");
     btn.type = "button";
@@ -943,7 +964,8 @@
       onClick();
     });
     wrapEl.appendChild(btn);
-    beforeEl.parentNode.insertBefore(wrapEl, beforeEl);
+    if (after) anchorEl.parentNode.insertBefore(wrapEl, anchorEl.nextSibling);
+    else anchorEl.parentNode.insertBefore(wrapEl, anchorEl);
   }
 
   function fabs() {
@@ -985,26 +1007,31 @@
       }
     );
 
-    addSectionButton(document.getElementById("baCarousel"), "+ Foto antes/después", () => {
-      openModal({
-        title: "Nueva foto antes/después",
-        fieldsHtml: fileField("results", "items.NEW.imageUrl"),
-        onSave: async () => {
-          if (!pendingImage) throw new Error("Elige una foto");
-          results.items = results.items || [];
-          const order = results.items.length + 1;
-          results.items.push({
-            id: `ba-${Date.now()}`,
-            order,
-            imageUrl: "",
-            alt: `Resultado ${order}`,
-          });
-          pendingImage.folder = "results";
-          pendingImage.setPath = `items.${results.items.length - 1}.imageUrl`;
-          await saveFile("results", results, [pendingImage]);
-        },
-      });
-    });
+    addSectionButton(
+      document.getElementById("baCarousel"),
+      "+ Foto antes/después",
+      () => {
+        openModal({
+          title: "Nueva foto antes/después",
+          fieldsHtml: fileField("results", "items.NEW.imageUrl"),
+          onSave: async () => {
+            if (!pendingImage) throw new Error("Elige una foto");
+            results.items = results.items || [];
+            const order = results.items.length + 1;
+            results.items.push({
+              id: `ba-${Date.now()}`,
+              order,
+              imageUrl: "",
+              alt: `Resultado ${order}`,
+            });
+            pendingImage.folder = "results";
+            pendingImage.setPath = `items.${results.items.length - 1}.imageUrl`;
+            await saveFile("results", results, [pendingImage]);
+          },
+        });
+      },
+      { after: true }
+    );
 
     addSectionButton(document.getElementById("testimonialsTrack"), "+ Testimonio", () => {
       openModal({
@@ -1035,6 +1062,7 @@
   async function boot() {
     ensureStyles();
     if (!ensureAuth()) return;
+    document.body.classList.add("cms-editing");
     topBar();
 
     const [s, svc, t, r] = await Promise.all([
