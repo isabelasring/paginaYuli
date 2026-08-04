@@ -100,7 +100,7 @@
         display: flex; flex-direction: column; gap: .5rem;
       }
       .cms-section-add {
-        display: flex; justify-content: center; margin: 1.25rem 0 0.5rem;
+        display: flex; justify-content: center; margin: 0 0 1rem;
       }
       .cms-section-add button, .cms-fab button {
         border: 0; border-radius: 999px; padding: .75rem 1.1rem;
@@ -943,7 +943,7 @@
     });
     wrapEl.appendChild(btn);
     const container = sectionEl.querySelector(".container") || sectionEl;
-    container.appendChild(wrapEl);
+    container.insertBefore(wrapEl, container.firstChild);
   }
 
   function fabs() {
