@@ -316,15 +316,13 @@
         border: 1px solid rgba(176,122,104,.35); border-radius: 12px; padding: .7rem .85rem; font: inherit; color: #2f2926;
       }
       .cms-modal__card textarea { min-height: 110px; resize: vertical; }
-      .cms-modal__actions { display: flex; gap: .5rem; justify-content: flex-end; margin-top: .5rem; align-items: center; flex-wrap: wrap; }
-      .cms-modal__spacer { flex: 1; }
+      .cms-modal__actions { display: flex; gap: .5rem; justify-content: flex-end; margin-top: .5rem; }
       .cms-modal__actions button {
         border-radius: 999px; padding: .65rem 1rem; border: 1px solid rgba(176,122,104,.35);
         background: #fff; cursor: pointer; font: inherit;
       }
-      .cms-modal__actions .primary { background: #b07a68; border-color: #b07a68; color: #fff; }
-      .cms-modal__actions .danger { background: #fff; border-color: #c45c5c; color: #a34444; margin-right: auto; }
-      .cms-modal__actions .danger:hover { background: #fdf2f2; }
+      .cms-modal__actions .danger { background: #c45c5c; border-color: #c45c5c; color: #fff; margin-right: auto; }
+      .cms-modal__actions .danger:hover { background: #a34444; }
       .cms-err { color: #a34444; font-size: .85rem; margin: .25rem 0 .5rem; }
       .cms-preview { max-width: 140px; max-height: 140px; border-radius: 12px; margin-bottom: .5rem; object-fit: cover; }
     `;
@@ -395,7 +393,7 @@
     host.appendChild(btn);
   }
 
-  function openModal({ title, fieldsHtml, onSave, onDelete, previewImg, deleteLabel }) {
+  function openModal({ title, fieldsHtml, onSave, onDelete, previewImg }) {
     pendingImage = null;
     let modal = document.getElementById("cmsEditModal");
     if (!modal) {
@@ -409,49 +407,25 @@
           <h3 id="cmsModalTitle"></h3>
           <div id="cmsModalBody"></div>
           <p class="cms-err" id="cmsModalErr" hidden></p>
-          <div class="cms-modal__actions">
-            <button type="button" class="danger" id="cmsModalDelete" hidden>Eliminar</button>
-            <span class="cms-modal__spacer"></span>
-            <button type="button" data-cms-close>Cancelar</button>
-            <button type="button" class="primary" id="cmsModalSave">Guardar</button>
-          </div>
+          <div class="cms-modal__actions" id="cmsModalActions"></div>
         </div>`;
       document.body.appendChild(modal);
-      modal.querySelectorAll("[data-cms-close]").forEach((el) =>
-        el.addEventListener("click", () => {
-          modal.hidden = true;
-        })
-      );
+      modal.addEventListener("click", (e) => {
+        if (e.target.matches("[data-cms-close]")) modal.hidden = true;
+      });
     }
     modal.querySelector("#cmsModalTitle").textContent = title;
     modal.querySelector("#cmsModalBody").innerHTML = fieldsHtml;
     const err = modal.querySelector("#cmsModalErr");
     err.hidden = true;
     err.textContent = "";
+    const actions = modal.querySelector("#cmsModalActions");
+    actions.innerHTML = `
+      ${onDelete ? '<button type="button" class="danger" id="cmsModalDelete">Eliminar</button>' : ""}
+      <button type="button" data-cms-close>Cancelar</button>
+      <button type="button" class="primary" id="cmsModalSave">Guardar</button>
+    `;
     modal.hidden = false;
-
-    const delBtn = modal.querySelector("#cmsModalDelete");
-    if (onDelete) {
-      delBtn.hidden = false;
-      delBtn.textContent = deleteLabel || "Eliminar";
-      delBtn.onclick = async () => {
-        if (!confirm("¿Seguro que quieres eliminarlo?")) return;
-        try {
-          delBtn.disabled = true;
-          const result = await onDelete();
-          modal.hidden = true;
-          await refreshAfterSave(result || {}, {});
-        } catch (e) {
-          err.textContent = e.message || "No se pudo eliminar";
-          err.hidden = false;
-        } finally {
-          delBtn.disabled = false;
-        }
-      };
-    } else {
-      delBtn.hidden = true;
-      delBtn.onclick = null;
-    }
 
     const file = modal.querySelector('input[type="file"]');
     if (file) {
@@ -489,6 +463,24 @@
         saveBtn.disabled = false;
       }
     };
+
+    const delBtn = modal.querySelector("#cmsModalDelete");
+    if (delBtn && onDelete) {
+      delBtn.onclick = async () => {
+        if (!confirm("¿Eliminar este servicio de la web?")) return;
+        try {
+          delBtn.disabled = true;
+          const result = await onDelete(modal);
+          modal.hidden = true;
+          await refreshAfterSave(result || {}, {});
+        } catch (e) {
+          err.textContent = e.message || "No se pudo eliminar";
+          err.hidden = false;
+        } finally {
+          delBtn.disabled = false;
+        }
+      };
+    }
   }
 
   function textField(name, label, value, multiline) {
@@ -1189,7 +1181,6 @@
                 if (!Number.isFinite(item.price)) throw new Error("Precio inválido");
                 return await saveFile("services", services);
               },
-              deleteLabel: "Eliminar servicio",
               onDelete: async () => {
                 services.items = (services.items || []).filter((s) => s.id !== item.id);
                 services.items.forEach((s, i) => {
