@@ -11,6 +11,7 @@
   let services = null;
   let testimonials = null;
   let results = null;
+  let products = [];
   let pendingImage = null;
 
   function token() {
@@ -141,6 +142,7 @@
     bindInicioCita();
     bindAbout();
     bindServices();
+    bindProducts();
     bindTestimonials();
     bindResults();
     fabs();
@@ -152,6 +154,26 @@
     if (result?.file === "services" && result.data) services = result.data;
     if (result?.file === "testimonials" && result.data) testimonials = result.data;
     if (result?.file === "results" && result.data) results = result.data;
+
+    // Productos guardados
+    if (Array.isArray(result?.products)) {
+      products = result.products.map((p, i) => {
+        const n = ProductsCore.normalizeProduct(p, p.id || `p-${i}`);
+        n.imagePath = stripLive(p.imageUrl || n.imageUrl);
+        n.imageUrl = ProductsCore.toLiveImageUrl(n.imagePath);
+        return n;
+      });
+      const grid = document.getElementById("productsGrid");
+      if (grid && window.ProductsCore?.productCardHtml) {
+        grid.innerHTML = products.map((p) => ProductsCore.productCardHtml(p)).join("");
+        if (window.initProductFlips) window.initProductFlips();
+        if (window.initProductFilters) window.initProductFilters();
+      }
+      teardownEditUi();
+      rebindAll();
+      flashSaved("Producto guardado · ya lo ves aquí");
+      return;
+    }
 
     // Vista inmediata de la foto nueva
     const imgEl =
@@ -214,10 +236,7 @@
       .cms-pencil svg { width: 15px; height: 15px; }
       [data-cms-edit] { position: relative; }
       [data-cms-edit].is-hot { outline: 2px dashed rgba(176,122,104,.7); outline-offset: 4px; border-radius: 8px; }
-      body.cms-editing .service-card,
-      body.cms-editing .service-card__body,
-      body.cms-editing .testimonial-card,
-      body.cms-editing .ba-case {
+      body.cms-editing .product-card {
         overflow: visible !important;
       }
       /* media sigue con overflow hidden para que la foto no se salga */
@@ -453,6 +472,119 @@
     }<label>Nueva foto
       <input type="file" accept="image/*" data-folder="${esc(folder)}" data-setpath="${esc(setPath)}" />
     </label>`;
+  }
+
+  async function saveProducts(next, newImages = []) {
+    const repoProducts = next.map((p) => {
+      const imageUrl = stripLive(p.imagePath || p.imageUrl || "");
+      return {
+        id: p.id,
+        name: p.name,
+        brand: p.brand || "",
+        category: p.category || "tratamiento",
+        order: Number(p.order) || 1,
+        price: p.price,
+        priceOld: p.priceOld ?? null,
+        badge: p.badge || "",
+        benefits: Array.isArray(p.benefits) ? p.benefits : [],
+        imageUrl,
+      };
+    });
+    return api({
+      action: "save",
+      products: repoProducts,
+      newImages,
+    });
+  }
+
+  function productFieldsHtml(p = {}) {
+    const cat = p.category || "tratamiento";
+    const benefits = Array.isArray(p.benefits) ? p.benefits.join("\n") : "";
+    return (
+      textField("name", "Nombre", p.name || "") +
+      textField("brand", "Marca", p.brand || "") +
+      `<label>Categoría
+        <select name="category">
+          <option value="limpieza"${cat === "limpieza" ? " selected" : ""}>Limpieza</option>
+          <option value="hidratacion"${cat === "hidratacion" ? " selected" : ""}>Hidratación</option>
+          <option value="tratamiento"${cat === "tratamiento" ? " selected" : ""}>Tratamiento</option>
+          <option value="proteccion"${cat === "proteccion" ? " selected" : ""}>Protección</option>
+        </select>
+      </label>` +
+      textField("price", "Precio (solo números)", p.price != null ? String(p.price) : "") +
+      textField("priceOld", "Precio anterior (opcional)", p.priceOld != null ? String(p.priceOld) : "") +
+      textField("badge", "Etiqueta (opcional)", p.badge || "") +
+      textField("order", "Orden", String(p.order ?? products.length + 1)) +
+      textField("benefits", "Beneficios (uno por línea)", benefits, true) +
+      fileField("productos", "", p.imageUrl || "")
+    );
+  }
+
+  function readProductForm(m, existing) {
+    const name = m.querySelector("[name=name]").value.trim();
+    const price = Number(String(m.querySelector("[name=price]").value).replace(/\D/g, ""));
+    if (!name) throw new Error("Escribe el nombre");
+    if (!Number.isFinite(price) || price <= 0) throw new Error("Escribe un precio válido");
+    const priceOldRaw = String(m.querySelector("[name=priceOld]").value || "").replace(/\D/g, "");
+    const priceOld = priceOldRaw ? Number(priceOldRaw) : null;
+    const benefits = String(m.querySelector("[name=benefits]").value || "")
+      .split("\n")
+      .map((l) => l.replace(/^[•\-\*\s]+/, "").trim())
+      .filter(Boolean);
+    return {
+      id: existing?.id || `producto-${Date.now().toString(36)}`,
+      name,
+      brand: m.querySelector("[name=brand]").value.trim(),
+      category: m.querySelector("[name=category]").value || "tratamiento",
+      order: Number(m.querySelector("[name=order]").value) || products.length + 1,
+      price,
+      priceOld: Number.isFinite(priceOld) && priceOld > 0 ? priceOld : null,
+      badge: m.querySelector("[name=badge]").value.trim(),
+      benefits,
+      imageUrl: stripLive(existing?.imagePath || existing?.imageUrl || ""),
+      imagePath: stripLive(existing?.imagePath || existing?.imageUrl || ""),
+    };
+  }
+
+  function openProductEditor(product, previewImg) {
+    const isNew = !product?.id;
+    openModal({
+      title: isNew ? "Nuevo producto" : "Editar producto",
+      previewImg,
+      fieldsHtml: productFieldsHtml(product || {}),
+      onSave: async (m) => {
+        const nextProduct = readProductForm(m, product);
+        if (!pendingImage && !nextProduct.imageUrl) {
+          throw new Error("Sube una foto del producto");
+        }
+        const next = products.filter((p) => p.id !== nextProduct.id);
+        next.push(nextProduct);
+        next.sort((a, b) => (a.order || 0) - (b.order || 0));
+        const imgs = [];
+        if (pendingImage) {
+          pendingImage.id = nextProduct.id;
+          imgs.push({
+            id: nextProduct.id,
+            fileName: pendingImage.fileName,
+            base64: pendingImage.base64,
+          });
+        }
+        return await saveProducts(next, imgs);
+      },
+    });
+  }
+
+  function bindProducts() {
+    document.querySelectorAll("#productsGrid .product-card").forEach((card) => {
+      const id = card.dataset.id;
+      const product = products.find((p) => p.id === id);
+      if (!product) return;
+      const img = card.querySelector(".product-card__media img");
+      wrap(card, {
+        block: true,
+        onEdit: () => openProductEditor(product, img),
+      });
+    });
   }
 
   function bindHero() {
@@ -1171,9 +1303,7 @@
     addSectionButton(
       document.querySelector("#productos .products__toolbar") || document.getElementById("productsGrid"),
       "+ Producto",
-      () => {
-        location.href = "admin.html?view=productos&new=1";
-      }
+      () => openProductEditor(null, null)
     );
 
     addSectionButton(
@@ -1234,16 +1364,25 @@
     document.body.classList.add("cms-editing");
     topBar();
 
-    const [s, svc, t, r] = await Promise.all([
+    const [s, svc, t, r, catalog] = await Promise.all([
       SiteCMS.loadFile("site"),
       SiteCMS.loadFile("services"),
       SiteCMS.loadFile("testimonials"),
       SiteCMS.loadFile("results"),
+      window.ProductsCore?.loadProducts
+        ? ProductsCore.loadProducts().catch(() => ({ products: [] }))
+        : Promise.resolve({ products: [] }),
     ]);
     site = s.data;
     services = svc.data;
     testimonials = t.data;
     results = r.data;
+    products = (catalog.products || []).map((p, i) => {
+      const n = ProductsCore.normalizeProduct(p, p.id || `p-${i}`);
+      n.imagePath = stripLive(p.imageUrl || n.imageUrl);
+      n.imageUrl = ProductsCore.toLiveImageUrl(n.imagePath);
+      return n;
+    });
 
     setTimeout(() => {
       try {
@@ -1255,13 +1394,14 @@
         bindInicioCita();
         bindAbout();
         bindServices();
+        bindProducts();
         bindTestimonials();
         bindResults();
         fabs();
       } catch (e) {
         console.error(e);
       }
-    }, 200);
+    }, 400);
   }
 
   window.CmsEditMode = {
