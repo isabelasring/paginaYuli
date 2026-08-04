@@ -762,6 +762,10 @@
   // boot
   bindListFilters();
   bindBenefitsField();
-  if (getToken()) setAuthUI(true);
-  else setAuthUI(false);
+  if (getToken()) {
+    setAuthUI(true);
+    if (wantsProducts() && new URLSearchParams(location.search).get("new") === "1") {
+      setTimeout(() => openNew(), 300);
+    }
+  } else setAuthUI(false);
 })();

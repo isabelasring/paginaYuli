@@ -99,12 +99,16 @@
         position: fixed; bottom: 1.25rem; right: 1.25rem; z-index: 10001;
         display: flex; flex-direction: column; gap: .5rem;
       }
-      .cms-fab button {
+      .cms-section-add {
+        display: flex; justify-content: center; margin: 1.25rem 0 0.5rem;
+      }
+      .cms-section-add button, .cms-fab button {
         border: 0; border-radius: 999px; padding: .75rem 1.1rem;
         background: #b07a68; color: #fff; font-weight: 600; cursor: pointer;
         box-shadow: 0 10px 28px rgba(79,52,42,.25);
         font-family: Outfit, system-ui, sans-serif; font-size: .82rem;
       }
+      .cms-section-add button:hover, .cms-fab button:hover { background: #8f5f50; }
       .cms-modal[hidden] { display: none !important; }
       .cms-modal { position: fixed; inset: 0; z-index: 10050; display: grid; place-items: center; padding: 1rem; }
       .cms-modal__bg { position: absolute; inset: 0; background: rgba(47,41,38,.45); }
@@ -925,92 +929,102 @@
     });
   }
 
+  function addSectionButton(sectionEl, label, onClick) {
+    if (!sectionEl || sectionEl.querySelector(".cms-section-add")) return;
+    const wrapEl = document.createElement("div");
+    wrapEl.className = "cms-section-add";
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = label;
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      onClick();
+    });
+    wrapEl.appendChild(btn);
+    const container = sectionEl.querySelector(".container") || sectionEl;
+    container.appendChild(wrapEl);
+  }
+
   function fabs() {
-    const box = document.createElement("div");
-    box.className = "cms-fab";
-    box.innerHTML = `
-      <button type="button" data-fab="service">+ Servicio</button>
-      <button type="button" data-fab="testimonial">+ Testimonio</button>
-      <button type="button" data-fab="result">+ Foto antes/después</button>
-    `;
-    document.body.appendChild(box);
-    box.addEventListener("click", (e) => {
-      const btn = e.target.closest("[data-fab]");
-      if (!btn) return;
-      const kind = btn.dataset.fab;
-      if (kind === "service") {
-        openModal({
-          title: "Nuevo servicio",
-          fieldsHtml:
-            textField("name", "Nombre", "") +
-            textField("description", "Descripción", "", true) +
-            textField("price", "Precio", "80000") +
-            fileField("services", "items.NEW.images.0"),
-          onSave: async (m) => {
-            if (!pendingImage) throw new Error("Agrega una foto");
-            const name = m.querySelector("[name=name]").value.trim();
-            const description = m.querySelector("[name=description]").value.trim();
-            const price = Number(String(m.querySelector("[name=price]").value).replace(/\D/g, ""));
-            if (!name) throw new Error("Pon un nombre");
-            services.items = services.items || [];
-            services.items.push({
-              id: `svc-${Date.now()}`,
-              order: services.items.length + 1,
-              name,
-              description,
-              price,
-              images: [""],
-            });
-            pendingImage.folder = "services";
-            pendingImage.setPath = `items.${services.items.length - 1}.images.0`;
-            await saveFile("services", services, [pendingImage]);
-          },
-        });
-      }
-      if (kind === "testimonial") {
-        openModal({
-          title: "Nuevo testimonio",
-          fieldsHtml:
-            textField("name", "Nombre", "") +
-            textField("quote", "Comentario", "", true) +
-            textField("stars", "Estrellas", "5"),
-          onSave: async (m) => {
-            const name = m.querySelector("[name=name]").value.trim();
-            const quote = m.querySelector("[name=quote]").value.trim();
-            const stars = Math.max(1, Math.min(5, Number(m.querySelector("[name=stars]").value) || 5));
-            if (!name || !quote) throw new Error("Completa nombre y comentario");
-            testimonials.items = testimonials.items || [];
-            testimonials.items.push({
-              id: `t-${Date.now()}`,
-              order: testimonials.items.length + 1,
-              name,
-              quote,
-              stars,
-            });
-            await saveFile("testimonials", testimonials);
-          },
-        });
-      }
-      if (kind === "result") {
-        openModal({
-          title: "Nueva foto antes/después",
-          fieldsHtml: fileField("results", "items.NEW.imageUrl"),
-          onSave: async () => {
-            if (!pendingImage) throw new Error("Elige una foto");
-            results.items = results.items || [];
-            const order = results.items.length + 1;
-            results.items.push({
-              id: `ba-${Date.now()}`,
-              order,
-              imageUrl: "",
-              alt: `Resultado ${order}`,
-            });
-            pendingImage.folder = "results";
-            pendingImage.setPath = `items.${results.items.length - 1}.imageUrl`;
-            await saveFile("results", results, [pendingImage]);
-          },
-        });
-      }
+    addSectionButton(document.getElementById("servicios"), "+ Servicio", () => {
+      openModal({
+        title: "Nuevo servicio",
+        fieldsHtml:
+          textField("name", "Nombre", "") +
+          textField("description", "Descripción", "", true) +
+          textField("price", "Precio", "80000") +
+          fileField("services", "items.NEW.images.0"),
+        onSave: async (m) => {
+          if (!pendingImage) throw new Error("Agrega una foto");
+          const name = m.querySelector("[name=name]").value.trim();
+          const description = m.querySelector("[name=description]").value.trim();
+          const price = Number(String(m.querySelector("[name=price]").value).replace(/\D/g, ""));
+          if (!name) throw new Error("Pon un nombre");
+          services.items = services.items || [];
+          services.items.push({
+            id: `svc-${Date.now()}`,
+            order: services.items.length + 1,
+            name,
+            description,
+            price,
+            images: [""],
+          });
+          pendingImage.folder = "services";
+          pendingImage.setPath = `items.${services.items.length - 1}.images.0`;
+          await saveFile("services", services, [pendingImage]);
+        },
+      });
+    });
+
+    addSectionButton(document.getElementById("productos"), "+ Producto", () => {
+      location.href = "admin.html?view=productos&new=1";
+    });
+
+    addSectionButton(document.getElementById("resultados"), "+ Foto antes/después", () => {
+      openModal({
+        title: "Nueva foto antes/después",
+        fieldsHtml: fileField("results", "items.NEW.imageUrl"),
+        onSave: async () => {
+          if (!pendingImage) throw new Error("Elige una foto");
+          results.items = results.items || [];
+          const order = results.items.length + 1;
+          results.items.push({
+            id: `ba-${Date.now()}`,
+            order,
+            imageUrl: "",
+            alt: `Resultado ${order}`,
+          });
+          pendingImage.folder = "results";
+          pendingImage.setPath = `items.${results.items.length - 1}.imageUrl`;
+          await saveFile("results", results, [pendingImage]);
+        },
+      });
+    });
+
+    addSectionButton(document.getElementById("testimonios"), "+ Testimonio", () => {
+      openModal({
+        title: "Nuevo testimonio",
+        fieldsHtml:
+          textField("name", "Nombre", "") +
+          textField("quote", "Comentario", "", true) +
+          textField("stars", "Estrellas", "5"),
+        onSave: async (m) => {
+          const name = m.querySelector("[name=name]").value.trim();
+          const quote = m.querySelector("[name=quote]").value.trim();
+          const stars = Math.max(1, Math.min(5, Number(m.querySelector("[name=stars]").value) || 5));
+          if (!name || !quote) throw new Error("Completa nombre y comentario");
+          testimonials.items = testimonials.items || [];
+          testimonials.items.push({
+            id: `t-${Date.now()}`,
+            order: testimonials.items.length + 1,
+            name,
+            quote,
+            stars,
+          });
+          await saveFile("testimonials", testimonials);
+        },
+      });
     });
   }
 
