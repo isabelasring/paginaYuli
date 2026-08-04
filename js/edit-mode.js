@@ -364,6 +364,298 @@
           }),
       });
     });
+    const primary = document.querySelector("#inicio .hero__actions .btn--primary");
+    const secondary = document.querySelector("#inicio .hero__actions .btn--outline");
+    if (primary) {
+      wrap(primary, {
+        onEdit: () =>
+          openModal({
+            title: "Botón principal",
+            fieldsHtml: textField("v", "Texto", h.ctaPrimaryLabel),
+            onSave: async (m) => {
+              site.hero.ctaPrimaryLabel = m.querySelector("[name=v]").value;
+              await saveFile("site", site);
+            },
+          }),
+      });
+    }
+    if (secondary) {
+      wrap(secondary, {
+        onEdit: () =>
+          openModal({
+            title: "Botón secundario",
+            fieldsHtml: textField("v", "Texto", h.ctaSecondaryLabel),
+            onSave: async (m) => {
+              site.hero.ctaSecondaryLabel = m.querySelector("[name=v]").value;
+              await saveFile("site", site);
+            },
+          }),
+      });
+    }
+  }
+
+  function bindPromesa() {
+    if (!site.promesa) site.promesa = {};
+    const p = site.promesa;
+    const head = document.querySelector("#promesa .section__head");
+    if (head) {
+      wrap(head, {
+        block: true,
+        onEdit: () =>
+          openModal({
+            title: "Bienvenida",
+            fieldsHtml:
+              textField("eyebrow", "Eyebrow", p.eyebrow) +
+              textField("l1", "Título línea 1", p.titleLine1) +
+              textField("l2", "Título línea 2", p.titleLine2) +
+              textField("sub", "Subtítulo", p.sub, true),
+            onSave: async (m) => {
+              p.eyebrow = m.querySelector("[name=eyebrow]").value;
+              p.titleLine1 = m.querySelector("[name=l1]").value;
+              p.titleLine2 = m.querySelector("[name=l2]").value;
+              p.sub = m.querySelector("[name=sub]").value;
+              await saveFile("site", site);
+            },
+          }),
+      });
+    }
+    if (!p.inviteCards) p.inviteCards = [];
+    document.querySelectorAll("#promesa .home-invite__card").forEach((card, i) => {
+      if (!p.inviteCards[i]) p.inviteCards[i] = { label: "", title: "", text: "", imageUrl: "" };
+      const item = p.inviteCards[i];
+      const img = card.querySelector("img");
+      if (img) {
+        wrap(img, {
+          img: true,
+          onEdit: () =>
+            openModal({
+              title: `Foto card ${i + 1}`,
+              fieldsHtml: fileField("inicio", `promesa.inviteCards.${i}.imageUrl`, item.imageUrl),
+              onSave: async () => {
+                if (!pendingImage) throw new Error("Elige una foto");
+                pendingImage.folder = "inicio";
+                pendingImage.setPath = `promesa.inviteCards.${i}.imageUrl`;
+                await saveFile("site", site, [pendingImage]);
+              },
+            }),
+        });
+      }
+      wrap(card.querySelector("h3") || card, {
+        onEdit: () =>
+          openModal({
+            title: `Card ${i + 1}`,
+            fieldsHtml:
+              textField("label", "Número", item.label) +
+              textField("title", "Título", item.title) +
+              textField("text", "Texto", item.text, true),
+            onSave: async (m) => {
+              item.label = m.querySelector("[name=label]").value;
+              item.title = m.querySelector("[name=title]").value;
+              item.text = m.querySelector("[name=text]").value;
+              await saveFile("site", site);
+            },
+          }),
+      });
+    });
+    if (!p.whyCards) p.whyCards = [];
+    document.querySelectorAll("#promesa .why-card").forEach((card, i) => {
+      if (!p.whyCards[i]) p.whyCards[i] = { title: "", text: "" };
+      const item = p.whyCards[i];
+      wrap(card.querySelector("h3") || card, {
+        onEdit: () =>
+          openModal({
+            title: `Valor ${i + 1}`,
+            fieldsHtml: textField("title", "Título", item.title) + textField("text", "Texto", item.text, true),
+            onSave: async (m) => {
+              item.title = m.querySelector("[name=title]").value;
+              item.text = m.querySelector("[name=text]").value;
+              await saveFile("site", site);
+            },
+          }),
+      });
+    });
+    const quote = document.querySelector("#promesa .why__quote");
+    if (quote) {
+      wrap(quote, {
+        block: true,
+        onEdit: () =>
+          openModal({
+            title: "Cita",
+            fieldsHtml: textField("v", "Texto (sin comillas)", p.quote, true),
+            onSave: async (m) => {
+              p.quote = m.querySelector("[name=v]").value;
+              await saveFile("site", site);
+            },
+          }),
+      });
+    }
+  }
+
+  function bindAtmosfera() {
+    if (!site.atmosfera) site.atmosfera = {};
+    const a = site.atmosfera;
+    const content = document.querySelector("#atmosfera .home-atmosphere__content");
+    if (content) {
+      wrap(content.querySelector("h2") || content, {
+        onEdit: () =>
+          openModal({
+            title: "Atmósfera",
+            fieldsHtml:
+              textField("eyebrow", "Eyebrow", a.eyebrow) +
+              textField("l1", "Título línea 1", a.titleLine1) +
+              textField("l2", "Título línea 2", a.titleLine2) +
+              textField("text", "Párrafo", a.text, true) +
+              textField("cta", "Botón", a.ctaLabel),
+            onSave: async (m) => {
+              a.eyebrow = m.querySelector("[name=eyebrow]").value;
+              a.titleLine1 = m.querySelector("[name=l1]").value;
+              a.titleLine2 = m.querySelector("[name=l2]").value;
+              a.text = m.querySelector("[name=text]").value;
+              a.ctaLabel = m.querySelector("[name=cta]").value;
+              await saveFile("site", site);
+            },
+          }),
+      });
+      content.querySelectorAll(".home-atmosphere__list li").forEach((li, i) => {
+        if (!a.list) a.list = [];
+        wrap(li, {
+          onEdit: () =>
+            openModal({
+              title: `Viñeta ${i + 1}`,
+              fieldsHtml: textField("v", "Texto", a.list[i] || ""),
+              onSave: async (m) => {
+                a.list[i] = m.querySelector("[name=v]").value;
+                await saveFile("site", site);
+              },
+            }),
+        });
+      });
+    }
+    const img = document.querySelector("#atmosfera .home-atmosphere__visual img");
+    if (img) {
+      wrap(img, {
+        img: true,
+        onEdit: () =>
+          openModal({
+            title: "Foto del espacio",
+            fieldsHtml: fileField("inicio", "atmosfera.imageUrl", a.imageUrl),
+            onSave: async () => {
+              if (!pendingImage) throw new Error("Elige una foto");
+              pendingImage.folder = "inicio";
+              pendingImage.setPath = "atmosfera.imageUrl";
+              await saveFile("site", site, [pendingImage]);
+            },
+          }),
+      });
+    }
+  }
+
+  function bindRutinas() {
+    if (!site.rutinas) site.rutinas = { panels: {} };
+    const r = site.rutinas;
+    if (!r.panels) r.panels = {};
+    const head = document.querySelector("#rutinas .section__head");
+    if (head) {
+      wrap(head, {
+        block: true,
+        onEdit: () =>
+          openModal({
+            title: "Rutinas",
+            fieldsHtml:
+              textField("eyebrow", "Eyebrow", r.eyebrow) +
+              textField("before", "Título", r.titleBefore) +
+              textField("em", "Palabra en cursiva", r.titleEm) +
+              textField("intro", "Intro", r.intro, true),
+            onSave: async (m) => {
+              r.eyebrow = m.querySelector("[name=eyebrow]").value;
+              r.titleBefore = m.querySelector("[name=before]").value;
+              r.titleEm = m.querySelector("[name=em]").value;
+              r.intro = m.querySelector("[name=intro]").value;
+              await saveFile("site", site);
+            },
+          }),
+      });
+    }
+    ["grasa", "seca", "mixta", "sensible"].forEach((key) => {
+      const root = document.querySelector(`#panel-${key}`);
+      if (!root) return;
+      if (!r.panels[key]) r.panels[key] = { headEm: "", steps: [] };
+      const panel = r.panels[key];
+      if (!panel.steps) panel.steps = [];
+      const headEm = root.querySelector(".routine-flow__head em");
+      if (headEm) {
+        wrap(headEm, {
+          onEdit: () =>
+            openModal({
+              title: `Rutina ${key}`,
+              fieldsHtml: textField("v", "Nombre en cursiva", panel.headEm),
+              onSave: async (m) => {
+                panel.headEm = m.querySelector("[name=v]").value;
+                await saveFile("site", site);
+              },
+            }),
+        });
+      }
+      root.querySelectorAll(":scope > .experience__steps > .experience-step").forEach((el, i) => {
+        if (!panel.steps[i]) panel.steps[i] = { title: "", text: "", imageUrl: "" };
+        const step = panel.steps[i];
+        const img = el.querySelector("img");
+        if (img) {
+          wrap(img, {
+            img: true,
+            onEdit: () =>
+              openModal({
+                title: `Foto ${key} paso ${i + 1}`,
+                fieldsHtml: fileField("rutinas", `rutinas.panels.${key}.steps.${i}.imageUrl`, step.imageUrl),
+                onSave: async () => {
+                  if (!pendingImage) throw new Error("Elige una foto");
+                  pendingImage.folder = "rutinas";
+                  pendingImage.setPath = `rutinas.panels.${key}.steps.${i}.imageUrl`;
+                  await saveFile("site", site, [pendingImage]);
+                },
+              }),
+          });
+        }
+        wrap(el.querySelector("h3") || el, {
+          onEdit: () =>
+            openModal({
+              title: `${key} · paso ${i + 1}`,
+              fieldsHtml: textField("title", "Título", step.title) + textField("text", "Texto", step.text, true),
+              onSave: async (m) => {
+                step.title = m.querySelector("[name=title]").value;
+                step.text = m.querySelector("[name=text]").value;
+                await saveFile("site", site);
+              },
+            }),
+        });
+      });
+    });
+  }
+
+  function bindInicioCita() {
+    if (!site.inicioCita) site.inicioCita = {};
+    const c = site.inicioCita;
+    const box = document.querySelector("#inicio-cita .home-cta__box > div");
+    if (!box) return;
+    wrap(box, {
+      block: true,
+      onEdit: () =>
+        openModal({
+          title: "Agenda",
+          fieldsHtml:
+            textField("eyebrow", "Eyebrow", c.eyebrow) +
+            textField("l1", "Título línea 1", c.titleLine1) +
+            textField("l2", "Título línea 2", c.titleLine2) +
+            textField("text", "Párrafo", c.text, true),
+          onSave: async (m) => {
+            c.eyebrow = m.querySelector("[name=eyebrow]").value;
+            c.titleLine1 = m.querySelector("[name=l1]").value;
+            c.titleLine2 = m.querySelector("[name=l2]").value;
+            c.text = m.querySelector("[name=text]").value;
+            await saveFile("site", site);
+          },
+        }),
+    });
   }
 
   function bindExperiencia() {
@@ -741,7 +1033,11 @@
     setTimeout(() => {
       try {
         bindHero();
+        bindPromesa();
         bindExperiencia();
+        bindAtmosfera();
+        bindRutinas();
+        bindInicioCita();
         bindAbout();
         bindServices();
         bindTestimonials();

@@ -10,21 +10,54 @@
     "ctaPrimaryLabel": "Explorar servicios",
     "ctaSecondaryLabel": "Agendar cita",
     "trustItems": [
+      { "strong": "Clientes", "span": "Satisfechos" },
+      { "strong": "Cuidado", "span": "Con propósito" },
+      { "strong": "Espacio", "span": "Seguro y cálido" },
+      { "strong": "Atención", "span": "Cercana y real" }
+    ]
+  },
+  "promesa": {
+    "eyebrow": "Una bienvenida especial",
+    "titleLine1": "Un ritual de cuidado",
+    "titleLine2": "pensado para ti.",
+    "sub": "Sin prisas. Sin fórmulas genéricas. Solo tu piel y lo que necesita.",
+    "quote": "Cuidarte es mi arte y mi propósito.",
+    "inviteCards": [
       {
-        "strong": "Clientes",
-        "span": "Satisfechos"
+        "label": "01",
+        "title": "Servicios",
+        "text": "Tratamientos faciales y corporales pensados para tu piel, con protocolos claros, precios transparentes y resultados que se sienten desde la primera sesión.",
+        "imageUrl": "assets/inicio/card-servicios.webp"
       },
       {
-        "strong": "Cuidado",
-        "span": "Con propósito"
+        "label": "02",
+        "title": "Productos",
+        "text": "Cosmética profesional para continuar el cuidado en casa, con productos seleccionados según lo que tu piel realmente necesita.",
+        "imageUrl": "assets/inicio/card-productos.webp"
       },
       {
-        "strong": "Espacio",
-        "span": "Seguro y cálido"
+        "label": "03",
+        "title": "Clientes",
+        "text": "Mira resultados reales y lo que dicen mis clientes: antes y después, experiencias honestas y el cambio que se siente en la piel.",
+        "imageUrl": "assets/inicio/card-clientes.webp"
+      }
+    ],
+    "whyCards": [
+      {
+        "title": "Escucha primero",
+        "text": "Cada cita empieza por entender tu piel, tu ritmo y lo que realmente buscas."
       },
       {
-        "strong": "Atención",
-        "span": "Cercana y real"
+        "title": "Ambiente sereno",
+        "text": "Un espacio cálido para desconectar, respirar y recibir cuidado sin prisa."
+      },
+      {
+        "title": "Resultados honestos",
+        "text": "Protocolos claros y expectativas reales, siempre con transparencia."
+      },
+      {
+        "title": "Acompañamiento",
+        "text": "No es solo una sesión: es un camino de cuidado continuo para tu piel."
       }
     ]
   },
@@ -58,6 +91,133 @@
         "imageUrl": "assets/experiencia/paso-04-plan.webp"
       }
     ]
+  },
+  "atmosfera": {
+    "eyebrow": "El espacio",
+    "titleLine1": "Un rincón para pausar",
+    "titleLine2": "y reconectar contigo.",
+    "text": "Skin Beauty no es solo un tratamiento: es un momento para ti. Luz suave, atención cercana y un ritmo que respeta tu tiempo.",
+    "list": [
+      "Ambiente limpio, íntimo y profesional",
+      "Protocolos adaptados a tu tipo de piel",
+      "Acompañamiento honesto antes y después"
+    ],
+    "ctaLabel": "Ver experiencias reales",
+    "imageUrl": "assets/inicio/atmosfera-espacio.webp"
+  },
+  "rutinas": {
+    "eyebrow": "Rutinas de cuidado",
+    "titleBefore": "Tu ritual según",
+    "titleEm": "tu tipo de piel",
+    "intro": "Elige tu tipo de piel y descubre tu rutina paso a paso.",
+    "panels": {
+      "grasa": {
+        "headEm": "Piel Grasa",
+        "steps": [
+          {
+            "title": "Limpiar",
+            "text": "Limpiador suave que equilibra el sebo sin resecar.",
+            "imageUrl": "assets/rutinas/piel-grasa/01-limpiar.webp"
+          },
+          {
+            "title": "Tonificar",
+            "text": "Tónico astringente con niacinamida para poros refinados.",
+            "imageUrl": "assets/rutinas/piel-grasa/02-tonificar.webp"
+          },
+          {
+            "title": "Tratar",
+            "text": "Sérum de ácido salicílico para textura uniforme.",
+            "imageUrl": "assets/rutinas/piel-grasa/03-tratar.webp"
+          },
+          {
+            "title": "Proteger",
+            "text": "Protector matificante SPF 50 para sellar tu rutina.",
+            "imageUrl": "assets/rutinas/piel-grasa/04-proteger.webp"
+          }
+        ]
+      },
+      "seca": {
+        "headEm": "Piel Seca",
+        "steps": [
+          {
+            "title": "Limpiar",
+            "text": "Limpiador cremoso hidratante para no resecar la piel.",
+            "imageUrl": "assets/rutinas/piel-seca/01-limpiar.webp"
+          },
+          {
+            "title": "Tonificar",
+            "text": "Tónico sin alcohol con aloe vera y glicerina para calmar y reponer.",
+            "imageUrl": "assets/rutinas/piel-seca/02-tonificar.webp"
+          },
+          {
+            "title": "Tratar",
+            "text": "Sérum de ácido hialurónico y aceites nutritivos para hidratación profunda.",
+            "imageUrl": "assets/rutinas/piel-seca/03-tratar.webp"
+          },
+          {
+            "title": "Proteger",
+            "text": "Protector solar hidratante con manteca de karité para sellar tu rutina.",
+            "imageUrl": "assets/rutinas/piel-seca/04-proteger.webp"
+          }
+        ]
+      },
+      "mixta": {
+        "headEm": "Piel Mixta",
+        "steps": [
+          {
+            "title": "Limpiar",
+            "text": "Limpiador en gel equilibrante que controla el sebo en la zona T sin resecar.",
+            "imageUrl": "assets/rutinas/piel-mixta/01-limpiar.webp"
+          },
+          {
+            "title": "Tonificar",
+            "text": "Tónico astringente ligero con extractos de hamamelis y pepino para refinar los poros.",
+            "imageUrl": "assets/rutinas/piel-mixta/02-tonificar.webp"
+          },
+          {
+            "title": "Tratar",
+            "text": "Sérum equilibrante con niacinamida para textura uniforme y control de brillos.",
+            "imageUrl": "assets/rutinas/piel-mixta/03-tratar.webp"
+          },
+          {
+            "title": "Proteger y equilibrar",
+            "text": "Gel-crema fluido hidratante con SPF 30 ligero para un acabado cómodo y matificado.",
+            "imageUrl": "assets/rutinas/piel-mixta/04-proteger.webp"
+          }
+        ]
+      },
+      "sensible": {
+        "headEm": "Piel Sensible",
+        "steps": [
+          {
+            "title": "Limpiar",
+            "text": "Limpiador en crema suave y calmante que limpia sin alterar la barrera cutánea.",
+            "imageUrl": "assets/rutinas/piel-sensible/01-limpiar.webp"
+          },
+          {
+            "title": "Tonificar",
+            "text": "Tónico suave sin alcohol con manzanilla y agua de rosas para calmar y reequilibrar.",
+            "imageUrl": "assets/rutinas/piel-sensible/02-tonificar.webp"
+          },
+          {
+            "title": "Tratar",
+            "text": "Sérum reparador de barrera con ceramidas y alantoína para calmar el enrojecimiento.",
+            "imageUrl": "assets/rutinas/piel-sensible/03-tratar.webp"
+          },
+          {
+            "title": "Proteger y nutrir",
+            "text": "Crema hidratante mineral suave con SPF 30 ligero, sin irritación y con protección.",
+            "imageUrl": "assets/rutinas/piel-sensible/04-proteger.webp"
+          }
+        ]
+      }
+    }
+  },
+  "inicioCita": {
+    "eyebrow": "Agenda",
+    "titleLine1": "Tu piel puede sentirse",
+    "titleLine2": "diferente desde hoy.",
+    "text": "Escríbeme y te ayudo a elegir el tratamiento ideal para ti."
   },
   "about": {
     "eyebrow": "Sobre mí",

@@ -287,6 +287,118 @@
     window.__CMS_RESULTS__ = items;
   }
 
+  function applyPromesa(site) {
+    const p = site?.promesa;
+    if (!p) return;
+    const head = document.querySelector("#promesa .section__head");
+    if (head) {
+      const eyebrow = head.querySelector(".eyebrow");
+      const h2 = head.querySelector("h2");
+      const sub = head.querySelector(".section__sub");
+      if (eyebrow && p.eyebrow) eyebrow.textContent = p.eyebrow;
+      if (h2 && (p.titleLine1 || p.titleLine2)) {
+        h2.innerHTML = `${escapeHtml(p.titleLine1 || "")}<br />${escapeHtml(p.titleLine2 || "")}`;
+      }
+      if (sub && p.sub) sub.textContent = p.sub;
+    }
+    const quote = document.querySelector("#promesa .why__quote");
+    if (quote && p.quote) quote.textContent = `“${p.quote}”`;
+
+    document.querySelectorAll("#promesa .home-invite__card").forEach((card, i) => {
+      const item = (p.inviteCards || [])[i];
+      if (!item) return;
+      const img = card.querySelector("img");
+      const label = card.querySelector(".home-invite__label");
+      const h3 = card.querySelector("h3");
+      const text = card.querySelector("p");
+      if (img && item.imageUrl) img.src = item.imageUrl;
+      if (label && item.label) label.textContent = item.label;
+      if (h3 && item.title) h3.textContent = item.title;
+      if (text && item.text) text.textContent = item.text;
+    });
+
+    document.querySelectorAll("#promesa .why-card").forEach((card, i) => {
+      const item = (p.whyCards || [])[i];
+      if (!item) return;
+      const h3 = card.querySelector("h3");
+      const text = card.querySelector("p");
+      if (h3 && item.title) h3.textContent = item.title;
+      if (text && item.text) text.textContent = item.text;
+    });
+  }
+
+  function applyAtmosfera(site) {
+    const a = site?.atmosfera;
+    if (!a) return;
+    const root = document.querySelector("#atmosfera .home-atmosphere__content");
+    if (root) {
+      const eyebrow = root.querySelector(".eyebrow");
+      const h2 = root.querySelector("h2");
+      const p = root.querySelector(":scope > p");
+      const cta = root.querySelector(".btn");
+      if (eyebrow && a.eyebrow) eyebrow.textContent = a.eyebrow;
+      if (h2 && (a.titleLine1 || a.titleLine2)) {
+        h2.innerHTML = `${escapeHtml(a.titleLine1 || "")}<br />${escapeHtml(a.titleLine2 || "")}`;
+      }
+      if (p && a.text) p.textContent = a.text;
+      if (cta && a.ctaLabel) cta.textContent = a.ctaLabel;
+      const lis = root.querySelectorAll(".home-atmosphere__list li");
+      (a.list || []).forEach((t, i) => {
+        if (lis[i] && t) lis[i].textContent = t;
+      });
+    }
+    const img = document.querySelector("#atmosfera .home-atmosphere__visual img");
+    if (img && a.imageUrl) img.src = a.imageUrl;
+  }
+
+  function applyRutinas(site) {
+    const r = site?.rutinas;
+    if (!r) return;
+    const head = document.querySelector("#rutinas .section__head");
+    if (head) {
+      const eyebrow = head.querySelector(".eyebrow");
+      const h2 = head.querySelector("h2");
+      const intro = head.querySelector(".routines__intro");
+      if (eyebrow && r.eyebrow) eyebrow.textContent = r.eyebrow;
+      if (h2 && (r.titleBefore || r.titleEm)) {
+        h2.innerHTML = `${escapeHtml(r.titleBefore || "")}<br /><em>${escapeHtml(r.titleEm || "")}</em>.`;
+      }
+      if (intro && r.intro) intro.textContent = r.intro;
+    }
+    Object.entries(r.panels || {}).forEach(([key, panel]) => {
+      const root = document.querySelector(`#panel-${key}`);
+      if (!root || !panel) return;
+      const headEm = root.querySelector(".routine-flow__head em");
+      if (headEm && panel.headEm) headEm.textContent = panel.headEm;
+      const steps = root.querySelectorAll(":scope > .experience__steps > .experience-step");
+      (panel.steps || []).forEach((step, i) => {
+        const el = steps[i];
+        if (!el) return;
+        const img = el.querySelector("img");
+        const title = el.querySelector("h3");
+        const text = el.querySelector("p");
+        if (img && step.imageUrl) img.src = step.imageUrl;
+        if (title && step.title) title.textContent = step.title;
+        if (text && step.text) text.textContent = step.text;
+      });
+    });
+  }
+
+  function applyInicioCita(site) {
+    const c = site?.inicioCita;
+    if (!c) return;
+    const box = document.querySelector("#inicio-cita .home-cta__box > div");
+    if (!box) return;
+    const eyebrow = box.querySelector(".eyebrow");
+    const h2 = box.querySelector("h2");
+    const p = box.querySelector("p:not(.eyebrow)");
+    if (eyebrow && c.eyebrow) eyebrow.textContent = c.eyebrow;
+    if (h2 && (c.titleLine1 || c.titleLine2)) {
+      h2.innerHTML = `${escapeHtml(c.titleLine1 || "")}<br />${escapeHtml(c.titleLine2 || "")}`;
+    }
+    if (p && c.text) p.textContent = c.text;
+  }
+
   async function mountAll() {
     const [site, services, testimonials, results] = await Promise.all([
       loadFile("site").catch(() => null),
@@ -297,7 +409,11 @@
 
     if (site?.data) {
       applyHero(site.data);
+      applyPromesa(site.data);
       applyExperiencia(site.data);
+      applyAtmosfera(site.data);
+      applyRutinas(site.data);
+      applyInicioCita(site.data);
       applyAbout(site.data);
       applyProductsSection(site.data);
     }
