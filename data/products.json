@@ -7,7 +7,7 @@
     "price": 256000,
     "priceOld": 160000,
     "badge": "Nuevo kit",
-    "imageUrl": "assets/productos/kit-dermabsolu-contorno-ojos.webp",
+    "imageUrl": "/api/media?path=assets%2Fproductos%2Fkit-dermabsolu-contorno-ojos.webp&v=b38d092c35bf0e741252a905f1267f32da8f4826",
     "benefits": [
       "Reafirma y redensifica el contorno de ojos",
       "Suaviza arrugas y líneas de expresión",
@@ -187,5 +187,19 @@
       "Buena tolerancia para rutinas antiedad"
     ],
     "order": 11
+  },
+  {
+    "id": "dhems-anti-pollution-msmu6ab2",
+    "name": "Dhems Anti-pollution",
+    "brand": "Dhems",
+    "category": "limpieza",
+    "price": 54000,
+    "priceOld": 44000,
+    "badge": "",
+    "imageUrl": "assets/productos/dhems-anti-pollution-msmu6ab2-1786342454689.jpeg",
+    "benefits": [
+      "Extracto de moringa que remueve suavemente el exceso de grasa"
+    ],
+    "order": 12
   }
 ]
