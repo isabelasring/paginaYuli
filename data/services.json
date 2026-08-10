@@ -101,6 +101,56 @@
       "images": [
         "assets/servicios/masaje-relajacion.webp"
       ]
+    },
+    {
+      "id": "svc-1786340510445",
+      "order": 10,
+      "name": "DEPILACIÓN CON CERA",
+      "description": "Piel suave, limpia y libre de vello 🤍\nUna depilación delicada y cuidadosa para que luzcas una piel hermosa y suave.",
+      "price": 0,
+      "images": [
+        ""
+      ]
+    },
+    {
+      "id": "svc-1786340524639",
+      "order": 11,
+      "name": "DEPILACIÓN CON CERA",
+      "description": "Piel suave, limpia y libre de vello 🤍\nUna depilación delicada y cuidadosa para que luzcas una piel hermosa y suave.",
+      "price": 0,
+      "images": [
+        ""
+      ]
+    },
+    {
+      "id": "svc-1786340531772",
+      "order": 12,
+      "name": "DEPILACIÓN CON CERA",
+      "description": "Piel suave, limpia y libre de vello 🤍\nUna depilación delicada y cuidadosa para que luzcas una piel hermosa y suave.",
+      "price": 0,
+      "images": [
+        ""
+      ]
+    },
+    {
+      "id": "svc-1786340540685",
+      "order": 13,
+      "name": "DEPILACIÓN CON CERA",
+      "description": "Piel suave, limpia y libre de vello 🤍\nUna depilación delicada y cuidadosa para que luzcas una piel hermosa y suave.",
+      "price": 0,
+      "images": [
+        ""
+      ]
+    },
+    {
+      "id": "svc-1786341353473",
+      "order": 14,
+      "name": "DEPILACIÓN CON CERA",
+      "description": "Piel suave, limpia y libre de vello 🤍\nUna depilación delicada y cuidadosa para que luzcas una piel hermosa y suave.",
+      "price": 0,
+      "images": [
+        "assets/servicios/e585618c-8396-4482-9286-ba54ddd52361-jpeg-1786341355133.jpeg"
+      ]
     }
   ]
 }
