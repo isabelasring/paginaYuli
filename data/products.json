@@ -4,10 +4,10 @@
     "name": "Kit DermAbsolu Contorno de Ojos 15ML + Loción Tónica 200ML + Agua Termal 50ML",
     "brand": "Eau Thermale Avène",
     "category": "hidratacion",
-    "price": 160000,
-    "priceOld": 256000,
+    "price": 256000,
+    "priceOld": 160000,
     "badge": "Nuevo kit",
-    "imageUrl": "/api/media?path=assets%2Fproductos%2Fkit-dermabsolu-contorno-ojos.webp&v=1785734293859",
+    "imageUrl": "assets/productos/kit-dermabsolu-contorno-ojos.webp",
     "benefits": [
       "Reafirma y redensifica el contorno de ojos",
       "Suaviza arrugas y líneas de expresión",
@@ -145,7 +145,7 @@
     "price": 161000,
     "priceOld": 230000,
     "badge": "-30%",
-    "imageUrl": "assets/productos/contorno-ojos-dermabsolu.webp",
+    "imageUrl": "/api/media?path=assets%2Fproductos%2Fcontorno-ojos-dermabsolu.webp&v=e55f66d359879260b9e666c374e2e283d99b9051",
     "benefits": [
       "Reafirma el contorno y párpados",
       "Ayuda a atenuar ojeras y bolsas",
