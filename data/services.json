@@ -103,7 +103,7 @@
       ]
     },
     {
-      "id": "svc-1786340510445",
+      "id": "svc-1786340524639",
       "order": 10,
       "name": "DEPILACIÓN CON CERA",
       "description": "Piel suave, limpia y libre de vello 🤍\nUna depilación delicada y cuidadosa para que luzcas una piel hermosa y suave.",
@@ -113,7 +113,7 @@
       ]
     },
     {
-      "id": "svc-1786340524639",
+      "id": "svc-1786340531772",
       "order": 11,
       "name": "DEPILACIÓN CON CERA",
       "description": "Piel suave, limpia y libre de vello 🤍\nUna depilación delicada y cuidadosa para que luzcas una piel hermosa y suave.",
@@ -123,18 +123,8 @@
       ]
     },
     {
-      "id": "svc-1786340531772",
-      "order": 12,
-      "name": "DEPILACIÓN CON CERA",
-      "description": "Piel suave, limpia y libre de vello 🤍\nUna depilación delicada y cuidadosa para que luzcas una piel hermosa y suave.",
-      "price": 0,
-      "images": [
-        ""
-      ]
-    },
-    {
       "id": "svc-1786341353473",
-      "order": 13,
+      "order": 12,
       "name": "DEPILACIÓN CON CERA",
       "description": "Piel suave, limpia y libre de vello 🤍\nUna depilación delicada y cuidadosa para que luzcas una piel hermosa y suave.",
       "price": 0,
